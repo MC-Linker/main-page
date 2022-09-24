@@ -270,7 +270,6 @@ body {
         grid-template-columns: 1fr 1fr;
         background-color: var(--color-discordembed);
         border-radius: 15px;
-        box-shadow: 0px 10px 0px var(--color-mclinker);
         padding: 10px;
         margin: 30px;
     }

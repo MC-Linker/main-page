@@ -1,88 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <title>MC Linker</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MC Linker</title>
-    <meta content="MC Linker" property="og:title">
-    <meta content="Connect your minecraft server with Discord! View minecraft stats, advancements and inventories in Discord! Also includes moderation tools, minecraft commands, two-way chat and more." property="og:description">
-    <meta content="https://mclinker.ml/assets/icon.png" property="og:image">
-    <meta content="#699f38" data-react-helmet="true" name="theme-color">
+    <meta name="description" content="Connect your minecraft server with Discord! View minecraft stats, advancements and inventories in Discord! Also includes moderation tools, minecraft commands, two-way chat and more.">
+    <meta name="keywords" content="Discord, Minecraft, Bot">
+    <meta name="author" content="Lianecx, TheAnnoying">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.5.55/css/materialdesignicons.min.css">
     <link href="https://fonts.cdnfonts.com/css/proxima-nova-2" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?display=swap&amp;family=Varela+Round:400,400italic" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="pagecontainer">
-        <img id="header-image" src="./assets/big_text.png">
-        <div class="divider-line"></div>
-        <div id="page-description">
-            Connect your minecraft server with Discord!
-        </div>
-        <div id="page-links">
-            <a class="link-button" href="https://guide.mclinker.ml">󰈔 Documentation</a>
-            <a class="link-button disabled" href="index.html">󰍜 Dashboard</a>
-            <a class="link-button" href="https://discord.gg/UEWqG4xd2E">󰀉 Support</a>
-        </div>
-        <div id="social-links-container">
-            <a class="social-link" href="https://github.com/MC-Linker">󰊤</a>
-            <a class="social-link" href="https://www.youtube.com/channel/UCGuaOLhFRuzn2NvZpgUDKGg">󰗃</a>
-            <a class="social-link" href="https://top.gg/bot/712759741528408064">󰙯</a>
-            <a class="social-link" href="https://www.spigotmc.org/resources/discord-linker.98749/">󰍳</a>
-        </div>
-        <div id="feature-container">
-            <div class="feature">
-                <img src="/assets/Clt.png">
-                <span class="feature-description"><span>Many Features<br></span> MC Linker allows you to view your and other players' inventories, <br>as well as see inside shulker boxes and view item data!</span>
-            </div>
-            <div class="feature">
-                <span class="feature-description"><span>Frequent Updates</span><br>Our bot is always maintained and kept up to date, making big updates come often! You can check out our <a href="https://github.com/MC-Linker" class="text-link" target="_blank">Github Organization</a>. Our plugin and Discord bot are both open source meaning anyone can see their code and request to help us make them better!</span>
-                <img src="/assets/Clt.png">
+    <div id="logo">
+        <img src="assets/mc-linker/mc-linker-logo.png" alt="MC Linker">
+        <p>MC Linker</p>
+    </div>
+    <div id="page-description">Link your Minecraft server with Discord!</div>
+    <div id="page-link-container">
+        <a class="link-button" href="https://guide.mclinker.com">Guide</a>
+        <a class="link-button disabled" href="https://dashboard.mclinker.com">Dashboard</a>
+        <a class="link-button" href="https://discord.gg/UEWqG4xd2E">Support</a>
+    </div>
+    <div id="social-links-container">
+        <a class="social-link" href="https://github.com/MC-Linker"><img src="assets/brands/github-mark-white.svg" alt="GitHub Logo"/></a>
+        <a class="social-link" href="https://www.youtube.com/@lianecx"><img src="assets/brands/youtube-icon.png" alt="YouTube Logo"></a>
+        <a class="social-link" href="https://top.gg/bot/712759741528408064"><img src="assets/brands/topgg-icon.png" alt="Top.gg Logo"/></a>
+        <a class="social-link" href="https://www.spigotmc.org/resources/discord-linker.98749/"><img src="assets/brands/spigot-icon.png" alt="SpigotMC Logo"/></a>
+    </div>
+    <div id="feature-container">
+        <div class="feature">
+            <img src="/assets/features/inventory.png" alt="Inventory Feature">
+            <div class="feature-text">
+                <h2>View Inventories</h2>
+                <p>View other player's inventories including information about every item.</p>
+                <a class="link-button">󰁔 Learn More</a>
             </div>
         </div>
-        <div class="card-container">
-            <div class="card">
-                <img src="assets/test.png">
-                <div class="card-contents">
-                    <div class="card-header">Inventories</div>
-                    <div class="card-description">MC Linker allows you to view your and other players' inventories, <br>as well as see inside shulker boxes and view item data! </div>
-                    <a class="card-button" href="index.html">Read more 󰁔</a>
-                </div>
+        <div class="feature">
+            <div class="feature-text">
+                <h2>Chat Channels</h2>
+                <p>Add a chat bridge between Minecraft and Discord or monitor commands being sent by users.</p>
+                <a class="link-button">󰁔 Learn More</a>
             </div>
-            <div class="card">
-                <img src="assets/Clt.png">
-                <div class="card-contents">
-                    <div class="card-header">Chat Channels</div>
-                    <div class="card-description">You can link your Discord channel or even multiple channels to your Minecraft chat using MC Linker! You can also customize the information that is displayed in Discord, such as death messages and advancements. </div>
-                    <a class="card-button" href="index.html">Read more 󰁔</a>
-                </div>
+            <img src="/assets/features/chatchannel.png" alt="ChatChannel Feature">
+        </div>
+        <div class="feature">
+            <img src="/assets/features/commands.png" alt="Inventory Feature">
+            <div class="feature-text">
+                <h2>Moderation</h2>
+                <p>Moderate your server by executing any command on the Minecraft server.</p>
+                <a class="link-button">󰁔 Learn More</a>
             </div>
         </div>
-        <div class="review-container">
-            <div class="review">
-                <div class="review-stars">
-                    <span>󰓎󰓎󰓎󰓎󰓎</span>
-                </div>
-                <div class="review-description">
-                    <i>This bot is amazing! It changed my life! 5/5, recommended.</i>
-                </div>
-                <div class="review-author">
-                    <img src="https://cdn.discordapp.com/avatars/321341078189899787/2ea6b90a0d5426c1f5ce68eea9d93a70.webp?size=256"> 
-                    LinuxUser
-                </div>
+    </div>
+    <div class="review-container">
+        <div class="review">
+            <div class="review-stars">
+                <span>󰓎󰓎󰓎󰓎󰓎</span>
             </div>
-            <div class="review">
-                <div class="review-stars">
-                    <span>󰓎󰓎󰓎󰓎󰉆</span>
-                </div>
-                <div class="review-description">
-                    <i>Great Bot! Allows you to finally collect all the statistics in your discord community. Easy to set up and use<br>and actually a lot of features implemented!</i>
-                </div>
-                <div class="review-author">
-                    <img src="https://images.discordapp.net/avatars/283677688353390592/89fae448f604aee6e6a99a2a1778a17a.png?size=512">
-                    Hannibal
-                </div>
+            <div class="review-description">
+                <i>This bot is amazing! It changed my life! 5/5, recommended.</i>
+            </div>
+            <div class="review-author">
+                <img src="https://cdn.discordapp.com/avatars/321341078189899787/2ea6b90a0d5426c1f5ce68eea9d93a70.webp?size=256" alt="LinuxUser Avatar">
+                LinuxUser
+            </div>
+        </div>
+        <div class="review">
+            <div class="review-stars">
+                <span>󰓎󰓎󰓎󰓎󰓎</span>
+            </div>
+            <div class="review-description">
+                <i>Great Bot! Allows you to finally collect all the statistics in your discord community. Easy to set up and use and actually a lot of features implemented!</i>
+            </div>
+            <div class="review-author">
+                <img src="https://images.discordapp.net/avatars/283677688353390592/89fae448f604aee6e6a99a2a1778a17a.png?size=512" alt="Hannibal Avatar">
+                Hannibal
+            </div>
+        </div>
+        <div class="review">
+            <div class="review-stars">
+                <span>󰓎󰓎󰓎󰓎󰓎</span>
+            </div>
+            <div class="review-description">
+                <i>It's amazing, easy to use 👍👍👍</i>
+            </div>
+            <div class="review-author">
+                <img src="https://cdn.discordapp.com/avatars/611574441805217849/5966708ff1bdcf8bca02bdcf5264a684.webp?size=100" alt="foerbedier Avatar">
+                foerbedier
             </div>
         </div>
     </div>

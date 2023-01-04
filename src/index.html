@@ -13,20 +13,35 @@
                 <label tabindex="0" class="btn btn-ghost btn-circle">
                     <img src="/assets/MCLinkerPfPTransparent.svg">
                 </label>
+                <a class="btn btn-ghost normal-case text-xl max-[640px]:hidden">MC Linker</a>
+            </div>
+            <div class="navbar-center hidden max-[640px]:block">
                 <a class="btn btn-ghost normal-case text-xl">MC Linker</a>
             </div>
-            <div class="navbar-end">
-                <a href="https://guide.mclinker.com" class="btn btn-ghost normal-case text-xl">Guide</a>
-                <a class="btn btn-ghost normal-case text-xl">Dashboard</a>
-                <a href="https://discord.com/invite/UEWqG4xd2E" class="btn btn-ghost normal-case text-xl">Support</a>
+            <div class="navbar-end gap-5">
+                <a href="https://guide.mclinker.com" class="max-[640px]:hidden btn btn-ghost normal-case text-xl">Guide</a>
+                <a class="max-[640px]:hidden btn btn-disabled btn-ghost normal-case text-xl">Dashboard</a>
+                <a href="https://discord.com/invite/UEWqG4xd2E" class="max-[640px]:hidden btn btn-ghost normal-case text-xl">Support</a>
+                <div class="hidden max-[640px]:block">
+                    <div class="dropdown dropdown-end">
+                        <label tabindex="0" class="btn m-1 text-xl" style="font-family: Material Design Icons;">󰍜</label>
+                        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                            <li><a href="https://guide.mclinker.com">Guide</a></li>
+                            <li><a>Dashboard</a></li>
+                            <li><a href="https://discord.com/invite/UEWqG4xd2E">Support</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="hero min-h-screen">
             <div class="hero-content text-center">
-                <div class="max-w-md">
-                    <img src="/assets/MCLinkerPfPTransparent.svg" class="drop-shadow-lg hover:drop-shadow-2xl">
-                    <h1 class="py-10 text-3xl font-bold drop-shadow-2xl">Link your Minecraft server with Discord!</h1>
-                    <button class="btn btn-primary btn-lg btn-wide text-white">Get Started</button>
+                <div class="max-w-xl gap-96">
+                    <div>
+                        <img src="/assets/banner.png" class="drop-shadow-lg hover:drop-shadow-2xl">
+                        <h1 class="py-10 text-3xl font-bold drop-shadow-2xl">Link your Minecraft server with Discord!</h1>
+                        <button class="btn btn-primary btn-lg btn-wide text-white">Get Started</button>
+                    </div>
                 </div>
             </div>
         </div>

@@ -5,6 +5,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="/dist/output.css" rel="stylesheet">
+        <script src="index.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.5.55/css/materialdesignicons.min.css">
     </head>
     <body>
@@ -15,32 +16,43 @@
                 </label>
                 <a class="btn btn-ghost normal-case text-xl max-[640px]:hidden">MC Linker</a>
             </div>
-            <div class="navbar-center hidden max-[640px]:block">
-                <a class="btn btn-ghost normal-case text-xl">MC Linker</a>
-            </div>
             <div class="navbar-end gap-5">
-                <a href="https://guide.mclinker.com" class="max-[640px]:hidden btn btn-ghost normal-case text-xl">Guide</a>
-                <a class="max-[640px]:hidden btn btn-disabled btn-ghost normal-case text-xl">Dashboard</a>
-                <a href="https://discord.com/invite/UEWqG4xd2E" class="max-[640px]:hidden btn btn-ghost normal-case text-xl">Support</a>
-                <div class="hidden max-[640px]:block">
-                    <div class="dropdown dropdown-end">
-                        <label tabindex="0" class="btn m-1 text-xl" style="font-family: Material Design Icons;">󰍜</label>
-                        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-                            <li><a href="https://guide.mclinker.com">Guide</a></li>
-                            <li><a>Dashboard</a></li>
-                            <li><a href="https://discord.com/invite/UEWqG4xd2E">Support</a></li>
-                        </ul>
-                    </div>
-                </div>
+                <a href="https://guide.mclinker.com" class="btn btn-ghost normal-case text-xl">Guide</a>
+                <a class="btn btn-disabled btn-ghost normal-case text-xl">Dashboard</a>
+                <a href="https://discord.com/invite/UEWqG4xd2E" class="btn btn-ghost normal-case text-xl">Support</a>
             </div>
         </div>
         <div class="hero min-h-screen">
             <div class="hero-content text-center">
-                <div class="max-w-xl gap-96">
-                    <div>
+                <div class="max-w-2xl max-[1024px]:items-center gap-10 max-[1024px]:gap-60 flex-col flex justify-center">
+                    <div class="p-10">
                         <img src="/assets/banner.png" class="drop-shadow-lg hover:drop-shadow-2xl">
                         <h1 class="py-10 text-3xl font-bold drop-shadow-2xl">Link your Minecraft server with Discord!</h1>
                         <button class="btn btn-primary btn-lg btn-wide text-white">Get Started</button>
+                    </div>
+                    <div class="max-w-sm inline-flex flex-row max-[1024px]:block gap-10 opacity-0">
+                        <img src="/assets/inventory.png" class="drop-shadow-lg hover:drop-shadow-2xl">
+                        <div>
+                            <h1 class="py-3 text-3xl font-bold drop-shadow-2xl">View Inventories</h1>
+                            <p class="py-3 text-xl drop-shadow-2xl">View other player's inventories including information about every item.</p>
+                            <button class="btn btn-primary btn-lg btn-wide text-white">Learn More</button>
+                        </div>
+                    </div>
+                    <div class="max-w-sm inline-flex flex-row max-[1024px]:block gap-10 opacity-0">
+                        <div>
+                            <h1 class="py-3 text-3xl font-bold drop-shadow-2xl">Chat Channels</h1>
+                            <p class="py-3 text-xl drop-shadow-2xl">Add a chat bridge between Minecraft and Discord or monitor commands being sent by users.</p>
+                            <button class="btn btn-primary btn-lg btn-wide text-white">Learn More</button>
+                        </div>
+                        <img src="/assets/inventory.png" class="drop-shadow-lg hover:drop-shadow-2xl">
+                    </div>
+                    <div class="max-w-sm inline-flex flex-row max-[1024px]:block gap-10 opacity-0">
+                        <img src="/assets/inventory.png" class="drop-shadow-lg hover:drop-shadow-2xl">
+                        <div>
+                            <h1 class="py-3.5 text-3xl font-bold drop-shadow-2xl">Moderation</h1>
+                            <p class="py-3 text-xl drop-shadow-2xl">Moderate your server by executing any command on the Minecraft server.</p>
+                            <button class="btn btn-primary btn-lg btn-wide text-white">Learn More</button>
+                        </div>
                     </div>
                 </div>
             </div>

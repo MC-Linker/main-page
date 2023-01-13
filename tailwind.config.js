@@ -14,17 +14,6 @@ module.exports = {
                     "success": "#52F17C",
                     "warning": "#F1FA89",
                     "error": "#FF5757"
-                },
-                mclinkerlight: {
-                    "primary": "#729e34",
-                    "secondary": "#BF95F9",
-                    "accent": "#FFB86B",
-                    "neutral": "#f0f2f5",
-                    "base-100": "#e7e4df",
-                    "info": "#8BE8FD",
-                    "success": "#52F17C",
-                    "warning": "#F1FA89",
-                    "error": "#FF5757"
                 }
             },
         ],

@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.shown {
+    opacity: 1 !important;
+    filter: blur(0px) !important;
+    transform: translateX(0) !important;
+}
+
+.unshown {
+    opacity: 0;
+    filter: blur(5px);
+    transition: opacity 0.5s, filter 0.5s, transform 0.5s;
+    transform: translateX(-150%);
+}

@@ -7,7 +7,7 @@
         <link href="/dist/output.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.5.55/css/materialdesignicons.min.css">
     </head>
-    <body>
+    <body class="bg-no-repeat bg-cover bg-[url('/assets/wave.svg')]">
         <div class="navbar bg-base-300">
             <div class="navbar-start">
                 <label tabindex="0" class="btn btn-ghost btn-circle">
@@ -23,11 +23,12 @@
         </div>
         <div class="hero min-h-screen">
             <div class="hero-content text-center">
-                <div class="max-w-2xl max-[1024px]:items-center gap-10 max-[1024px]:gap-60 flex-col flex justify-center">
+                <div class="max-w-2xl max-[1024px]:items-center gap-48 max-[1024px]:gap-60 flex-col flex justify-center">
                     <div class="p-10">
                         <img src="/assets/banner.png" class="drop-shadow-lg hover:drop-shadow-2xl">
-                        <h1 class="py-10 text-3xl font-bold drop-shadow-2xl">Link your Minecraft server with Discord!</h1>
-                        <button class="btn btn-primary btn-lg btn-wide text-white">Get Started</button>
+                        <h1 class="py-7 text-3xl font-bold drop-shadow-2xl">Link your Minecraft server with Discord!</h1>
+                        <a href="https://guide.mclinker.com" class="btn btn-primary btn-lg btn-wide text-white mr-5 max-[1024px]:mr-0 max-[1024px]:mb-3">Get Started</a>
+                        <a href="https://discord.com/oauth2/authorize?client_id=712759741528408064&permissions=275415092224&scope=applications.commands%20bot" class="btn btn-sucess btn-lg btn-wide text-white ml-5 max-[1024px]:ml-0 max-[1024px]:mt-3">Invite</a>
                     </div>
                     <div class="max-w-sm inline-flex flex-row max-[1024px]:block gap-10 unshown">
                         <img src="/assets/inventory.png" class="drop-shadow-lg hover:drop-shadow-2xl">

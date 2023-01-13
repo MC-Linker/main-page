@@ -1,11 +1,12 @@
+let observer = new IntersectionObserver((entries, observer) => {
+    for (const entry of entries) {
+        if (entry.intersectionRatio === 1) {
+            setTimeout(() => {
+                entry.target.classList.add("shown");
+            }, 300)
+        }
+    }
+}, { threshold: 1 });
 
-console.log("im in!")
-let observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-        console.log(entry)
-        entry.target.classList.toggle('opacity-100', entry.isIntersecting);
-    })
-});
-
-const hiddenElements = document.querySelectorAll('.opacity-0');
+const hiddenElements = document.querySelectorAll('.unshown');
 hiddenElements.forEach((el) => observer.observe(el));

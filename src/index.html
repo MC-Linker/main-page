@@ -1,0 +1,68 @@
+<!doctype html>
+<html data-theme="mclinker"></html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="/dist/output.css" rel="stylesheet">
+        <title>MC Linker - Main Page</title>
+        <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.5.55/css/materialdesignicons.min.css">
+        <meta content="MC Linker - Main Page" property="og:title" />
+        <meta content="Moderate and connect your Minecraft server with Discord! This bot allows you to view minecraft stats, advancements, and even inventories of any member in Discord. Also supports a powerful two-way chat with Minecraft, command execution and many other helpful features." property="og:description" />
+        <meta content="https://images-ext-1.discordapp.net/external/HKU2jiIN8GhuYc2XXkfLp16R5g48H0-1p38NDqDg4UA/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/712759741528408064/d3ee14343f8a927473f68a8e9e0e0e29.png?width=671&height=671" property="og:image" />
+        <meta content="#729e34" data-react-helmet="true" name="theme-color" />
+    </head>
+    <body class="bg-no-repeat bg-cover bg-[url('/assets/wave.svg')]">
+        <div class="navbar bg-base-300">
+            <div class="navbar-start">
+                <label tabindex="0" class="btn btn-ghost btn-circle">
+                    <img src="/assets/MCLinkerPfPTransparent.svg">
+                </label>
+                <a class="btn btn-ghost normal-case text-xl max-[640px]:hidden">MC Linker</a>
+            </div>
+            <div class="navbar-end gap-5">
+                <a href="https://guide.mclinker.com" class="btn btn-ghost normal-case text-xl">Guide</a>
+                <a class="btn btn-disabled btn-ghost normal-case text-xl">Dashboard</a>
+                <a href="https://discord.com/invite/UEWqG4xd2E" class="btn btn-ghost normal-case text-xl">Support</a>
+            </div>
+        </div>
+        <div class="hero min-h-screen">
+            <div class="hero-content text-center">
+                <div class="max-w-2xl max-[1024px]:items-center gap-48 max-[1024px]:gap-60 flex-col flex justify-center">
+                    <div class="p-10">
+                        <img src="/assets/banner.png" class="drop-shadow-lg hover:drop-shadow-2xl">
+                        <h1 class="py-7 text-3xl font-bold drop-shadow-2xl">Link your Minecraft server with Discord!</h1>
+                        <a href="https://guide.mclinker.com" class="btn btn-primary btn-lg btn-wide text-white mr-5 max-[640px]:mr-0 max-[640px]:mb-3">Get Started</a>
+                        <a href="https://discord.com/oauth2/authorize?client_id=712759741528408064&permissions=275415092224&scope=applications.commands%20bot" class="btn btn-sucess btn-lg btn-wide text-white ml-5 max-[640px]:ml-0 max-[640px]:mt-3">Invite</a>
+                    </div>
+                    <div class="max-w-sm inline-flex flex-row max-[1024px]:block gap-10 unshown">
+                        <img src="/assets/inventory.png" class="drop-shadow-lg hover:drop-shadow-2xl">
+                        <div>
+                            <h1 class="py-3 text-3xl font-bold drop-shadow-2xl">View Inventories</h1>
+                            <p class="py-3 text-xl drop-shadow-2xl">View other player's inventories including information about every item.</p>
+                            <button class="btn btn-primary btn-lg btn-wide text-white">Learn More</button>
+                        </div>
+                    </div>
+                    <div class="max-w-sm inline-flex flex-row max-[1024px]:block gap-10 unshown">
+                        <div>
+                            <h1 class="py-3 text-3xl font-bold drop-shadow-2xl">Chat Channels</h1>
+                            <p class="py-3 text-xl drop-shadow-2xl">Add a chat bridge between Minecraft and Discord or monitor commands being sent by users.</p>
+                            <button class="btn btn-primary btn-lg btn-wide text-white">Learn More</button>
+                        </div>
+                        <img src="/assets/inventory.png" class="drop-shadow-lg hover:drop-shadow-2xl">
+                    </div>
+                    <div class="max-w-sm inline-flex flex-row max-[1024px]:block gap-10 unshown">
+                        <img src="/assets/inventory.png" class="drop-shadow-lg hover:drop-shadow-2xl">
+                        <div>
+                            <h1 class="py-3.5 text-3xl font-bold drop-shadow-2xl">Moderation</h1>
+                            <p class="py-3 text-xl drop-shadow-2xl">Moderate your server by executing any command on the Minecraft server.</p>
+                            <button class="btn btn-primary btn-lg btn-wide text-white">Learn More</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="index.js"></script>
+    </body>
+</html>

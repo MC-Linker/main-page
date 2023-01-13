@@ -3,7 +3,7 @@ let observer = new IntersectionObserver((entries, observer) => {
         if (entry.intersectionRatio === 1) {
             setTimeout(() => {
                 entry.target.classList.add("shown");
-            }, 300)
+            }, 150)
         }
     }
 }, { threshold: 1 });

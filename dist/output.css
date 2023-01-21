@@ -1652,23 +1652,25 @@ html {
   }
 }
 
-@media (max-width: 640px) {
-  .max-\[640px\]\:mr-0 {
+@media (max-width: 669px) {
+  .max-\[669px\]\:mr-0 {
     margin-right: 0px;
   }
 
-  .max-\[640px\]\:mb-3 {
+  .max-\[669px\]\:mb-3 {
     margin-bottom: 0.75rem;
   }
 
-  .max-\[640px\]\:ml-0 {
+  .max-\[669px\]\:ml-0 {
     margin-left: 0px;
   }
 
-  .max-\[640px\]\:mt-3 {
+  .max-\[669px\]\:mt-3 {
     margin-top: 0.75rem;
   }
+}
 
+@media (max-width: 640px) {
   .max-\[640px\]\:block {
     display: block;
   }

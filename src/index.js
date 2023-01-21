@@ -1,9 +1,7 @@
 let observer = new IntersectionObserver((entries, observer) => {
     for (const entry of entries) {
         if (entry.intersectionRatio === 1) {
-            setTimeout(() => {
-                entry.target.classList.add("shown");
-            }, 150)
+            entry.target.classList.add("shown");
         }
     }
 }, { threshold: 1 });

@@ -1,0 +1,101 @@
+<!doctype html>
+<html data-theme="mclinker"></html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="/dist/output.css" rel="stylesheet">
+        <title>MC Linker - TOS</title>
+        <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.5.55/css/materialdesignicons.min.css">
+        <meta content="MC Linker - TOS" property="og:title" />
+        <meta content="Moderate and connect your Minecraft server with Discord! This bot allows you to view minecraft stats, advancements, and even inventories of any member in Discord. Also supports a powerful two-way chat with Minecraft, command execution and many other helpful features." property="og:description" />
+        <meta content="https://images-ext-1.discordapp.net/external/HKU2jiIN8GhuYc2XXkfLp16R5g48H0-1p38NDqDg4UA/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/712759741528408064/d3ee14343f8a927473f68a8e9e0e0e29.png?width=671&height=671" property="og:image" />
+        <meta content="#729e34" data-react-helmet="true" name="theme-color" />
+    </head>
+    <body>
+        <div class="navbar bg-base-300">
+            <div class="navbar-start">
+                <label tabindex="0" class="btn btn-ghost btn-circle">
+                    <img src="/assets/MCLinkerPfPTransparent.svg">
+                </label>
+                <a href="/index.html" class="btn btn-ghost normal-case text-xl max-[640px]:hidden">MC Linker</a>
+            </div>
+            <div class="navbar-center">
+                <a href="/index.html" class="btn btn-ghost normal-case text-xl hidden max-[640px]:flex">MC Linker</a>
+            </div>
+            <div class="navbar-end gap-5">
+                <a href="https://guide.mclinker.com" class="btn btn-ghost normal-case text-xl max-[640px]:hidden">Guide</a>
+                <a class="btn btn-disabled btn-ghost normal-case text-xl max-[640px]:hidden">Dashboard</a>
+                <a href="https://discord.com/invite/UEWqG4xd2E" class="btn btn-ghost normal-case text-xl max-[640px]:hidden">Support</a>
+                <div class="dropdown dropdown-bottom dropdown-end hidden max-[640px]:block">
+                    <label tabindex="0" class="btn" style="font-family: Material Design Icons">󰍜</label>
+                    <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                        <li><a href="https://guide.mclinker.com">Guide</a></li>
+                        <li><a>Dashboard</a></li>
+                        <li><a href="https://discord.com/invite/UEWqG4xd2E">Support</a></li>
+                        <div class="flex flex-col w-full"><div class=" divider"></div></div>
+                        <li><a href="https://discord.com/oauth2/authorize?client_id=712759741528408064&permissions=275415092224&scope=applications.commands%20bot">Invite</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col mx-40 py-10">
+            <h1 class="text-3xl font-bold">Privacy</h1>
+            <div class="flex flex-col w-full"><div class="divider"></div></div>
+            <p class="pb-10">By using the Discord bot <span class="highlighted">Minecraft SMP Bot</span>, you agree that you have read and agreed to this policy. This is our Privacy Policy, which will describe the types of data collected, how it is used, how to opt out of data collection, and how to remove your data. The terms "we", "us", and "our" refer to the owner and moderators of <span class="highlighted">Minecraft SMP Bot</span>. The terms "bot" and "Minecraft SMP Bot" refer to the Discord bot itself. We may update this Privacy Policy at any time. Any changes that are made will be made effective immediately. If you are a regular user of our bot, please make sure you are kept up to date with this Privacy Policy.</p>
+
+            <h2 class="text-3xl font-bold">Privacy statement</h2>
+            <div class="flex flex-col w-full"><div class="divider"></div></div>
+            <p class="pb-10">We respect the privacy of your information. This policy describes the types of information that we may collect from you or that you may provide when you use our bot, as well as describing our practices for collecting, using, maintaining, protecting and disclosing that information.<br><span class="font-bold">This policy applies to any data collected through these sources:</span><br>• Data provided directly by users<br>• Any commands ran</p>
+
+            <h2 class="text-3xl font-bold">The information we collect and how we collect it</h2>
+            <div class="flex flex-col w-full"><div class="divider"></div></div>
+            <p class="pb-10"><span class="font-bold">Connections:</span><br>The Minecraft SMP Bot collects and stores Minecraft usernames that you tie to your Discord account. This will only be personally identifiable if the username is personally identifiable. Our bot also stores server connection files in JSON format that are tied to your Discord server.
+                Server connections can be of two types: Plugin connections include the IP the server is running on, the Minecraft version and the path to the Minecraft world folder. FTP connections do not include the IP but rather the FTP credentials needed to communicate with the server.<br>This data is provided voluntarily with the commands <span class="highlighted">/connect</span> as well as <span class="highlighted">/account</span> and can be removed by the user at any time. User and server connection files are stored locally on the bot’s server.<br><span class="font-bold">Commands:</span><br>Any command executed through our Bot is logged in the console temporarily. This includes the command name, command arguments, the tag of the user who executed the command, as well as the name of the server in which it was executed. These logs will always be deleted within a week or after a restart of the bot.</p>
+            
+            <h2 class="text-3xl font-bold">How we use information</h2>
+            <div class="flex flex-col w-full"><div class="divider"></div></div>
+            <p class="pb-10"><span class="font-bold">Commands:</span><br>Commands are logged to help track error messages and bot abuse. When an error occurs, the command logs can be used to see the activity that occurred around the time of an error.</p>
+
+            <h2 class="text-3xl font-bold">Opting out</h2>
+            <div class="flex flex-col w-full"><div class="divider"></div></div>
+            <p class="pb-10">How to opt out of having this data collected:<br><span class="font-bold">Server owners/admins:</span><br> To opt out of having any commands logged from your server, kick Minecraft SMP Bot from your Discord server.<span class="font-bold">Server members:</span><br>To opt out of having your commands logged from a server using our bot, leave the Discord server.</p>
+
+            <h2 class="text-3xl font-bold">Removal of data</h2>
+            <div class="flex flex-col w-full"><div class="divider"></div></div>
+            <p class="pb-10"><span class="font-bold">Connections:</span><br>User and Server connections can be removed by using the implemented commands <span class="highlighted">/disconnect account</span>, <span class="highlighted">/disconnect ftp</span> or <span class="highlighted">/disconnect</span> plugin for the respective connections.<br><span class="font-bold">Commands:</span><br>Command logs are generally deleted every week. If you still want to urgently remove command logs, please contact me through the contacts listed at the bottom of this policy, with the Command name and User Tag of the logs you would like to have removed.</p>
+
+            <h2 class="text-3xl font-bold">Third-party websites</h2>
+            <div class="flex flex-col w-full"><div class="divider"></div></div>
+            <p class="pb-10">Minecraft SMP Bot may link to third-party websites. These websites are separate from our bot and will have their own privacy policies. Any data collected through these third-party websites is separate and unrelated to the bot.</p>
+
+            <h2 class="text-3xl font-bold">Contact information</h2>
+            <div class="flex flex-col w-full"><div class="divider"></div></div>
+            <p class="pb-10">If you have any questions about this Privacy Policy, you can contact me:<br>• By email: <a class="underline" href="mailto:benjeck@gmail.com">benjeck@gmail.com</a><br>• Support Discord Server: <a class="underline" href="https://discord.gg/rX36kZUGNK">MC Linker Hub</a><br>• Discord DM: Lianecx#6444</p>
+        </div>
+        <footer class="footer p-10 bg-neutral bg-opacity-50 text-neutral-content">
+            <div>
+                <img src="/assets/MCLinkerPfPTransparent.svg" height="50" width="50">
+                <p class="font-bold">MC Linker</p>
+                <p class="opacity-50 uppercase">Not an official <a href="https://www.minecraft.net/en-us" class="underline">Minecraft</a> product. Not approved by or associated with <a href="https://www.minecraft.net/en-us" class="underline">Mojang</a></p>
+            </div>
+            <div>
+                <span class="footer-title">SOCIALS</span>
+                <div class="grid grid-flow-col gap-4">
+                    <a href="https://youtube.com/@lianecx" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="fill-current"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"></path></svg></a>
+                    <a href="https://discord.gg/UEWqG4xd2E" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 127.14 96.36" class="fill-current"><defs></defs><g id="图层_2" data-name="图层 2"><g id="Discord_Logos" data-name="Discord Logos"><g id="Discord_Logo_-_Large_-_White" data-name="Discord Logo - Large - White"><path class="cls-1" d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></g></g></g></svg></a>
+                </div>
+            </div>
+            <div>
+                <span class="footer-title">LEGAL</span>
+                <div class="grid grid-flow-col gap-4">
+                    <a href="/pages/tos.html" class="hover:underline">Terms of Service</a>
+                    <a href="/pages/privacy.html" class="hover:underline">Privacy Policy</a>
+                </div>
+            </div>
+        </footer>
+        <script src="src/index.js"></script>
+    </body>
+</html>

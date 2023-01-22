@@ -19,3 +19,14 @@ if(document.URL.includes("invite")){
         document.getElementById("counterElement").style.setProperty('--value', counter);
     }, 1000);
 }
+
+if(document.URL.includes("plugin")){
+    let counter = 3;
+    setInterval(() => {
+        counter > 0 ? counter-- : null;
+        counter == 0 ? window.location.replace("https://www.spigotmc.org/resources/discord-linker.98749/") : null;
+        counter == 0 ? document.getElementById("notRedirected").style.setProperty('opacity', '100%') : null;
+
+        document.getElementById("counterElement").style.setProperty('--value', counter);
+    }, 1000);
+}

@@ -18,6 +18,18 @@ module.exports = {
             },
         ],
     },
-    theme: { extend: {} },
+    theme: { 
+        extend: {
+            animation: {
+                "fade": 'fadeIn 0.6s'
+            },
+            keyframes: {
+                fadeIn: {
+                    '0%': { opacity: 0 },
+                    '100%': { opacity: 100 }
+                }
+            }
+        } 
+    },
     plugins: [require("daisyui")]
 }

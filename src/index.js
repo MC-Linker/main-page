@@ -14,6 +14,8 @@ if(document.URL.includes("invite")){
     setInterval(() => {
         counter > 0 ? counter-- : null;
         counter == 0 ? window.location.replace("https://discord.com/oauth2/authorize?client_id=712759741528408064&permissions=275415092224&scope=applications.commands%20bot") : null;
+        counter == 0 ? document.getElementById("notRedirected").style.setProperty('opacity', '100%') : null;
+
         document.getElementById("counterElement").style.setProperty('--value', counter);
     }, 1000);
 }

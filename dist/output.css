@@ -1594,6 +1594,20 @@ html {
   max-width: 24rem;
 }
 
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 100;
+  }
+}
+
+.animate-fade {
+  animation: fadeIn 0.6s;
+}
+
 .grid-flow-col {
   grid-auto-flow: column;
 }
@@ -1727,10 +1741,6 @@ html {
 .text-neutral-content {
   --tw-text-opacity: 1;
   color: hsl(var(--nc) / var(--tw-text-opacity));
-}
-
-.underline {
-  text-decoration-line: underline;
 }
 
 .opacity-50 {

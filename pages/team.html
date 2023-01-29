@@ -1,0 +1,87 @@
+<!doctype html>
+<html data-theme="mclinker"></html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="/dist/output.css" rel="preload" as="style">
+        <link href="/dist/output.css" rel="stylesheet">
+        <title>MC Linker - Meet The Team</title>
+        <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.5.55/css/materialdesignicons.min.css">
+        <meta content="MC Linker - Meet The Team" property="og:title" />
+        <meta content="Moderate and connect your Minecraft server with Discord! This bot allows you to view minecraft stats, advancements, and even inventories of any member in Discord. Also supports a powerful two-way chat with Minecraft, command execution and many other helpful features." property="og:description" />
+        <meta content="https://images-ext-1.discordapp.net/external/HKU2jiIN8GhuYc2XXkfLp16R5g48H0-1p38NDqDg4UA/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/712759741528408064/d3ee14343f8a927473f68a8e9e0e0e29.png?width=671&height=671" property="og:image" />
+        <meta content="#729e34" data-react-helmet="true" name="theme-color" />
+    </head>
+    <body class="animate-fade">
+        <div include-html="/components/navbar.html"></div>
+
+        <div class="py-10 p-10 justify-center items-center flex flex-col gap-10">
+            <h1 class="font-bold text-3xl">Our Team</h1>
+            <div class="flex flex-col w-2/4"><div class="divider"></div></div>
+
+            <div class="grid grid-cols-1 gap-10 xl:grid-cols-3 lg:grid-cols-2 justify-center place-items-center items-center">
+                <div class="card w-96 h-[35rem] bg-neutral shadow-xl">
+                    <figure class="py-3"><img src="/assets/profiles/Lianecx.png" width=254 height=254 alt="Lianecx - Primary Developer" class="rounded-xl" /></figure>
+                    <div class="card-body">
+                        <h2 class="card-title">
+                            Lianecx
+                            <div class="badge badge-primary">Team Lead</div>
+                            <div class="badge badge-primary">Developer</div>
+                        </h2>
+                        <p>Hey 👋<br> I‘m Lianecx and I manage and develop the MC Linker Discord bot. I love programming (especially in Java and JS) and my favorite games are Minecraft and Rocket League 👀</p>
+                    </div>
+                </div>
+                <div class="card w-96 h-[35rem] bg-neutral shadow-xl">
+                    <figure class="py-3"><img src="/assets/profiles/TheAnnoying.png" width=254 height=254 alt="Lianecx - Primary Developer" class="rounded-xl" /></figure>
+                    <div class="card-body">
+                        <h2 class="card-title">
+                            TheAnnoying
+                            <div class="badge badge-primary text-left whitespace-nowrap">Marketing</div>
+                            <div class="badge badge-primary">Designer</div>
+                        </h2>
+                        <p>Hey there!<br>I'm in charge of all the fun, and how everything about the bot is presented to you! I enjoy coding as well, but I really love designing images, editing videos and making websites. I hope your experience with MC Linker is great!</p>
+                    </div>
+                </div>
+                <div class="card w-96 h-[35rem] bg-neutral shadow-xl">
+                    <figure class="py-3"><img src="/assets/profiles/Bnux.png" width=254 height=254 alt="Lianecx - Primary Developer" class="rounded-xl" /></figure>
+                    <div class="card-body">
+                        <h2 class="card-title">
+                            Bnux
+                            <div class="badge badge-primary">Dev Ops</div>
+                        </h2>
+                        <p>Hey!<br>I manage the deployment of the MC Linker Discord bot and the testing Minecraft server.<br>I also help with the architecture of the project.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h1 class="font-bold text-3xl">Special Thanks</h1>
+            <div class="flex flex-col w-2/4"><div class="divider"></div></div>
+
+            <div class="flex flex-row gap-10 max-[1024px]:flex-col">
+                <div class="card w-96 h-[23rem] bg-neutral shadow-xl">
+                    <figure class="py-3"><img src="/assets/profiles/Hannibal.png" width=254 height=254 alt="Lianecx - Primary Developer" class="rounded-xl" /></figure>
+                    <div class="card-body">
+                        <h2 class="card-title">
+                            Hannibal
+                            <div class="badge badge-primary text-left whitespace-nowrap">Donator</div>
+                        </h2>
+                    </div>
+                </div>
+                <div class="card w-96 h-[23rem] bg-neutral shadow-xl">
+                    <figure class="py-3"><img src="/assets/profiles/fALECX.png" width=254 height=254 alt="Lianecx - Primary Developer" class="rounded-xl" /></figure>
+                    <div class="card-body">
+                        <h2 class="card-title">
+                            fALECX
+                            <div class="badge badge-primary text-left whitespace-nowrap">Supporter</div>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer include-html="/components/footer.html"></footer>
+        <script src="/src/index.js"></script>
+    </body>
+</html>

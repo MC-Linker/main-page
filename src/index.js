@@ -1,10 +1,12 @@
+
+
 let observer = new IntersectionObserver((entries, observer) => {
     for (const entry of entries) {
         if (entry.intersectionRatio === 1) {
             entry.target.classList.add("shown");
         }
     }
-}, { threshold: 0.6 });
+}, { threshold: 1 });
 
 const hiddenElements = document.querySelectorAll('.unshown');
 hiddenElements.forEach((el) => observer.observe(el));
@@ -30,3 +32,8 @@ if(document.URL.includes("plugin")){
         document.getElementById("counterElement").style.setProperty('--value', counter);
     }, 1000);
 }
+
+document.querySelectorAll("[include-html]").forEach(async e => {
+    const r = await fetch(e.getAttribute("include-html"));
+    e.innerHTML = await r.text();
+});

@@ -23,6 +23,5 @@
 @media(prefers-reduced-motion) {
     .unshown {
         transition: none;
-        opacity: 1;
     }
 }

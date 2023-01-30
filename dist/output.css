@@ -2103,6 +2103,13 @@ html {
   font-weight: 600;
 }
 
+@media(prefers-reduced-motion) {
+  .unshown {
+    transition: none;
+    opacity: 1;
+  }
+}
+
 .hover\:underline:hover {
   text-decoration-line: underline;
 }

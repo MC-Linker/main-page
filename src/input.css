@@ -19,3 +19,10 @@
     border-radius: 0.5rem;
     font-weight: 600;
 }
+
+@media(prefers-reduced-motion) {
+    .unshown {
+        transition: none;
+        opacity: 1;
+    }
+}

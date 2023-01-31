@@ -2188,6 +2188,10 @@ html {
     display: block;
   }
 
+  .max-\[1024px\]\:w-\[20rem\] {
+    width: 20rem;
+  }
+
   .max-\[1024px\]\:flex-col {
     flex-direction: column;
   }

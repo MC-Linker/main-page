@@ -2205,6 +2205,14 @@ html {
     display: block;
   }
 
+  .max-\[1024px\]\:h-\[75\%\] {
+    height: 75%;
+  }
+
+  .max-\[1024px\]\:w-\[75\%\] {
+    width: 75%;
+  }
+
   .max-\[1024px\]\:w-\[20rem\] {
     width: 20rem;
   }
@@ -2217,8 +2225,8 @@ html {
     align-items: center;
   }
 
-  .max-\[1024px\]\:gap-60 {
-    gap: 15rem;
+  .max-\[1024px\]\:gap-48 {
+    gap: 12rem;
   }
 }
 

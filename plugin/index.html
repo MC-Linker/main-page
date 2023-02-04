@@ -1,26 +1,25 @@
 <!doctype html>
-<html data-theme="mclinker"></html>
-<html>
+<html data-theme="mclinker" lang="en">
     <head>
+        <title>MC Linker - Plugin Link</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="/dist/output.css" rel="preload" as="style">
         <link href="/dist/output.css" rel="stylesheet">
-        <title>MC Linker - Plugin Link</title>
         <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.5.55/css/materialdesignicons.min.css">
         <meta content="#729e34" data-react-helmet="true" name="theme-color" />
     </head>
     <body class="animate-fade">
-        <div include-html="/components/navbar.html" class="sticky top-0 z-[1]"></div>
+        <div data-include-html="/components/navbar.html" class="sticky top-0 z-[1]"></div>
         <div class="hero min-h-screen">
             <div class="hero-content max-w-2xl flex flex-col">
-                <img src="/assets/redirecting.png" class="drop-shadow-lg hover:drop-shadow-2xl px-10">
+                <img src="/assets/redirecting.png" class="drop-shadow-lg hover:drop-shadow-2xl px-10" alt="Redirecting...">
                 <div class="countdown"><span id="counterElement" style="--value:3;" class="text-5xl font-bold drop-shadow-2xl"></span></div>
                 <span id="notRedirected" class="opacity-0 text-2xl drop-shadow-3xl pt-10">Not getting redirected? Not cool. press <a href="https://discord.com/oauth2/authorize?client_id=712759741528408064&permissions=275415092224&scope=applications.commands%20bot" class="hover:underline">here!</a></span>
             </div>
         </div>
-        <footer include-html="/components/footer.html"></footer>
+        <footer data-include-html="/components/footer.html"></footer>
         <script src="/src/index.js"></script>
     </body>
 </html>

@@ -1864,10 +1864,6 @@ html {
   margin-bottom: 0.75rem;
 }
 
-.pointer-events-none {
-  pointer-events: none;
-}
-
 .sticky {
   position: sticky;
 }

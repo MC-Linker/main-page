@@ -12,7 +12,7 @@ const hiddenElements = document.querySelectorAll('.unshown');
 hiddenElements.forEach(el => observer.observe(el));
 
 if(document.URL.includes("invite")) {
-    let counter = 3;
+    let counter = 1;
     setInterval(() => {
         counter > 0 ? counter-- : null;
         counter === 0 ? window.location.replace("https://discord.com/oauth2/authorize?client_id=712759741528408064&permissions=275415092224&scope=applications.commands%20bot") : null;
@@ -23,7 +23,7 @@ if(document.URL.includes("invite")) {
 }
 
 if(document.URL.includes("plugin")){
-    let counter = 3;
+    let counter = 1;
     setInterval(() => {
         counter > 0 ? counter-- : null;
         counter === 0 ? window.location.replace("https://www.spigotmc.org/resources/discord-linker.98749/") : null;

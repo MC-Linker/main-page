@@ -1864,6 +1864,10 @@ html {
   margin-bottom: 0.75rem;
 }
 
+.static {
+  position: static;
+}
+
 .sticky {
   position: sticky;
 }
@@ -1924,12 +1928,12 @@ html {
   width: 100%;
 }
 
-.w-\[10rem\] {
-  width: 10rem;
-}
-
 .w-52 {
   width: 13rem;
+}
+
+.w-\[10rem\] {
+  width: 10rem;
 }
 
 .max-w-2xl {
@@ -2004,6 +2008,10 @@ html {
 
 .rounded-2xl {
   border-radius: 1rem;
+}
+
+.border-opacity-50 {
+  --tw-border-opacity: 0.5;
 }
 
 .bg-neutral {

@@ -13,11 +13,11 @@
     transition: opacity 0.5s, filter 0.5s;
 }
 
+code,
 .highlighted {
-    background-color: rgba(0, 0, 0, 0.444);
-    padding: 0.375rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
+    background-color: #00000080;
+    @apply p-3;
+    @apply rounded-sm;
 }
 
 @media(prefers-reduced-motion) {

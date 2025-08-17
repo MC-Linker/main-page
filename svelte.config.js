@@ -1,0 +1,19 @@
+import { mdsvex } from 'mdsvex';
+import path from "path";
+import adapter from '@sveltejs/adapter-cloudflare';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+
+/** @type {import('@sveltejs/kit').Config} */
+const config = {
+	// Consult https://svelte.dev/docs/kit/integrations
+	// for more information about preprocessors
+	preprocess: [vitePreprocess(), mdsvex({
+		layout: {
+			_: path.resolve("src/routes/md/Layout.svelte")
+		}
+	})],
+	kit: { adapter: adapter() },
+	extensions: ['.svelte', '.svx']
+};
+
+export default config;

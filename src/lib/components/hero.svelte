@@ -8,6 +8,6 @@
     <div class="flex flex-col gap-3">
         <h1 class="text-3xl font-bold">{title}</h1>
         <p class="text-lg">{description}</p>
-        <Button href={link} variant="outline">Learn More</Button>
+        <Button href={link} variant="secondary">Learn More</Button>
     </div>
 </div>

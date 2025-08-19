@@ -68,7 +68,6 @@ export const team = {
     specialthanks: [
         {
             username: "Hannibal",
-            github: "hannibal",
             roles: [ "Donator" ]
         },
         {

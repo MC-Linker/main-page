@@ -6,7 +6,7 @@
 <div class="flex flex-col justify-around bg-secondary border-t rounded-t-4xl h-min p-10">
     <div class="mb-5">
         <img src="/banner.png" alt="MC Linker Banner" class="w-44" />
-        <span class="text-muted-foreground">Not an official Minecraft product. Not approved by or associated with Mojang</span>
+        <span class="text-muted-foreground">NOT AN OFFICIAL MINECRAFT PRODUCT. NOT APPROVED BY OR ASSOCIATED WITH MOJANG</span>
     </div>
     <div>
         <span class="font-bold text-muted-foreground">Socials</span>
@@ -32,7 +32,7 @@
     <div>
         <span class="font-bold text-muted-foreground">Other</span>
         <div class="flex flex-row items-center">
-            <Button variant="ghost" href="/team">Meet The Teem</Button>
+            <Button variant="ghost" href="/team">Meet The Team</Button>
         </div>
     </div>
     <div>

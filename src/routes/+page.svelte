@@ -13,13 +13,13 @@
     <div class="flex flex-row gap-2">
         <Button variant="default" href={links.invites.bot} target="_blank">
             <UserPlus />
-            <span class="md:block hidden">Invite Bot</span>
+            Invite Bot
         </Button>
         <Popover.Root>
             <Popover.Trigger>
                 <Button variant="secondary">
                     <Blocks />
-                    <span class="md:block hidden">Plugin</span>
+                    Plugin
                 </Button>
             </Popover.Trigger>
             <Popover.Content class="flex flex-row gap-2">
@@ -35,7 +35,7 @@
         </Popover.Root>
     </div>
 </div>
-<div class="transition-all flex flex-col gap-20 md:w-3xl w-sm mb-32">
+<div class="transition-all flex flex-col gap-20 md:w-3xl w-xs mb-32">
     {#each hero as data, i}
         <Hero
             order={i+1}

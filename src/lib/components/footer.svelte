@@ -1,7 +1,6 @@
 <script>
     import { links } from "$lib";
     import { Button } from "$lib/components/ui/button/index";
-
 </script>
 <div class="flex flex-col justify-around bg-secondary border-t rounded-t-4xl h-min p-10">
     <div class="mb-5">

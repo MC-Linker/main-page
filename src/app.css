@@ -78,7 +78,7 @@ body::before {
 	--primary-foreground: oklch(0.21 0.006 285.885);
 	--secondary: #222E35;
 	--secondary-foreground: oklch(0.985 0 0);
-	--muted: oklch(0.274 0.006 286.033);
+	--muted: #1C272E;
 	--muted-foreground: #6B7F8A;
 	--accent: #313D43;
 	--accent-foreground: oklch(0.985 0 0);

@@ -4,7 +4,7 @@
 
     let { username, github = undefined, roles, about = undefined } = $props();
 </script>
-<div class="bg-secondary/70 border-t flex md:flex-row flex-col gap-5 p-5 rounded-[var(--radius)] w-full">
+<div class="bg-muted border-t flex md:flex-row flex-col gap-5 p-5 rounded-[var(--radius)] w-full">
     <div class="flex flex-col justify-around">
         <div class="flex flex-row items-center gap-3">
             <Avatar.Root class="size-15">
@@ -14,7 +14,7 @@
             <div class="flex flex-col">
                 <span class="font-bold text-lg">{username}</span>
                 {#if github}
-                    <a href="https://github.com/{github}/" target="_blank" class="text-sm font-extralight text-muted-foreground underline">@{github}</a>
+                    <a href="https://github.com/{github}/" target="_blank" class="text-sm font-extralight text-muted-foreground">@{github}</a>
                 {/if}
             </div>
         </div>

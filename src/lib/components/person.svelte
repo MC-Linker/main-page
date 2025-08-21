@@ -14,7 +14,7 @@
             <div class="flex flex-col">
                 <span class="font-bold text-lg">{username}</span>
                 {#if github}
-                    <a href="https://github.com/{github}/" target="_blank" class="text-sm font-extralight text-muted-foreground">@{github}</a>
+                    <a href="https://github.com/{github}/" target="_blank" class="text-sm font-extralight text-muted-foreground hover:underline">@{github}</a>
                 {/if}
             </div>
         </div>

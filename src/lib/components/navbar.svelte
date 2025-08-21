@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { fly, slide } from "svelte/transition";
+    import { fly } from "svelte/transition";
     import { Button } from "$lib/components/ui/button/index";
     import { Book, UserPlus, Blocks } from '@lucide/svelte';
     import { onMount } from "svelte"
@@ -18,11 +18,11 @@
     });
     
 </script>
-<div in:fly={{ y: -5 }} class="border-b border-b-accent transition-all flex justify-center h-[var(--header-height)] top-0 fixed items-center {hasScrolled ? 'bg-card/70 backdrop-blur-2xl lg:w-3xl w-3/4 rounded-[var(--radius)] m-2' : 'bg-card w-full'}">
+<div in:fly={{ y: -5 }} class="border-b border-b-accent transition-all flex justify-center h-[var(--header-height)] top-0 fixed items-center z-10 {hasScrolled ? 'bg-card/70 backdrop-blur-2xl lg:w-3xl w-3/4 rounded-[var(--radius)] m-2' : 'bg-card w-full'}">
     <div class="flex flex-row w-3xl justify-around items-center">
         <a href="/" class="flex flex-row items-center gap-2">
             <img src="/mc-linker.svg" alt="MC Linker Icon" class="size-11" />
-            <p class="md:block hidden">MC Linker</p>
+            <span class="md:block hidden">MC Linker</span>
         </a>
         <div class="flex flex-row gap-1">
             <Button variant="outline" href={links.pages.guide}>
@@ -50,7 +50,7 @@
                         Spigot
                     </Button>
                     <Button variant="outline" href={links.plugin.modrinth} target="_blank">
-                        <img src="/brands/modrinth.svg" alt="Modrinth Icon" class="h-5 fill-amber-50" />
+                        <img src="/brands/modrinth.svg" alt="Modrinth Icon" class="h-5" />
                         Modrinth
                     </Button>
                 </Popover.Content>

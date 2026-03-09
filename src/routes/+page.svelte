@@ -11,13 +11,13 @@
     <img src="/banner.png" alt="MC Linker Banner" />
     <span class="text-center">Link your Minecraft server with Discord</span>
     <div class="flex flex-row gap-2">
-        <Button variant="default" href={links.invites.bot} target="_blank">
+        <Button size="lg" variant="default" href={links.invites.bot} target="_blank">
             <UserPlus />
             Invite Bot
         </Button>
         <Popover.Root>
             <Popover.Trigger>
-                <Button variant="secondary">
+                <Button size="lg" variant="secondary">
                     <Blocks />
                     Plugin
                 </Button>

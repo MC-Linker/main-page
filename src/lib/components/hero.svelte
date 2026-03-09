@@ -1,12 +1,12 @@
 <script lang="ts">
-    let { image, alt, title, description, link, reverse = false, order = 1 } = $props();
+    let { image, alt, title, description, link, reverse = false } = $props();
     import Button from "$lib/components/ui/button/button.svelte";
 </script>
 <div class="flex flex-col {reverse ? 'md:flex-row-reverse' : 'md:flex-row'} gap-10 items-center">
-    <img src={image} {alt}>
+    <img src={image} {alt} class="max-w-sm">
     <div class="flex flex-col gap-3">
         <h1 class="text-3xl font-bold">{title}</h1>
         <p class="text-lg">{description}</p>
-        <Button href={link} variant="secondary">Learn More</Button>
+        <Button disabled={!link} href={link} variant="secondary">Learn More</Button>
     </div>
 </div>

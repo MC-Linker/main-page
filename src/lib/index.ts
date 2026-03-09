@@ -41,6 +41,12 @@ export const hero = [
         title: "Moderation",
         description: "Moderate your server by executing any Minecraft command from Discord",
         link: "https://guide.mclinker.com/guide/moderation/commands.html"
+    },
+    {
+        image: "/hero/profilecustomization.png",
+        alt: "A custom MC-Linker profile in Villager fashion",
+        title: "Customization",
+        description: "Customize MC-Linker with your own banner, name and about section",
     }
 ];
 

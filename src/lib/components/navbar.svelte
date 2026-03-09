@@ -5,23 +5,11 @@
     import { onMount } from "svelte"
     import { links } from "$lib/index";
     import * as Popover from "$lib/components/ui/popover/index.js";
-    
-    let hasScrolled = $state(false);
-    
-    onMount(() => {
-        const handleScroll = () => window.scrollY > 32 ? hasScrolled = true : hasScrolled = false;
-        window.addEventListener('scroll', handleScroll);
-        
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    });
-    
 </script>
-<div in:fly={{ y: -5 }} class="border-b border-b-accent transition-all flex justify-center h-[var(--header-height)] top-0 fixed items-center z-10 {hasScrolled ? 'bg-card/70 backdrop-blur-2xl lg:w-3xl w-3/4 rounded-[var(--radius)] m-2' : 'bg-card w-full'}">
+<div in:fly={{ y: -5 }} class="border-b border-b-accent flex justify-center h-[var(--header-height)] top-0 fixed items-center z-10 bg-card w-full">
     <div class="flex flex-row w-3xl justify-around items-center">
         <a href="/" class="flex flex-row items-center gap-2">
-            <img src="/mc-linker.svg" alt="MC Linker Icon" class="size-11" />
+            <img src="/logo.svg" alt="MC Linker Icon" class="size-11" />
             <span class="md:block hidden">MC Linker</span>
         </a>
         <div class="flex flex-row gap-1">

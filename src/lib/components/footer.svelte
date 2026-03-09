@@ -37,8 +37,8 @@
     <div>
         <span class="font-bold text-muted-foreground">Legal</span>
         <div class="flex flex-row items-center">
-            <Button variant="ghost" href="/md/terms">Terms of Service</Button>
-            <Button variant="ghost" href="/md/privacy">Privacy Policy</Button>
+            <Button variant="ghost" href={links.pages.terms}>Terms of Service</Button>
+            <Button variant="ghost" href={links.pages.privacy}>Privacy Policy</Button>
         </div>
     </div>
 </div>

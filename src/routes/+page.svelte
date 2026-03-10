@@ -39,7 +39,7 @@
     {#each hero as data, i}
         <Hero
             order={i+1}
-            reverse={data?.reverse}
+            reverse={i % 2 !== 0}
             image={data.image}
             alt={data.alt}
             title={data.title}

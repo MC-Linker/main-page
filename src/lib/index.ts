@@ -33,7 +33,6 @@ export const hero = [
         title: "Chat Channel",
         description: "Adds a chat bridge between Minecraft and Discord and allows administrators to monitor commands sent by users",
         link: "https://guide.mclinker.com/guide/chatchannels/creating.html",
-        reverse: true
     },
     {
         image: "/hero/moderation.png",
@@ -47,7 +46,6 @@ export const hero = [
         alt: "A custom MC-Linker profile in Villager fashion",
         title: "Customization",
         description: "Customize MC-Linker with your own banner, name and about section",
-        reverse: true
     }
 ];
 

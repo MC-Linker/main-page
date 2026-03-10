@@ -4,7 +4,7 @@ export const links = {
         spigot: "https://www.spigotmc.org/resources/discord-linker.98749/"
     },
     invites: {
-        bot: "https://discord.com/oauth2/authorize?client_id=712759741528408064&permissions=275415092224&scope=applications.commands%20bot",
+        bot: "https://discord.com/api/oauth2/authorize?client_id=712759741528408064",
         server: "https://discord.gg/rX36kZUGNK",        
     },
     pages: {
@@ -47,6 +47,7 @@ export const hero = [
         alt: "A custom MC-Linker profile in Villager fashion",
         title: "Customization",
         description: "Customize MC-Linker with your own banner, name and about section",
+        reverse: true
     }
 ];
 

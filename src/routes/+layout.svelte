@@ -6,7 +6,7 @@
 	import { navigating } from '$app/state';
 
 	import nProgress from "nprogress";
-	import favicon from '$lib/assets/favicon.svg';
+	import favicon from '$lib/assets/favicon.ico';
 
     import Navbar from "$lib/components/navbar.svelte";
     import Footer from "$lib/components/footer.svelte";

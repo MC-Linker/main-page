@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { fade } from 'svelte/transition';
     import { goto } from '$app/navigation';
     import { page } from '$app/state';
     import { links } from '$lib/data/links';
@@ -46,7 +45,8 @@
 
 <nav class="hud" aria-label="Main (keys 1 to 9)">
     {#key label}
-        <p class="label mc-text" out:fade={{ duration: 600, delay: 900 }} aria-hidden="true">{label}</p>
+        <!-- Like the game: the name shows up, then fades. A new name replaces it right away. -->
+        <p class="label mc-text" aria-hidden="true">{label}</p>
     {/key}
     <div class="xp" aria-hidden="true">
         <span class="level mc-text">{Math.max(0, selected) + 1}</span>
@@ -82,7 +82,9 @@
         display: flex; flex-direction: column; align-items: center; gap: 0.2rem;
         pointer-events: none;
     }
-    .label { position: absolute; bottom: calc(100% + 0.6rem); margin: 0; white-space: nowrap; color: #fff; font-size: 1rem; }
+    .label { position: absolute; bottom: calc(100% + 0.6rem); margin: 0; white-space: nowrap; color: #fff; font-size: 1rem; animation: label-fade 2.5s ease-in forwards; }
+    @keyframes label-fade { 0%, 60% { opacity: 1; } 100% { opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) { .label { animation: none !important; } }
     .xp { position: relative; width: calc(var(--s) * 9 - 0.6rem); margin-top: 1.1rem; }
     .level { position: absolute; left: 50%; bottom: 0.3rem; transform: translateX(-50%); color: var(--color-mc-green); font-size: 1rem; --mc-shadow: 0.1em; }
     .bar { display: block; height: 0.45rem; background: #1b1b1b; border: 1px solid #000; }

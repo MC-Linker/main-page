@@ -45,11 +45,11 @@
         {#if guide}<a class="guide" href={guide}>How to set it up <span aria-hidden="true">→</span></a>{/if}
     </div>
     <div class="side mc">
-        <span class="tag mc-text">In Minecraft</span>
+        <span class="tag mojang">In Minecraft</span>
         {@render mc()}
     </div>
     <div class="side dc">
-        <span class="tag">In Discord</span>
+        <span class="tag dc-tag">In Discord</span>
         {@render dc()}
     </div>
 </section>
@@ -98,7 +98,7 @@
     /* Only hide before the reveal when JavaScript is there to reveal it. */
     :global(html.js) .scene:not(.seen) .label { opacity: 0; transform: translateY(16px); }
     .num { display: block; font-size: 1rem; color: var(--color-grass-light); }
-    h3 { margin: 0.25rem 0 0.5rem; font-family: var(--font-pixel); font-weight: 700; font-size: clamp(1.75rem, 3.2vw, 2.4rem); line-height: 1.1; color: #fff; }
+    h3 { margin: 0.25rem 0 0.5rem; font-family: var(--font-pixel); font-weight: 400; font-size: clamp(1.75rem, 3.2vw, 2.4rem); line-height: 1.1; color: #fff; }
     p { margin: 0 auto; max-width: 30rem; color: #ced4da; line-height: 1.55; text-wrap: pretty; }
     .chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.375rem; margin: 0.875rem 0 0; padding: 0; list-style: none; }
     .chips code {
@@ -126,7 +126,8 @@
     :global(html.js) .scene:not(.seen) .side.dc { transform: translateX(20px); }
     .side > :global(:not(.tag)) { width: 100%; max-width: 32rem; }
     .tag { font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: #adb5bd; }
-    .mc .tag { color: #e9ecef; letter-spacing: 0.04em; }
+    .mc .tag { color: #e9ecef; font-size: 0.85rem; }
+    .dc-tag { font-weight: 600; }
 
     @media (max-width: 860px) {
         .scene { grid-template-columns: 1fr; grid-template-rows: auto auto auto; padding-bottom: 0; }

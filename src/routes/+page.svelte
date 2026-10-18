@@ -21,6 +21,7 @@
 
 <div id="features" class="features">
     <header class="intro" style:--ground={ground}>
+        <p class="kicker mojang">Features</p>
         <h2 class="mc-text">One link. Two worlds.</h2>
         <p>Every feature works on both sides. On the left, what your players see in-game. On the right, what your community sees in Discord. Try the buttons.</p>
     </header>
@@ -49,8 +50,9 @@
             var(--ground) 0 0 / 64px 64px;
         image-rendering: pixelated;
     }
-    .intro h2 { margin: 0; font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 700; color: #fff; }
-    .intro p { margin: 0.75rem auto 0; max-width: 36rem; padding: 0.75rem 1rem; border-radius: 12px; background: rgb(13 16 20 / 0.7); color: #ced4da; line-height: 1.6; }
+    .kicker { margin: 0 0 0.6rem; font-size: 1rem; color: var(--color-grass-light); text-shadow: 0.1em 0.1em 0 rgb(0 0 0 / 0.6); }
+    .intro h2 { margin: 0; font-size: clamp(2.2rem, 5vw, 3.5rem); color: #fff; }
+    .intro p:not(.kicker) { margin: 0.75rem auto 0; max-width: 36rem; padding: 0.75rem 1rem; border-radius: 12px; background: rgb(13 16 20 / 0.7); color: #ced4da; line-height: 1.6; }
     @media (max-width: 860px) {
         .intro { background: var(--color-ink); }
     }

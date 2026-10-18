@@ -21,6 +21,7 @@
 </script>
 
 <section class="more" aria-labelledby="more-title">
+    <p class="kicker mojang">More features</p>
     <h2 id="more-title"><span class="mc-text">And a lot more</span></h2>
     <p class="sub">Everything below is free and set up with a slash command or two.</p>
     <ul class="grid">
@@ -46,7 +47,8 @@
         background: var(--color-ink);
         text-align: center;
     }
-    h2 { margin: 0; font-size: clamp(2rem, 4.5vw, 3.25rem); font-weight: 700; color: #fff; }
+    .kicker { margin: 0 0 0.6rem; font-size: 1rem; color: var(--color-grass-light); text-shadow: 0.1em 0.1em 0 rgb(0 0 0 / 0.6); }
+    h2 { margin: 0; font-size: clamp(2rem, 4.5vw, 3.25rem); font-weight: 400; color: #fff; }
     .sub { margin: 0.75rem auto 0; max-width: 34rem; color: #adb5bd; }
     .grid {
         display: grid;

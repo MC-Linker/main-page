@@ -13,7 +13,7 @@
     <nav aria-label="Main">
         <a class="brand" href="/" aria-label="MC Linker home">
             <img src="/logo.svg" alt="" width="32" height="32" />
-            <span class="mc-text">MC Linker</span>
+            <span class="mc-logo">MC Linker</span>
         </a>
         <ul>
             <li class="wide"><a href={home ? '#features' : '/#features'}>Features</a></li>

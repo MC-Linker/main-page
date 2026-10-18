@@ -3,6 +3,7 @@
 </script>
 
 <section class="faq" aria-labelledby="faq-title">
+    <p class="kicker mojang">Help</p>
     <h2 id="faq-title" class="mc-text">Questions</h2>
     <div class="list">
         {#each faq as item, i (item.q)}
@@ -16,7 +17,8 @@
 
 <style>
     .faq { padding: clamp(4rem, 9vw, 7rem) 1rem; background: var(--color-ink); }
-    h2 { margin: 0 0 2rem; text-align: center; font-size: clamp(2rem, 4.5vw, 3.25rem); font-weight: 700; color: #fff; }
+    .kicker { margin: 0 0 0.6rem; text-align: center; font-size: 1rem; color: var(--color-grass-light); text-shadow: 0.1em 0.1em 0 rgb(0 0 0 / 0.6); }
+    h2 { margin: 0 0 2rem; text-align: center; font-size: clamp(2rem, 4.5vw, 3.25rem); font-weight: 400; color: #fff; }
     .list { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 0.6rem; }
     details { border-radius: 12px; background: #161b21; box-shadow: 0 0 0 1px rgb(255 255 255 / 0.06); }
     summary {

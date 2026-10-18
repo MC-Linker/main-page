@@ -1,8 +1,30 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* Minecraft fonts from the MC-Linker bot repo (resources/fonts), subset to woff2. */
+@font-face {
+	font-family: "Minecraft Seven";
+	src: url("/fonts/minecraft-seven.woff2") format("woff2");
+	font-display: swap;
+}
+@font-face {
+	font-family: "Minecrafter";
+	src: url("/fonts/minecrafter.woff2") format("woff2");
+	font-display: swap;
+}
+@font-face {
+	font-family: "Mojang Studios";
+	src: url("/fonts/mojang-studios.woff2") format("woff2");
+	font-display: swap;
+}
+
 @theme {
-	--font-pixel: "Pixelify Sans Variable", "Pixelify Sans", ui-monospace, monospace;
+	/* In-game text. Pixelify only fills in glyphs Minecraft Seven doesn't have (like arrows). */
+	--font-pixel: "Minecraft Seven", "Pixelify Sans Variable", ui-monospace, monospace;
+	/* The blocky logo font. Letters and digits only, so keep it to short words. */
+	--font-logo: "Minecrafter", "Minecraft Seven", ui-monospace, monospace;
+	/* The Mojang Studios logo font, for small uppercase labels. */
+	--font-mojang: "Mojang Studios", "Minecraft Seven", ui-monospace, monospace;
 	--font-sans: "DM Sans Variable", "DM Sans", ui-sans-serif, system-ui, sans-serif;
 
 	/* Minecraft side */
@@ -49,6 +71,8 @@
 }
 
 html {
+	/* The Minecraft fonts have one weight; never smear them into fake bold. */
+	font-synthesis-weight: none;
 	scroll-behavior: smooth;
 	-webkit-text-size-adjust: 100%;
 }
@@ -81,11 +105,26 @@ body {
 	outline-offset: 2px;
 }
 
-/* Minecraft-style text: pixel font with the hard drop shadow the game uses. */
+/* Minecraft-style text: the game's font with its hard drop shadow. */
 .mc-text {
 	font-family: var(--font-pixel);
+	font-weight: 400;
 	text-shadow: var(--mc-shadow) var(--mc-shadow) 0 rgb(0 0 0 / 0.55);
-	letter-spacing: 0.01em;
+}
+
+/* Short logo words in the Minecraft logo font. */
+.mc-logo {
+	font-family: var(--font-logo);
+	font-weight: 400;
+	text-shadow: var(--mc-shadow) var(--mc-shadow) 0 rgb(0 0 0 / 0.55);
+}
+
+/* Small labels in the Mojang Studios font. It reads best in capitals. */
+.mojang {
+	font-family: var(--font-mojang);
+	font-weight: 400;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
 }
 
 .skip-link {

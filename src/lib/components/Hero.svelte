@@ -83,7 +83,7 @@
     <div class="dc-bg" aria-hidden="true"></div>
 
     <h1 id="hero-title" class="title">
-        <span class="word mc mc-text">Minecraft</span>
+        <span class="word mc mc-logo">Minecraft</span>
         <span class="link-logo" class:pulsing bind:this={logo}>
             <img src="/logo.svg" alt="" width="160" height="160" />
             <span class="sr-only">linked with</span>
@@ -181,7 +181,7 @@
         line-height: 1;
     }
     .word { font-size: clamp(2.6rem, 6.2vw, 5.75rem); color: #fff; }
-    .word.mc { justify-self: end; padding-right: 1.25rem; --mc-shadow: 0.07em; font-weight: 700; }
+    .word.mc { justify-self: end; padding-right: 1.25rem; --mc-shadow: 0.07em; font-size: clamp(2.4rem, 5.6vw, 5.25rem); }
     .word.dc { justify-self: start; padding-left: 1.25rem; font-family: var(--font-sans); font-weight: 800; letter-spacing: -0.03em; }
     .link-logo {
         position: relative;

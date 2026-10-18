@@ -36,6 +36,7 @@
 
 <section id="setup" class="setup" style:--ground={tile} aria-labelledby="setup-title">
     <header class="head">
+        <p class="kicker mojang">Setup</p>
         <h2 id="setup-title" class="mc-text">Linked in three steps</h2>
         <p>No bot to host, no config files. Most people are done in about a minute.</p>
     </header>
@@ -111,7 +112,8 @@
 <style>
     .setup { position: relative; padding-bottom: clamp(3rem, 6vw, 5rem); background: var(--color-ink); }
     .head { padding: clamp(4rem, 9vw, 7rem) 1rem 2.5rem; text-align: center; }
-    h2 { margin: 0; font-size: clamp(2rem, 4.5vw, 3.25rem); font-weight: 700; color: #fff; }
+    .kicker { margin: 0 0 0.6rem; font-size: 1rem; color: var(--color-grass-light); text-shadow: 0.1em 0.1em 0 rgb(0 0 0 / 0.6); }
+    h2 { margin: 0; font-size: clamp(2rem, 4.5vw, 3.25rem); font-weight: 400; color: #fff; }
     .head p { margin: 0.75rem auto 0; max-width: 32rem; color: #adb5bd; }
 
     .band { position: relative; display: grid; grid-template-columns: 1fr 1fr; }
@@ -130,7 +132,7 @@
     .side.dc { grid-column: 2; justify-content: flex-start; }
     .badge {
         display: inline-grid; place-items: center; width: 2.5rem; height: 2.5rem; margin-bottom: 0.9rem;
-        font-size: 1.4rem; font-weight: 700; color: #fff;
+        font-size: 1.4rem; font-weight: 400; color: #fff;
         background: var(--color-grass); border: 3px solid #000; box-shadow: inset -3px -3px 0 rgb(0 0 0 / 0.25), inset 3px 3px 0 rgb(255 255 255 / 0.25);
     }
     .badge.dc-badge { border: 0; border-radius: 50%; background: var(--color-dc-blurple); box-shadow: none; font-family: var(--font-sans); font-weight: 800; }
@@ -138,7 +140,7 @@
 
     .step { max-width: 28rem; }
     h3 { margin: 0 0 0.5rem; font-size: clamp(1.4rem, 2.6vw, 1.85rem); line-height: 1.2; color: #fff; }
-    .mc-step h3 { font-weight: 700; }
+    .mc-step h3 { font-weight: 400; }
     .step p { margin: 0 0 1rem; color: #ced4da; line-height: 1.55; }
     .step em { font-style: normal; color: #fff; font-weight: 600; }
     .step code, .intro code { padding: 0.05em 0.35em; border-radius: 5px; background: rgb(255 255 255 / 0.1); font-size: 0.9em; }

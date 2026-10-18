@@ -10,7 +10,7 @@
     <McWorld class="cta-world" tile={30} clouds={false} />
     <div class="dc-bg" aria-hidden="true"></div>
     <h2 id="cta-title">
-        <span class="mc-text left">Link your</span>
+        <span class="mc-logo left">Link your</span>
         <img src="/logo.svg" alt="" width="96" height="96" class="logo" />
         <span class="right">worlds.</span>
     </h2>
@@ -38,7 +38,7 @@
         grid-column: 1 / -1; grid-row: 1; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
         margin: 0; padding: clamp(4rem, 9vw, 7rem) 0 1.5rem; font-weight: 400; font-size: clamp(2.2rem, 5.5vw, 4.5rem); line-height: 1; color: #fff;
     }
-    .left { justify-self: end; padding-right: 1rem; font-weight: 700; --mc-shadow: 0.07em; }
+    .left { justify-self: end; padding-right: 1rem; --mc-shadow: 0.07em; font-size: 0.85em; }
     .right { justify-self: start; padding-left: 1rem; font-weight: 800; letter-spacing: -0.03em; }
     .logo { width: clamp(4rem, 8vw, 6rem); height: auto; filter: drop-shadow(0 5px 0 rgb(0 0 0 / 0.35)); }
     .side { grid-row: 2; display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 1.5rem 1rem clamp(6rem, 12vw, 8rem); }

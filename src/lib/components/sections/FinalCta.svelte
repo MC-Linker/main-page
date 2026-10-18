@@ -16,7 +16,7 @@
     </h2>
     <div class="side mc">
         <GrassBlock size={54} />
-        <McButton href="#download" size="lg">Get the plugin</McButton>
+        <McButton href="#install" size="lg">Get the plugin</McButton>
         <span class="mc-text small">Paper · Spigot · Fabric · Forge · NeoForge</span>
     </div>
     <div class="side dc">

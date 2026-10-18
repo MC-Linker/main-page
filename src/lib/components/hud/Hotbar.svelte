@@ -6,13 +6,13 @@
     import { toasts, tooltip } from '$lib/ui.svelte';
     import type { Item, ItemIcon as Icon } from '$lib/data/items';
     import type { Sprite } from '$lib/pixel/sprites';
-    import { book, chest, craftingTable, discordBlock, enchantedBook, letter, map } from '$lib/pixel/items';
+    import { book, chest, craftingTable, discordBlock, letter, map } from '$lib/pixel/items';
     import PixelArt from '$lib/pixel/PixelArt.svelte';
     import ItemIcon from '../inventory/ItemIcon.svelte';
 
     /**
      * The site's navigation, as Minecraft's hotbar. Two clearly separate parts:
-     * "This page" jumps to sections of the home page (keys 1 to 5) and follows
+     * "This page" jumps to sections of the home page (keys 1 to 4) and follows
      * your scroll position; "Links" leaves the page.
      */
     type Section = { id: string; name: string; title: string; icon: Icon; advancement?: string };
@@ -20,7 +20,6 @@
         { id: 'top', name: 'Home', title: 'Minecraft, linked with Discord', icon: { block: 'grass' } },
         { id: 'setup', name: 'Setup', title: 'Linked in three steps', icon: { sprite: craftingTable }, advancement: 'Getting an Upgrade' },
         { id: 'features', name: 'Features', title: 'Everything in the inventory', icon: { sprite: chest }, advancement: 'Window Shopping' },
-        { id: 'download', name: 'Download', title: 'Get the plugin', icon: { sprite: enchantedBook }, advancement: 'Server Hopper' },
         { id: 'faq', name: 'FAQ', title: 'Questions? Read the book.', icon: { sprite: book }, advancement: 'Bookworm' },
     ];
 
@@ -44,6 +43,9 @@
     let progress = $state(0);
     let open = $state(false);
     let nav: HTMLElement;
+    // Phones: get out of the way while the keyboard is open.
+    let typing = $state(false);
+    const isField = (t: EventTarget | null) => t instanceof HTMLElement && !!t.closest('input, textarea, [contenteditable]');
 
     /** The section whose top has passed 40% of the screen is the current one. */
     function track() {
@@ -109,9 +111,9 @@
     });
 </script>
 
-<svelte:window onkeydown={keys} onpointerdown={outside} />
+<svelte:window onkeydown={keys} onpointerdown={outside} onfocusin={e => (typing = isField(e.target))} onfocusout={() => (typing = false)} />
 
-<nav class="hud" class:open bind:this={nav} aria-label="Site">
+<nav class="hud" class:open class:typing bind:this={nav} aria-label="Site">
     <div class="group sections">
         <div class="top">
             <span class="cap">{onHome ? 'This page' : 'Home page'}</span>
@@ -227,12 +229,14 @@
 
     /* Phones: the links fold into one slot that opens a small list. */
     @media (max-width: 720px) {
-        .hud { --s: min(3.6rem, calc((100vw - 2.25rem) / 6)); --icon: 1.45rem; --label: 0.625rem; bottom: 0.4rem; gap: 0; }
+        .hud { --s: min(4.25rem, calc((100vw - 2.5rem) / 5)); --icon: 1.6rem; --label: 0.7rem; bottom: 0.4rem; gap: 0; }
         .cap { display: none; }
         .top { height: 0.9rem; }
         .more-li { display: block; margin-left: 4px; }
         .slot.more { background: rgb(255 255 255 / 0.06); }
         .open .slot.more { background: rgb(255 255 255 / 0.2); }
+        .hud { transition: transform 0.2s ease, opacity 0.2s ease; }
+        .hud.typing { opacity: 0; pointer-events: none; transform: translate(-50%, 130%); }
         .group.pages { display: none; position: absolute; right: 0; bottom: calc(100% + 0.5rem); }
         .open .group.pages { display: flex; }
         .pages .top { display: none; }
@@ -240,5 +244,13 @@
         .pages .slot { flex-direction: row; justify-content: flex-start; gap: 0.75rem; width: 100%; height: 3rem; padding: 0 0.75rem; }
         .pages .name { font-size: 0.95rem; }
         .pages .out { top: 50%; right: 0.75rem; width: 0.6rem; transform: translateY(-50%); }
+    }
+
+    /* Phones held sideways: a slimmer bar without captions, so the page keeps most of the screen. */
+    @media (max-height: 520px) and (min-width: 721px) {
+        .hud { --s: 3.1rem; --icon: 1.2rem; --label: 0.6rem; bottom: 0.3rem; gap: 0.5rem; }
+        .top, .xp { display: none; }
+        .slot { gap: 0.15rem; }
+        .key { display: none; }
     }
 </style>

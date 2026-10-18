@@ -25,4 +25,10 @@
     }
     .title { color: var(--color-mc-yellow); font-size: 0.95rem; }
     .name { color: #fff; font-size: 0.95rem; }
+    /* Phones: one at a time, a bit smaller. */
+    @media (max-width: 560px) {
+        .toast { width: min(15rem, calc(100vw - 1.5rem)); padding: 0.45rem 0.6rem; gap: 0.6rem; }
+        .toast:not(:last-child) { display: none; }
+        .title, .name { font-size: 0.85rem; }
+    }
 </style>

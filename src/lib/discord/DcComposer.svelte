@@ -123,7 +123,7 @@
     }
     input {
         flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: transparent;
-        color: var(--color-dc-text); font: inherit; font-size: 0.9375rem;
+        color: var(--color-dc-text); font: inherit; font-size: max(0.9375rem, 16px);
     }
     input::placeholder { color: #6d6f78; }
     .field:has(input:focus-visible) { outline: 2px solid var(--color-dc-blurple); outline-offset: 0; }

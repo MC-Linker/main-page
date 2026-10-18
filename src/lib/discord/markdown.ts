@@ -27,6 +27,8 @@ export function discordMarkdown(text: string, inEmbed = false): string {
         .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
         .replace(/\*([^*]+)\*/g, '<em>$1</em>')
         .replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g, '<discord-link href="$2" target="_blank" rel="noopener">$1</discord-link>')
+        // Command mentions, written like Discord's </name> (Discord adds an id: </name:123>).
+        .replace(/&lt;\/([\w -]+?)(?::\d+)?&gt;/g, '<discord-mention type="slash">$1</discord-mention>')
         .replace(/(^|\s)@([\w.]+)/g, '$1<discord-mention>$2</discord-mention>')
         .replace(/(^|\s)#([\w-]+)/g, '$1<discord-mention type="channel">$2</discord-mention>')
         .replace(botEmoji, `<discord-custom-emoji name="$1" url="/emoji/$1.png"${inEmbed ? ' embed-emoji' : ''}></discord-custom-emoji>`)

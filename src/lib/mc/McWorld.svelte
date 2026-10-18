@@ -85,11 +85,12 @@
     .rain .stars { opacity: 0.2; }
 
     .orb {
-        position: absolute; z-index: -2; width: clamp(2.25rem, 4.5vw, 3.75rem); top: 7%;
+        position: absolute; z-index: -2; width: clamp(2.25rem, 4.5vw, 3.75rem); top: var(--orb-top, 7%);
         transition: transform 1.2s cubic-bezier(.5, 0, .3, 1.2), opacity 0.8s ease;
     }
-    .sun { left: 9%; }
-    .moon { left: 9%; transform: translateY(160%); opacity: 0; }
+    /* Pages can move the sun and moon with --orb-left / --orb-right (e.g. away from a title on phones). */
+    .sun, .moon { left: var(--orb-left, 9%); right: var(--orb-right, auto); }
+    .moon { transform: translateY(160%); opacity: 0; }
     .night .sun { transform: translateY(160%); opacity: 0; }
     .night .moon { transform: none; opacity: 1; }
     .rain .orb { filter: brightness(0.7); }

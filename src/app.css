@@ -83,6 +83,9 @@
 @media (max-width: 720px) {
 	:root { --hud-space: 6.25rem; }
 }
+@media (max-height: 520px) and (min-width: 721px) {
+	:root { --hud-space: 4.25rem; }
+}
 
 html {
 	/* The Minecraft fonts have one weight; never smear them into fake bold. */
@@ -145,6 +148,11 @@ body {
    components have loaded, so they never flash unstyled. */
 discord-messages:not(:defined) { visibility: hidden; }
 discord-messages { display: block; }
+
+/* On phones the page titles sit where the sun would be: move it to the right. */
+@media (max-width: 760px) {
+	:root { --orb-left: auto; --orb-right: 5%; --orb-top: 0.6rem; }
+}
 
 /* Jumping to a section (hotbar, #links) skips some of its top padding. */
 main > section[id]:not(#top) { scroll-margin-top: -2rem; }

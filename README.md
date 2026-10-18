@@ -22,7 +22,7 @@ src/
     bridge.svelte.ts  The hero's pretend server: chat bridge, slash commands, demo script
     ui.svelte.ts   Shared UI state: the item tooltip and the advancement toasts
     components/
-      sections/    The home page, top to bottom: Hero, Setup, Features, Download, Faq, FinalCta
+      sections/    The home page, top to bottom: Hero, Setup, Features, Faq, FinalCta
       hud/         The hotbar navigation, item tooltip and advancement toasts
       inventory/   Inventory slot and item icon
     discord/       Discord UI. Messages and embeds come from @skyra/discord-components-core (also used by the guide);
@@ -41,6 +41,6 @@ static/
   emoji/           The bot's custom emoji, used in the simulated embeds
 ```
 
-The hotbar (`components/hud/Hotbar.svelte`) is the site's navigation. Its left part lists the sections of the home page (keys 1 to 5); add a section there when you add one to `+page.svelte`. Its right part holds links to other pages.
+The hotbar (`components/hud/Hotbar.svelte`) is the site's navigation. Its left part lists the sections of the home page (keys 1 to 4); add a section there when you add one to `+page.svelte`. Its right part holds links to other pages.
 
 Chat formats, embed titles and colours in the demos are taken from the bot's language file and the plugin's default `config.yml`, so they look like the real thing. If those change, update `bridge.svelte.ts` and `data/items.ts`.

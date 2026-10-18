@@ -27,10 +27,10 @@
     aria-label={label ?? item?.name ?? 'Empty slot'}
     aria-pressed={selected || undefined}
     {onclick}
-    onpointerenter={e => item && tooltip.show(item, e, extra)}
-    onpointermove={e => { if(!item) tooltip.hide(); else if(tooltip.item !== item) tooltip.show(item, e, extra); else tooltip.move(e); }}
+    onpointerenter={e => item && e.pointerType === 'mouse' && tooltip.show(item, e, extra)}
+    onpointermove={e => { if(e.pointerType !== 'mouse') return; if(!item) tooltip.hide(); else if(tooltip.item !== item) tooltip.show(item, e, extra); else tooltip.move(e); }}
     onpointerleave={() => tooltip.hide()}
-    onfocus={e => item && tooltip.show(item, e, extra)}
+    onfocus={e => item && e.currentTarget.matches(':focus-visible') && tooltip.show(item, e, extra)}
     onblur={() => tooltip.hide()}
 >
     {#if item}<ItemIcon icon={item.icon} glint={item.glint} {count} size="calc(var(--slot) * 0.72)" />{/if}

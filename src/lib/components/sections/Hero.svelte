@@ -18,6 +18,8 @@
     const bridge = new Bridge();
     bridge.seed();
     const keyboard = new MediaQuery('(hover: hover) and (pointer: fine)', true);
+    /** Phones: the two chats are stacked, so the other one is usually off-screen. */
+    const stacked = new MediaQuery('(max-width: 860px)', false);
 
     // Like Minecraft's yellow splash texts. A new one on every visit.
     const splashes = [
@@ -75,13 +77,27 @@
         tick().then(() => dcList?.scrollTo({ top: dcList.scrollHeight, behavior: reducedMotion.current ? 'auto' : 'smooth' }));
     });
 
+    /**
+     * On phones, after sending: close the keyboard and, if the message went to the
+     * other world, scroll there so you can watch it arrive.
+     */
+    function reveal(target?: HTMLElement) {
+        if(!stacked.current) return;
+        (document.activeElement as HTMLElement | null)?.blur();
+        if(target) setTimeout(() => target.scrollIntoView({ block: 'center', behavior: reducedMotion.current ? 'auto' : 'smooth' }), 250);
+    }
+
     function fromMinecraft(text: string) {
         toasts.advancement('Hello, Discord!', { sprite: discordBlock });
+        // Chat and /dm show up in Discord; other commands change the world right here.
+        reveal(!text.startsWith('/') || /^\/dm\b/i.test(text) ? dcEnd : undefined);
         void bridge.runMinecraft(text);
     }
 
     function fromDiscord(text: string) {
         toasts.advancement('Hello, Minecraft!', { block: 'grass' });
+        // Chat and these commands act in Minecraft; the rest only answer in Discord.
+        reveal(!text.startsWith('/') || /^\/(command|message|ban)\b/i.test(text) ? mcEnd : undefined);
         void bridge.runDiscord(text);
     }
 
@@ -125,7 +141,7 @@
         </p>
         <nav class="menu" aria-label="Get started">
             <McButton href={links.invite} external size="lg" variant="discord"><BrandIcon brand="discord" size="1.15em" /> Add to Discord</McButton>
-            <McButton href="#download" size="lg">Get the Plugin</McButton>
+            <McButton href="#install" size="lg">Get the Plugin</McButton>
             <div class="row">
                 <McButton href={links.guide} size="lg">Guide</McButton>
                 <McButton href={links.support} external size="lg">Support...</McButton>
@@ -374,7 +390,7 @@
         .dc-bg { position: relative; inset: auto; grid-column: 1; grid-row: 4 / -1; margin-bottom: calc(-1 * var(--hud-space)); }
         .title { display: contents; }
         .title > * { grid-column: 1; }
-        .word.mc { grid-row: 1; justify-self: center; padding: 2.5rem 0 0; }
+        .word.mc { grid-row: 1; justify-self: center; padding: 3.5rem 0 0; }
         .splash { right: -0.5rem; bottom: -1.2rem; }
         .center { grid-column: 1; grid-row: 2; width: min(24rem, calc(100% - 2rem)); margin-top: 2.25rem; }
         .mc-side { grid-column: 1; grid-row: 3; justify-self: stretch; width: auto; margin: 1.75rem 0 0; padding: 0 1rem calc(var(--logo) / 2 + 1.5rem); }

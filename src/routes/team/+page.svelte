@@ -196,7 +196,7 @@
         .team { grid-template-columns: 1fr; grid-template-rows: auto auto auto auto; min-height: 0; padding-top: 0; }
         .team :global(.mc-bg) { position: relative; inset: auto; grid-column: 1; grid-row: 1 / 4; mask: none; }
         .dc-bg { position: relative; inset: auto; grid-column: 1; grid-row: 4; margin-bottom: calc(-1 * (var(--hud-space) + 2rem)); }
-        .title { grid-row: 1; grid-template-columns: 1fr; justify-items: center; gap: 0.6rem; padding-top: 2.5rem; }
+        .title { grid-row: 1; grid-template-columns: 1fr; justify-items: center; gap: 0.6rem; padding-top: 3.5rem; }
         .left, .right { justify-self: center; padding: 0; }
         .lead { grid-row: 2; }
         .mc-side { grid-row: 3; grid-column: 1; justify-content: center; padding-bottom: 2rem; }

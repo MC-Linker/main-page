@@ -101,9 +101,9 @@
     }
 
     const asItem = (name: string, icon: Icon): Item => ({ id: name, name, lore: [], icon });
+    // Tooltips sit above the hotbar, so they never cover the other slots.
     const tip = (item: Item, extra: string[]) => ({
-        onpointerenter: (e: PointerEvent) => { if(e.pointerType === 'mouse') tooltip.show(item, e, extra); },
-        onpointermove: (e: PointerEvent) => { if(tooltip.item === item) tooltip.move(e); },
+        onpointerenter: (e: PointerEvent) => { if(e.pointerType === 'mouse') tooltip.showAbove(item, e.currentTarget as HTMLElement, extra); },
         onpointerleave: () => tooltip.hide(),
         onclick: () => tooltip.hide(),
     });

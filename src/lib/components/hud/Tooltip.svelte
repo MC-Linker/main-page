@@ -10,8 +10,13 @@
     let vh = $state(800);
 
     // Sit to the right of the pointer, flip when it would leave the screen.
-    const left = $derived(tooltip.x + 16 + w > vw - 8 ? Math.max(8, tooltip.x - 16 - w) : tooltip.x + 16);
-    const top = $derived(Math.min(Math.max(8, tooltip.y - 24), vh - h - 8));
+    // Hotbar tooltips sit centred above their slot instead.
+    const left = $derived(tooltip.above
+        ? Math.min(Math.max(8, tooltip.x - w / 2), vw - w - 8)
+        : tooltip.x + 16 + w > vw - 8 ? Math.max(8, tooltip.x - 16 - w) : tooltip.x + 16);
+    const top = $derived(tooltip.above
+        ? Math.max(8, tooltip.y - h - 10)
+        : Math.min(Math.max(8, tooltip.y - 24), vh - h - 8));
 </script>
 
 <svelte:window bind:innerWidth={vw} bind:innerHeight={vh} />

@@ -17,7 +17,7 @@
 
 <style>
     .head {
-        padding: 8rem 1rem 3rem;
+        padding: 4.5rem 1rem 3rem;
         text-align: center;
         background: linear-gradient(90deg, #2d4a12 0 50%, #232a6b 50% 100%);
     }

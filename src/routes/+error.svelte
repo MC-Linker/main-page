@@ -29,7 +29,7 @@
 <style>
     .died {
         display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
-        min-height: 100svh; padding: 6rem 1rem 4rem; text-align: center;
+        min-height: 100svh; padding: 3rem 1rem var(--hud-space); text-align: center;
         background: radial-gradient(circle, rgb(120 0 0 / 0.55), rgb(60 0 0 / 0.85)), #1a0505;
     }
     h1 { margin: 0; font-size: clamp(3rem, 9vw, 5.5rem); color: #fff; --mc-shadow: 0.08em; }

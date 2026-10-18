@@ -1,21 +1,31 @@
 <script lang="ts">
     import { onMount, tick } from 'svelte';
     import { fly, fade } from 'svelte/transition';
+    import { MediaQuery } from 'svelte/reactivity';
     import { Bridge, demoCommands } from '$lib/bridge.svelte';
     import { links } from '$lib/data/links';
     import { reducedMotion } from '$lib/motion';
-    import { MediaQuery } from 'svelte/reactivity';
+    import { toasts } from '$lib/ui.svelte';
+    import { discordBlock } from '$lib/pixel/items';
     import McWorld from '$lib/mc/McWorld.svelte';
     import McChat from '$lib/mc/McChat.svelte';
     import McButton from '$lib/mc/McButton.svelte';
     import DcWindow from '$lib/discord/DcWindow.svelte';
     import DcMessage from '$lib/discord/DcMessage.svelte';
     import DcComposer from '$lib/discord/DcComposer.svelte';
-    import BrandIcon from './BrandIcon.svelte';
+    import BrandIcon from '../BrandIcon.svelte';
 
     const bridge = new Bridge();
     bridge.seed();
     const keyboard = new MediaQuery('(hover: hover) and (pointer: fine)', true);
+
+    // Like Minecraft's yellow splash texts. A new one on every visit.
+    const splashes = [
+        'Also try Discord!', 'Chat both ways!', 'No config files!', '100% slash commands!', 'Bedrock friendly!',
+        'Now with 26.2!', 'Creeper-proof!', 'Free!', 'Links!', 'Tab-completion!', 'Works on Aternos!',
+        'Made with love!', 'Hello, Discord!', '/connect!', 'Inventories in Discord!', 'Not a bot you host!',
+    ];
+    let splash = $state(splashes[0]);
 
     let stage: HTMLElement;
     let logo: HTMLElement;
@@ -30,15 +40,17 @@
     async function transfer(dir: 'toDiscord' | 'toMinecraft') {
         if(reducedMotion.current || !stage) return;
         const box = stage.getBoundingClientRect();
-        const centre = (el: HTMLElement, side?: 'left' | 'right' | 'top' | 'bottom') => {
+        const point = (el: HTMLElement, side?: 'left' | 'right' | 'top') => {
             const r = el.getBoundingClientRect();
             const x = side === 'left' ? r.left + 12 : side === 'right' ? r.right - 12 : r.left + r.width / 2;
-            const y = side === 'top' ? r.top + 12 : side === 'bottom' ? r.bottom - 12 : r.top + r.height / 2;
+            const y = side === 'top' ? r.top + 12 : r.top + r.height / 2;
             return [x - box.left, y - box.top];
         };
-        const [mx, my] = centre(mcEnd, 'right');
-        const [dx, dy] = centre(dcEnd, 'left');
-        const [lx, ly] = centre(logo);
+        // Side by side the chats face each other; stacked (phones) they sit above and below the logo.
+        const stacked = mcEnd.getBoundingClientRect().bottom <= dcEnd.getBoundingClientRect().top;
+        const [mx, my] = point(mcEnd, stacked ? undefined : 'right');
+        const [dx, dy] = point(dcEnd, stacked ? 'top' : 'left');
+        const [lx, ly] = point(logo);
         const [x0, y0, x1, y1] = dir === 'toDiscord' ? [mx, my, dx, dy] : [dx, dy, mx, my];
 
         const packet = document.createElement('span');
@@ -63,6 +75,16 @@
         tick().then(() => dcList?.scrollTo({ top: dcList.scrollHeight, behavior: reducedMotion.current ? 'auto' : 'smooth' }));
     });
 
+    function fromMinecraft(text: string) {
+        toasts.advancement('Hello, Discord!', { sprite: discordBlock });
+        void bridge.runMinecraft(text);
+    }
+
+    function fromDiscord(text: string) {
+        toasts.advancement('Hello, Minecraft!', { block: 'grass' });
+        void bridge.runDiscord(text);
+    }
+
     function shortcuts(e: KeyboardEvent) {
         const t = e.target as HTMLElement;
         if(e.ctrlKey || e.metaKey || e.altKey || t.closest('input, textarea, [contenteditable]')) return;
@@ -71,6 +93,7 @@
     }
 
     onMount(() => {
+        splash = splashes[Math.floor(Math.random() * splashes.length)];
         bridge.transfer = transfer;
         void bridge.playScript(!reducedMotion.current);
     });
@@ -78,12 +101,15 @@
 
 <svelte:window onkeydown={shortcuts} />
 
-<section class="hero" bind:this={stage} aria-labelledby="hero-title">
+<section id="top" class="hero" bind:this={stage} aria-labelledby="hero-title">
     <McWorld class="mc-bg" night={bridge.night} rain={bridge.rain} tile={34} />
     <div class="dc-bg" aria-hidden="true"></div>
 
     <h1 id="hero-title" class="title">
-        <span class="word mc mc-logo">Minecraft</span>
+        <span class="word mc">
+            <span class="mc-logo">Minecraft</span>
+            <span class="splash mc-text" aria-hidden="true">{splash}</span>
+        </span>
         <span class="link-logo" class:pulsing bind:this={logo}>
             <img src="/logo.svg" alt="" width="160" height="160" />
             <span class="sr-only">linked with</span>
@@ -91,31 +117,34 @@
         <span class="word dc">Discord</span>
     </h1>
 
-    <div class="pitch" in:fly={{ y: 16, duration: 500, delay: 150 }}>
-        <p class="lead">
-            MC Linker connects your Minecraft server to your Discord server.
-            Chat, stats and moderation, <em>both ways</em>. No bot to host, no config files.
+    <!-- The game's title menu, right between the two worlds. -->
+    <div class="center" in:fly={{ y: 16, duration: 500, delay: 150 }}>
+        <p class="motd mc-text">
+            MC Linker connects your Minecraft server with Discord.
+            <span>Chat, stats and moderation, both ways. No bot to host, no config files.</span>
         </p>
-        <div class="ctas">
-            <McButton href="#setup" size="lg">Get the plugin</McButton>
-            <a class="dc-btn" href={links.invite} target="_blank" rel="noopener">
-                <BrandIcon brand="discord" size="1.3em" />
-                Add to Discord
-            </a>
-        </div>
-        <p class="fine">Free · Paper, Spigot, Fabric, Forge &amp; NeoForge · 1.8 → 26.2</p>
+        <nav class="menu" aria-label="Get started">
+            <McButton href={links.invite} external size="lg" variant="discord"><BrandIcon brand="discord" size="1.15em" /> Add to Discord</McButton>
+            <McButton href="#download" size="lg">Get the Plugin</McButton>
+            <div class="row">
+                <McButton href={links.guide} size="lg">Guide</McButton>
+                <McButton href={links.support} external size="lg">Support...</McButton>
+            </div>
+            <McButton href="#setup" size="lg">How does it work?</McButton>
+        </nav>
+        <p class="fine mc-text">Free · Paper, Spigot, Fabric, Forge &amp; NeoForge · <span class="nowrap">1.8 – 26.2</span></p>
     </div>
 
     <div class="mc-side">
         <p class="hint mc-text">{#if keyboard.current}<kbd>T</kbd> to chat · {/if}try <code>/time set night</code></p>
         <div class="mc-chat" bind:this={mcEnd}>
-            <McChat bind:this={mcChat} lines={bridge.mc} onsubmit={t => bridge.runMinecraft(t)} label="Minecraft chat (demo)" placeholder={keyboard.current ? 'Press T to chat' : 'Tap to chat'} />
+            <McChat bind:this={mcChat} lines={bridge.mc} max={10} onsubmit={fromMinecraft} label="Minecraft chat (demo)" placeholder={keyboard.current ? 'Press T to chat' : 'Tap to chat'} />
         </div>
     </div>
 
     <div class="dc-side">
         <p class="hint">{#if keyboard.current}<kbd>/</kbd> for commands · {/if}try <code>/command weather rain</code></p>
-        <div bind:this={dcEnd}>
+        <div class="dc-end" bind:this={dcEnd}>
             <DcWindow channel="minecraft-chat" topic="Linked with play.example.net · {bridge.online.length} online" class="dc-window">
                 <div class="dc-list" bind:this={dcList} aria-live="polite" aria-label="Discord channel (demo)">
                     {#each bridge.dc as msg (msg.id)}
@@ -123,7 +152,7 @@
                     {/each}
                 </div>
                 {#snippet footer()}
-                    <DcComposer bind:this={composer} placeholder="Message #minecraft-chat" commands={demoCommands} onsubmit={t => bridge.runDiscord(t)} label="Discord message (demo)" />
+                    <DcComposer bind:this={composer} placeholder="Message #minecraft-chat" commands={demoCommands} onsubmit={fromDiscord} label="Discord message (demo)" />
                     <div class="typing" aria-live="polite">
                         {#if bridge.typing}<span transition:fade={{ duration: 150 }}><i></i><i></i><i></i> <b>{bridge.typing}</b> is typing…</span>{/if}
                     </div>
@@ -141,18 +170,23 @@
 
 <style>
     .hero {
-        --logo: clamp(5rem, 8.5vw, 8rem);
+        --logo: clamp(5rem, 7.5vw, 7.5rem);
+        --gutter: clamp(1rem, 2.5vw, 2.5rem);
         position: relative;
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: 5rem auto auto 1fr;
-        min-height: max(100svh, 46rem);
+        /* Two equal middle columns put the seam (and the logo) at exactly 50%. */
+        grid-template-columns: 1fr minmax(9.5rem, 12.5rem) minmax(9.5rem, 12.5rem) 1fr;
+        grid-template-rows: auto auto;
+        align-content: center;
+        row-gap: clamp(1rem, 3vh, 2rem);
+        min-height: max(100svh, 44rem);
+        padding: 1.5rem 0 var(--hud-space);
         isolation: isolate;
         overflow: hidden;
     }
     .hero :global(.mc-bg) {
-        grid-column: 1;
-        grid-row: 1 / -1;
+        position: absolute;
+        inset: 0 50% 0 0;
         z-index: -1;
         /* Pixel-stepped edge along the seam, like the grass edge in the logo. */
         mask:
@@ -160,29 +194,48 @@
             url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3 8' width='12' height='32'%3E%3Cpath d='M0 0h3v2H2v2h1v1H1v3H0z'/%3E%3C/svg%3E") right top / 12px 32px repeat-y;
     }
     .dc-bg {
-        grid-column: 2;
-        grid-row: 1 / -1;
+        position: absolute;
+        inset: 0 0 0 calc(50% - 12px);
         z-index: -2;
-        margin-left: -12px;
         background:
             radial-gradient(60rem 30rem at 85% 0%, rgb(88 101 242 / 0.22), transparent 60%),
             var(--color-dc-3);
     }
 
+    /* ── Title ─────────────────────────────────────────────────────────── */
     .title {
         grid-column: 1 / -1;
-        grid-row: 2;
+        grid-row: 1;
         display: grid;
         grid-template-columns: 1fr auto 1fr;
         align-items: center;
         margin: 0;
-        padding-top: clamp(0.5rem, 3vh, 2.5rem);
         font-weight: 400;
         line-height: 1;
     }
-    .word { font-size: clamp(2.6rem, 6.2vw, 5.75rem); color: #fff; }
-    .word.mc { justify-self: end; padding-right: 1.25rem; --mc-shadow: 0.07em; font-size: clamp(2.4rem, 5.6vw, 5.25rem); }
-    .word.dc { justify-self: start; padding-left: 1.25rem; font-family: var(--font-sans); font-weight: 800; letter-spacing: -0.03em; }
+    .word { color: #fff; }
+    .word.mc {
+        position: relative;
+        justify-self: end;
+        padding-right: 1.25rem;
+        font-size: clamp(2.3rem, 5.2vw, 4.9rem);
+        --mc-shadow: 0.07em;
+    }
+    .word.dc { justify-self: start; padding-left: 1.25rem; font-family: var(--font-sans); font-size: clamp(2.5rem, 5.8vw, 5.4rem); font-weight: 800; letter-spacing: -0.03em; }
+    .splash {
+        position: absolute;
+        right: 1.5rem;
+        bottom: -0.55em;
+        font-size: max(0.22em, 0.9rem);
+        white-space: nowrap;
+        color: var(--color-mc-yellow);
+        --mc-shadow: 0.12em;
+        transform: rotate(-12deg);
+        transform-origin: center;
+        animation: splash 0.55s ease-in-out infinite alternate;
+        pointer-events: none;
+    }
+    @keyframes splash { to { transform: rotate(-12deg) scale(1.08); } }
     .link-logo {
         position: relative;
         display: grid;
@@ -198,48 +251,47 @@
         transition: transform 0.25s cubic-bezier(.3, 1.6, .5, 1);
     }
     .link-logo.pulsing img { transform: scale(1.14) rotate(-10deg); }
-    @keyframes bob {
-        50% { transform: translateY(-6px); }
-    }
+    @keyframes bob { 50% { transform: translateY(-6px); } }
 
-    .pitch {
-        grid-column: 1 / -1;
-        grid-row: 3;
-        justify-self: center;
-        width: min(40rem, calc(100% - 2rem));
-        margin-top: clamp(0.5rem, 2vh, 1.5rem);
-        padding: 1.1rem 1.5rem 0.9rem;
-        border-radius: 16px;
-        background: rgb(13 16 20 / 0.78);
-        backdrop-filter: blur(10px);
-        box-shadow: 0 0 0 2px rgb(255 255 255 / 0.06), 0 20px 50px rgb(0 0 0 / 0.35);
+    /* ── Menu ──────────────────────────────────────────────────────────── */
+    .center {
+        grid-column: 2 / 4;
+        grid-row: 2;
+        align-self: center;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.9rem;
+        padding: 1.1rem 1.1rem 1rem;
         text-align: center;
+        /* Like the game dimming the world behind its menu. */
+        background: rgb(0 0 0 / 0.42);
+        border: 2px solid rgb(0 0 0 / 0.35);
+        box-shadow: inset 0 0 0 2px rgb(255 255 255 / 0.06);
+        backdrop-filter: blur(6px);
     }
-    .lead { margin: 0; font-size: clamp(1.05rem, 1.6vw, 1.25rem); line-height: 1.5; color: #e9ecef; text-wrap: balance; }
-    .lead em { font-style: normal; color: var(--color-grass-light); font-weight: 700; }
-    .ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; margin-top: 1rem; }
-    .dc-btn {
-        display: inline-flex; align-items: center; gap: 0.6rem;
-        min-height: 3rem; padding: 0 1.5rem; border-radius: 8px;
-        background: var(--color-dc-blurple); color: #fff; font-weight: 700; font-size: 1.05rem; text-decoration: none;
-        transition: background 0.15s ease, transform 0.15s ease;
-    }
-    .dc-btn:hover { background: var(--color-dc-blurple-dark); }
-    .dc-btn:active { transform: translateY(1px); }
-    .fine { margin: 0.75rem 0 0; font-size: 0.8rem; color: #adb5bd; }
+    .motd { margin: 0; font-size: 1.05rem; line-height: 1.45; color: #fff; text-wrap: balance; }
+    .motd span { display: block; margin-top: 0.3rem; color: #d0d0d0; font-size: 0.95rem; }
+    .menu { display: flex; flex-direction: column; gap: 0.5rem; }
+    .menu :global(.mc-btn) { width: 100%; padding: 0 0.75rem; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    .fine { margin: 0; font-size: 0.8rem; color: #e0e0e0; }
+    .nowrap { white-space: nowrap; }
 
+    /* ── The two chats ─────────────────────────────────────────────────── */
     .mc-side, .dc-side {
-        grid-row: 4;
+        grid-row: 2;
         align-self: end;
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
-        padding: 1.5rem clamp(1rem, 3vw, 2.5rem) clamp(1rem, 3vh, 2rem);
+        width: min(100%, 30rem);
         min-width: 0;
     }
-    .mc-side { grid-column: 1; }
-    .dc-side { grid-column: 2; position: relative; }
-    .mc-chat { max-width: 34rem; }
+    .mc-side { grid-column: 1; justify-self: end; padding: 0 var(--gutter) 0 1rem; }
+    .dc-side { grid-column: 4; justify-self: start; padding: 0 1rem 0 var(--gutter); position: relative; }
+    /* New lines push older ones up; the oldest drop off the top. */
+    .mc-chat { display: flex; flex-direction: column; justify-content: flex-end; max-height: 18rem; overflow: hidden; }
     .hint { margin: 0; font-size: 0.85rem; color: #e9ecef; }
     .mc-side .hint { color: #fff; }
     .hint kbd {
@@ -250,9 +302,9 @@
     .hint code { font-family: var(--font-pixel); color: var(--color-mc-yellow); }
     .dc-side .hint code { font-family: var(--font-sans); color: #c9cdfb; }
 
-    .dc-side :global(.dc-window) { max-width: 34rem; }
+    .dc-end { position: relative; }
     .dc-list {
-        height: clamp(10rem, calc(100svh - 41rem), 18rem);
+        height: clamp(8.5rem, calc(100svh - 34rem), 12rem);
         overflow-y: auto;
         overscroll-behavior: contain;
         scrollbar-width: thin;
@@ -272,7 +324,7 @@
     @keyframes blink { 50% { opacity: 0.3; } }
 
     .dm-toast {
-        position: absolute; top: 3.5rem; right: clamp(1rem, 3vw, 2.5rem); z-index: 3;
+        position: absolute; top: 3.5rem; right: 0.75rem; z-index: 3;
         display: flex; gap: 0.6rem; align-items: flex-start; max-width: 16rem; padding: 0.6rem 0.8rem;
         border-radius: 8px; background: #111214; box-shadow: 0 8px 24px rgb(0 0 0 / 0.5);
         font-size: 0.85rem; line-height: 1.35;
@@ -290,22 +342,42 @@
         box-shadow: 0 0 0 2px #1e2470, 0 0 18px 4px rgb(88 101 242 / 0.8);
     }
 
+    /* Smaller laptops: a narrower menu leaves the chats enough room. */
+    @media (max-width: 1279px) {
+        .hero { grid-template-columns: 1fr 9.75rem 9.75rem 1fr; }
+        .center { padding-inline: 0.85rem; }
+    }
+
+    /* Tablets: the menu under the title, the chats side by side below it. */
+    @media (max-width: 1023px) {
+        .hero { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto; align-content: start; padding-top: 2rem; }
+        .center { grid-column: 1 / -1; grid-row: 2; justify-self: center; width: min(25rem, calc(100% - 2rem)); }
+        .mc-side, .dc-side { grid-row: 3; align-self: start; width: min(100%, 32rem); margin-top: 1rem; }
+        .mc-side { grid-column: 1; }
+        .dc-side { grid-column: 2; }
+    }
+
+    /* Phones: Minecraft on top, Discord below, the logo on the seam between them. */
     @media (max-width: 860px) {
         .hero {
             grid-template-columns: 1fr;
-            grid-template-rows: 4.5rem auto auto auto auto auto;
+            grid-template-rows: auto auto auto auto auto;
+            row-gap: 0;
             min-height: 0;
+            padding: 0 0 var(--hud-space);
         }
-        .hero :global(.mc-bg) { grid-column: 1; grid-row: 1 / 4; mask: none; }
-        .dc-bg { grid-column: 1; grid-row: 4 / -1; margin-left: 0; }
+        .hero :global(.mc-bg) { position: relative; inset: auto; grid-column: 1; grid-row: 1 / 4; mask: none; }
+        .dc-bg { position: relative; inset: auto; grid-column: 1; grid-row: 4 / -1; margin-bottom: calc(-1 * var(--hud-space)); }
         .title { display: contents; }
         .title > * { grid-column: 1; }
-        .word.mc { grid-row: 2; justify-self: center; padding: 1rem 0 0; }
+        .word.mc { grid-row: 1; justify-self: center; padding: 2.5rem 0 0; }
+        .splash { right: -0.5rem; bottom: -1.2rem; }
+        .center { grid-column: 1; grid-row: 2; width: min(24rem, calc(100% - 2rem)); margin-top: 2.25rem; }
+        .mc-side { grid-column: 1; grid-row: 3; justify-self: stretch; width: auto; margin: 1.75rem 0 0; padding: 0 1rem calc(var(--logo) / 2 + 1.5rem); }
+        .mc-chat { max-height: 13rem; }
         .link-logo { grid-row: 4; justify-self: center; align-self: start; margin-top: calc(var(--logo) / -2); z-index: 2; }
         .word.dc { grid-row: 4; justify-self: center; padding: calc(var(--logo) / 2 + 0.75rem) 0 0; }
-        .pitch { grid-column: 1; grid-row: 5; margin: 1.25rem 0 0; }
-        .mc-side { grid-column: 1; grid-row: 3; padding-top: 1.5rem; padding-bottom: calc(var(--logo) / 2 + 2.5rem); }
-        .dc-side { grid-column: 1; grid-row: 6; padding-top: 1.5rem; }
-        .mc-chat, .dc-side :global(.dc-window) { max-width: none; }
+        .dc-side { grid-column: 1; grid-row: 5; justify-self: stretch; width: auto; margin: 1.25rem 0 0; padding: 0 1rem 1rem; }
+        .dc-list { height: 15rem; }
     }
 </style>

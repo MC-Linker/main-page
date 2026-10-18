@@ -1,7 +1,7 @@
 <script lang="ts">
     import { fly } from 'svelte/transition';
     import { inview } from '$lib/actions/inview';
-    import { links, platforms, platformNotes } from '$lib/data';
+    import { links, platforms } from '$lib/data';
     import { reducedMotion, sleep } from '$lib/motion';
     import { spriteUri } from '$lib/pixel/uri';
     import { deepslate } from '$lib/pixel/sprites';
@@ -10,7 +10,7 @@
     import DcWindow from '$lib/discord/DcWindow.svelte';
     import DcMessage from '$lib/discord/DcMessage.svelte';
     import { bot, embedStyle } from '$lib/discord/types';
-    import BrandIcon from './BrandIcon.svelte';
+    import BrandIcon from '../BrandIcon.svelte';
 
     let platform = $state(platforms[0].id);
     const current = $derived(platforms.find(p => p.id === platform)!);
@@ -35,7 +35,7 @@
 </script>
 
 <section id="setup" class="setup" style:--ground={tile} aria-labelledby="setup-title">
-    <header class="head">
+    <header class="section-head head">
         <p class="kicker mojang">Setup</p>
         <h2 id="setup-title" class="mc-text">Linked in three steps</h2>
         <p>No bot to host, no config files. Most people are done in about a minute.</p>
@@ -64,9 +64,7 @@
                         {/each}
                     </div>
                 </div>
-                <ul class="notes">
-                    {#each platformNotes as n (n)}<li>{n}</li>{/each}
-                </ul>
+                <p class="more">Hybrid server or Aternos? See <a href="#download">all downloads</a>.</p>
             </div>
         </div>
         <div class="side dc">
@@ -111,10 +109,7 @@
 
 <style>
     .setup { position: relative; padding-bottom: clamp(3rem, 6vw, 5rem); background: var(--color-ink); }
-    .head { padding: clamp(4rem, 9vw, 7rem) 1rem 2.5rem; text-align: center; }
-    .kicker { margin: 0 0 0.6rem; font-size: 1rem; color: var(--color-grass-light); text-shadow: 0.1em 0.1em 0 rgb(0 0 0 / 0.6); }
-    h2 { margin: 0; font-size: clamp(2rem, 4.5vw, 3.25rem); font-weight: 400; color: #fff; }
-    .head p { margin: 0.75rem auto 0; max-width: 32rem; color: #adb5bd; }
+    .head { padding-top: clamp(4rem, 9vw, 7rem); padding-bottom: 2.5rem; }
 
     .band { position: relative; display: grid; grid-template-columns: 1fr 1fr; }
     .band::before, .band::after { content: ''; grid-row: 1 / -1; z-index: 0; }
@@ -162,7 +157,8 @@
     .versions { margin: 0 0 0.8rem !important; color: #fff !important; }
     .also { font-size: 0.85rem; color: #bbb; }
     .downloads { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-    .notes { margin: 1rem 0 0; padding-left: 1.1rem; font-size: 0.85rem; color: #adb5bd; line-height: 1.5; }
+    .step .more { margin: 0.9rem 0 0; font-size: 0.85rem; color: #adb5bd; }
+    .more a { color: var(--color-grass-light); }
 
     .band.last { grid-template-rows: auto 1fr; }
     .band.last .intro { grid-column: 1 / -1; grid-row: 1; position: relative; z-index: 1; justify-self: center; width: min(36rem, calc(100% - 2rem)); margin-top: clamp(2.5rem, 5vw, 3.5rem); padding: 1.4rem 1.6rem; border-radius: 16px; background: rgb(13 16 20 / 0.92); box-shadow: 0 0 0 2px rgb(255 255 255 / 0.07); text-align: center; }

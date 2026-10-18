@@ -35,6 +35,8 @@
 	--color-dirt-dark: #79491f;
 	--color-sky: #78a6f7;
 	--color-mc-ui: #c6c6c6;
+	--color-mc-ui-dark: #8b8b8b;
+	--color-mc-ink: #3f3f3f;
 	--color-mc-gold: #ffaa00;
 	--color-mc-yellow: #ffff55;
 	--color-mc-aqua: #55ffff;
@@ -66,8 +68,12 @@
 
 :root {
 	color-scheme: dark;
-	--seam: 50%;
 	--mc-shadow: 0.125em;
+	/* Room the hotbar takes at the bottom of the screen. Sections keep their content above it. */
+	--hud-space: 8rem;
+}
+@media (max-width: 720px) {
+	:root { --hud-space: 6.25rem; }
 }
 
 html {
@@ -125,6 +131,52 @@ body {
 	font-weight: 400;
 	text-transform: uppercase;
 	letter-spacing: 0.06em;
+}
+
+/* Jumping to a section (hotbar, #links) skips some of its top padding. */
+main > section[id]:not(#top) { scroll-margin-top: -2rem; }
+
+/* Section headings: a small label, a title in the game's font, a line of text. */
+.section-head { padding: 0 1rem; text-align: center; }
+.section-head .kicker { margin: 0 0 0.6rem; font-size: 1rem; color: var(--color-grass-light); text-shadow: 0.1em 0.1em 0 rgb(0 0 0 / 0.6); }
+.section-head h2 { margin: 0; font-size: clamp(2rem, 4.5vw, 3.25rem); font-weight: 400; line-height: 1.15; color: #fff; }
+.section-head p:not(.kicker) { margin: 0.75rem auto 0; max-width: 34rem; color: #ced4da; line-height: 1.55; }
+
+/* A Minecraft GUI panel: light gray with a bevelled border. */
+.mc-panel {
+	position: relative;
+	padding: 0.9rem;
+	background: var(--color-mc-ui);
+	color: var(--color-mc-ink);
+	border: 3px solid #000;
+	border-radius: 6px;
+	box-shadow: inset 3px 3px 0 #fff, inset -3px -3px 0 #555;
+}
+.mc-panel-title { margin: 0 0 0.5rem; font-family: var(--font-pixel); font-size: 1.05rem; color: var(--color-mc-ink); }
+
+/* An inventory slot. */
+.mc-slot {
+	position: relative;
+	display: grid;
+	place-items: center;
+	width: var(--slot, 2.75rem);
+	height: var(--slot, 2.75rem);
+	background: var(--color-mc-ui-dark);
+	box-shadow: inset 2px 2px 0 #373737, inset -2px -2px 0 #fff;
+}
+
+/* The purple tooltip Minecraft shows over items. */
+.mc-tooltip {
+	padding: 0.4rem 0.55rem;
+	background: rgb(16 0 16 / 0.94);
+	border: 2px solid;
+	border-image: linear-gradient(#5000ff 0%, #28007f 100%) 1;
+	box-shadow: 0 0 0 2px rgb(16 0 16 / 0.94);
+	font-family: var(--font-pixel);
+	font-size: 0.95rem;
+	line-height: 1.35;
+	color: #fff;
+	text-shadow: 0.12em 0.12em 0 #3f3f3f;
 }
 
 .skip-link {

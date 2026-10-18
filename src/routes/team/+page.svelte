@@ -30,6 +30,7 @@
 {/snippet}
 
 <header class="head">
+    <p class="crumb mc-text"><a href="/">MC Linker</a> / Team</p>
     <h1 class="mc-logo">The team</h1>
     <p>A small crew who like Minecraft, Discord and building things that link the two.</p>
 </header>
@@ -44,7 +45,9 @@
 </section>
 
 <style>
-    .head { padding: 8rem 1rem 2.5rem; text-align: center; background: linear-gradient(90deg, #2d4a12 0 50%, #232a6b 50% 100%); }
+    .head { padding: 4.5rem 1rem 2.5rem; text-align: center; background: linear-gradient(90deg, #2d4a12 0 50%, #232a6b 50% 100%); }
+    .crumb { margin: 0 0 0.75rem; color: #e9ecef; }
+    .crumb a { color: inherit; }
     h1 { margin: 0; font-size: clamp(2.4rem, 6vw, 3.75rem); color: #fff; }
     .head p { margin: 0.75rem auto 0; max-width: 32rem; color: #e9ecef; }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 1.25rem; max-width: 64rem; margin: 3rem auto 0; padding: 0 1rem; }

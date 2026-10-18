@@ -6,7 +6,11 @@
 	import nProgress from 'nprogress';
 	import { navigating } from '$app/state';
 	import favicon from '$lib/assets/favicon.ico';
-	import Nav from '$lib/components/Nav.svelte';
+	import { spriteUri } from '$lib/pixel/uri';
+	import { dirt } from '$lib/pixel/sprites';
+	import Hotbar from '$lib/components/hud/Hotbar.svelte';
+	import Tooltip from '$lib/components/hud/Tooltip.svelte';
+	import Toasts from '$lib/components/hud/Toasts.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 
 	let { children } = $props();
@@ -18,6 +22,8 @@
 	});
 
 	const description = 'MC Linker links your Minecraft server with Discord. Two-way chat, inventories, stats, moderation, role sync and more. No bot to host, no config files.';
+	// Block textures shared by several sections, as CSS variables.
+	const textures = `:root{--dirt:${spriteUri(dirt)}}`;
 </script>
 
 <svelte:head>
@@ -34,11 +40,14 @@
 	<meta property="og:image" content="https://mclinker.com/logo.png" />
 	<meta property="og:url" content="https://mclinker.com" />
 	<meta name="twitter:card" content="summary" />
+	{@html `<style>${textures}</style>`}
 </svelte:head>
 
 <a class="skip-link" href="#main">Skip to content</a>
-<Nav />
 <main id="main">
 	{@render children?.()}
 </main>
 <Footer />
+<Hotbar />
+<Tooltip />
+<Toasts />

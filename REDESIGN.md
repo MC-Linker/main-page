@@ -1,9 +1,10 @@
 # mclinker.com redesign
 
-This file explains the redesign: what we learned about the project, the decisions every concept shares, and the concepts themselves. Each concept lives on its own branch so you can compare them side by side.
+This file explains the redesign: what we learned about the project, the decisions every concept shares, and the concepts themselves. Each concept lives on its own branch so you can compare them side by side. The **final** branch combines the parts that worked best and is the one to keep building on.
 
 | Branch | Concept | One-liner |
 |---|---|---|
+| `claude/mclinker-website-final-jy15ja` | **Final** | Two Worlds' split-screen hero with Crafting Table's title menu between the chats, then setup, the feature inventory, the server list and the FAQ as a written book. Navigation is a labelled hotbar. |
 | `claude/mclinker-website-guide-redesign-jy15ja` | **Two Worlds** | The screen is split: Minecraft on the left, Discord on the right, the MC Linker logo links them. Every feature is shown happening on both sides at once. |
 | `claude/mclinker-website-crafting-jy15ja` | **Crafting Table** | The site plays like Minecraft's UI. You craft the link in a crafting grid, browse features as items in an inventory, and earn advancements while scrolling. |
 | `claude/mclinker-website-speedrun-jy15ja` | **Speedrun** | A light, bold, type-driven site built around "quick". A speedrun timer runs your setup with splits, and you can actually time your own run. |
@@ -29,7 +30,7 @@ This file explains the redesign: what we learned about the project, the decision
 - **Content from one place:** `src/lib/data/*` holds links, features, platforms, FAQ and guide URLs, all checked against the bot and plugin source.
 - **Short links:** `/invite`, `/discord`, `/guide`, `/plugin`, `/privacy`, `/terms`, `/tos` redirect to the right place.
 - **Original pixel art:** player heads, items and blocks are drawn in code (`PixelArt`), not copied from Minecraft textures. Real bot output screenshots are only used where they show actual bot output.
-- **Fonts:** Pixelify Sans (pixel display, OFL) and DM Sans (body, OFL), self-hosted through Fontsource.
+- **Fonts:** the Minecraft fonts from the bot repo (`resources/fonts`): Minecraft Seven for in-game text, Minecrafter for logo words and the Mojang Studios font for small labels, self-hosted as subset woff2 files. DM Sans (OFL) for body text. Pixelify Sans only fills in symbols the Minecraft font lacks.
 - **Accessible and fast:** semantic HTML, keyboard support, `prefers-reduced-motion` turns off auto-play, works at phone width with no horizontal scroll.
 - **Pages kept:** Team, Terms, Privacy (restyled). The 404 page gets a playful "You died!" treatment.
 
@@ -71,3 +72,24 @@ The opposite of the other two: light, bold, typographic, almost no UI mimicry. I
 ## Guide
 
 The guide (`MC-Linker/guide`, same branch name) is restructured and completed in parallel. Feature links on every concept point to the new guide URLs, and the guide keeps redirects for old URLs.
+
+## Final
+
+The parts that worked best, in one page:
+
+1. **Hero (Two Worlds):** Minecraft on the left, Discord on the right, the logo on the seam, with the live chat bridge on both sides. Between the two chats sits Minecraft's title menu (Add to Discord, Get the Plugin, Guide, Support, How does it work?) on a dimmed panel, plus a yellow splash text. On phones the worlds stack: Minecraft with the menu and chat on top, the logo on the seam, Discord below.
+2. **Linked in three steps (Two Worlds).** Step 1 keeps the platform tabs and downloads and points to the full server list for hybrids and Aternos.
+3. **Features (Crafting Table):** the creative inventory. The selected item opens as a big item tooltip with what it does in Minecraft and in Discord.
+4. **Download (Crafting Table):** the Play Multiplayer server list on the game's dirt background.
+5. **FAQ:** a written book, drawn in pixel art: leather cover, cream pages, "Page 1 of 8", page-turn arrows, all text in the Minecraft font. Two pages side by side on wide screens, one page on phones; arrow keys and swipes turn pages. The first page is the contents, the last one points to the guide's FAQ and troubleshooting pages.
+6. **Final call to action and footer (Two Worlds).**
+
+**Hotbar navigation.** Bigger slots, each with a label under its icon. It has two clearly separate parts:
+
+- **This page** (left): the home page sections. The XP bar above it fills as you scroll and the selected slot follows where you are. Keys 1 to 5 jump to a section. On other pages it reads "Home page" and leads back to those sections.
+- **Links** (right): Add bot, Guide, Support and Team. Each slot has a small arrow that says "this leaves the page"; the ones that open Discord open in a new tab.
+
+On phones the link slots fold into one "Links" slot that opens a small list, so the bar stays readable.
+
+Advancement toasts pop up the first time you reach a section or send a message through the bridge.
+

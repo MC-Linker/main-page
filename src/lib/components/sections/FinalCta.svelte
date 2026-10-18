@@ -3,7 +3,7 @@
     import McButton from '$lib/mc/McButton.svelte';
     import McWorld from '$lib/mc/McWorld.svelte';
     import GrassBlock from '$lib/pixel/GrassBlock.svelte';
-    import BrandIcon from './BrandIcon.svelte';
+    import BrandIcon from '../BrandIcon.svelte';
 </script>
 
 <section class="cta" aria-labelledby="cta-title">
@@ -16,7 +16,7 @@
     </h2>
     <div class="side mc">
         <GrassBlock size={54} />
-        <McButton href="#setup" size="lg">Get the plugin</McButton>
+        <McButton href="#download" size="lg">Get the plugin</McButton>
         <span class="mc-text small">Paper · Spigot · Fabric · Forge · NeoForge</span>
     </div>
     <div class="side dc">

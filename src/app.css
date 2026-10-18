@@ -149,9 +149,9 @@ body {
 discord-messages:not(:defined) { visibility: hidden; }
 discord-messages { display: block; }
 
-/* On phones the page titles sit where the sun would be: move it to the right. */
+/* On phones: the sun sits above the page titles, out of their way. */
 @media (max-width: 760px) {
-	:root { --orb-left: auto; --orb-right: 5%; --orb-top: 0.6rem; }
+	:root { --orb-left: 5%; --orb-top: 0.6rem; }
 }
 
 /* Jumping to a section (hotbar, #links) skips some of its top padding. */

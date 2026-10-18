@@ -8,7 +8,7 @@
 	import { navigating } from '$app/state';
 	import favicon from '$lib/assets/favicon.ico';
 	import { spriteUri } from '$lib/pixel/uri';
-	import { dirt } from '$lib/pixel/sprites';
+	import { dirt, stone } from '$lib/pixel/sprites';
 	import Hotbar from '$lib/components/hud/Hotbar.svelte';
 	import Tooltip from '$lib/components/hud/Tooltip.svelte';
 	import Toasts from '$lib/components/hud/Toasts.svelte';
@@ -24,7 +24,7 @@
 
 	const description = 'MC Linker links your Minecraft server with Discord. Two-way chat, inventories, stats, moderation, role sync and more. No bot to host, no config files.';
 	// Block textures shared by several sections, as CSS variables.
-	const textures = `:root{--dirt:${spriteUri(dirt)}}`;
+	const textures = `:root{--dirt:${spriteUri(dirt)};--stone-tile:${spriteUri(stone)}}`;
 </script>
 
 <svelte:head>

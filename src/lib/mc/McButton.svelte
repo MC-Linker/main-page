@@ -68,10 +68,17 @@
     .mc-btn[aria-pressed='true'] { --face: #5c8a2a; }
     .mc-btn:active:not(:disabled) { transform: translateY(1px); }
     .mc-btn:disabled { color: #a0a0a0; --face: #2c2c2c; cursor: default; }
-    .mc-btn > span { display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap; }
+    .mc-btn > span { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap; }
+    /* The button texture: a faint stone grain over the face colour, like the game's buttons. */
+    .mc-btn::before {
+        content: ''; position: absolute; inset: 2px 0 3px; pointer-events: none;
+        background: var(--stone-tile) 0 0 / 32px 32px; opacity: 0.22; mix-blend-mode: luminosity;
+        image-rendering: pixelated;
+    }
+    .mc-btn:disabled::before { display: none; }
     .mc-btn :global(svg) { flex: none; }
     .badge {
-        position: absolute; top: -0.7rem; right: 0.5rem; padding: 0.05rem 0.35rem;
+        position: absolute; z-index: 2; top: -0.7rem; right: 0.5rem; padding: 0.05rem 0.35rem;
         background: #1d1d1d; border: 2px solid #000; box-shadow: inset 0 0 0 1px #ffff55;
         color: #ffff55; font-size: 0.7rem; line-height: 1.2; white-space: nowrap; pointer-events: none;
     }

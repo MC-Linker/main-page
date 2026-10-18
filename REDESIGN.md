@@ -77,7 +77,7 @@ The guide (`MC-Linker/guide`, same branch name) is restructured and completed in
 
 The parts that worked best, in one page:
 
-1. **Hero (Two Worlds):** Minecraft on the left, Discord on the right, the logo on the seam, with the live chat bridge on both sides. Between the two chats sits Minecraft's title menu (Add to Discord, Get the Plugin, Guide, Support, How does it work?) on a dimmed panel, plus a yellow splash text. On phones the worlds stack: Minecraft with the menu and chat on top, the logo on the seam, Discord below.
+1. **Hero: a Minecraft title screen, split in two.** Both halves are out of focus like the title screen's panorama: rolling Minecraft hills on the left, a Discord app on the right, with the pixel-stepped seam between them. On top: a stone "Minecraft" logo and a 3D "Discord" wordmark joined by the MC Linker chain, a yellow splash text, "Linked by MC Linker" in place of "Java Edition", plain stacked menu buttons (Add to Discord, Get the Plugin, Guide, Support..., How does it work?) and the version and disclaimer lines in the bottom corners. The live chat bridge stays: Minecraft chat on the left, the Discord channel on the right.
 2. **Linked in three steps**, in the guide's order. Step 1 happens in Discord: add the bot, next to the welcome message it posts. Step 2 happens in Minecraft: pick your server software in the game's server list screen and download from Modrinth (recommended), Hangar, SpigotMC or CurseForge, each in its own colour. Step 3 is both: `/connect` in Discord, paste the code in Minecraft.
 3. **Features (Crafting Table):** the creative inventory. The selected item opens as a big item tooltip with what it does in Minecraft and in Discord.
 4. **FAQ:** a written book, drawn in pixel art: leather cover, cream pages, "Page 1 of 8", page-turn arrows, all text in the Minecraft font. Two pages side by side on wide screens, one page on phones; arrow keys and swipes turn pages. The first page is the contents, the last one points to the guide's FAQ and troubleshooting pages.
@@ -93,4 +93,6 @@ On phones the link slots fold into one "Links" slot that opens a small list, so 
 Advancement toasts pop up the first time you reach a section or send a message through the bridge.
 
 **Phones.** Everything stacks into one column: Minecraft on top, Discord below. Sending a message in one chat closes the keyboard and scrolls to the other chat so you can watch it arrive. The inventory shows six bigger slots per row and scrolls to the item you tap. The book shows one page and turns with a swipe. Text fields use 16px text so phones don't zoom in, tooltips only appear for a mouse, and the hotbar hides while you type. Held sideways, the hotbar gets slimmer.
+
+**Team page.** A title-screen header ("The Team" in the stone logo style over the blurred hills), then every member as a Discord profile card with their about text and roles, all visible at once. Each card's banner has the member's colour with a stone grain and a Minecraft nametag.
 

@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { Snippet } from 'svelte';
     import PixelArt from '$lib/pixel/PixelArt.svelte';
-    import { dirt, grassSide, type Sprite } from '$lib/pixel/sprites';
+    import { dirt, grassSide, stone, type Sprite } from '$lib/pixel/sprites';
     import { spriteUri } from '$lib/pixel/uri';
 
     type Props = {
@@ -12,16 +12,32 @@
         /** Height of the ground, in blocks. Columns can add bumps on top. */
         ground?: number;
         clouds?: boolean;
+        /**
+         * Rolling hills with trees that slowly pan by, like the title screen's
+         * panorama, instead of flat ground.
+         */
+        hills?: boolean;
+        /** Blur in px, for a soft, out-of-focus backdrop (the title screen look). */
+        blur?: number;
         class?: string;
         children?: Snippet;
     };
-    let { night = false, rain = false, tile = 32, ground = 2, clouds = true, class: className = '', children }: Props = $props();
+    let { night = false, rain = false, tile = 32, ground = 2, clouds = true, hills = false, blur = 0, class: className = '', children }: Props = $props();
 
     const grass = spriteUri(grassSide);
     const soil = spriteUri(dirt);
+    const rock = spriteUri(stone);
 
     // A stepped skyline like the edge of the logo: mostly flat, with a hill on each side.
     const bumps = [2, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 3, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2];
+
+    // The panorama: column heights in blocks, drawn twice so the loop is seamless.
+    const heights = [5, 5, 6, 6, 7, 7, 7, 6, 6, 5, 4, 4, 4, 5, 5, 6, 8, 9, 9, 8, 7, 6, 6, 5, 5, 5, 6, 6, 5, 4, 3, 3, 4, 4, 5, 6, 7, 7, 6, 5];
+    const trees = new Set([3, 12, 19, 27, 34]);
+    const tree: Sprite = {
+        rows: ['.LLL.', 'LLlLL', 'LlLLL', 'LLLlL', '..T..', '..T..', '..T..'],
+        palette: { L: '#3f7a1f', l: '#4f8f28', T: '#6b4a26' },
+    };
 
     const cloud: Sprite = {
         rows: ['....wwwww.....', '..wwwwwwwwww..', 'wwwwwwwwwwwwww', '.wwwwwwwwwww..'],
@@ -44,7 +60,7 @@
     }));
 </script>
 
-<div class="world {className}" class:night class:rain style:--tile="{tile}px" style:--ground="{ground * tile}px">
+<div class="world {className}" class:night class:rain class:hills class:blurred={blur > 0} style:--tile="{tile}px" style:--ground="{ground * tile}px" style:--blur="{blur}px">
     <div class="sky day" aria-hidden="true"></div>
     <div class="sky dusk" aria-hidden="true"></div>
     <div class="stars" aria-hidden="true">
@@ -59,19 +75,39 @@
             <div class="cloud c3"><PixelArt sprite={cloud} width="100%" /></div>
         </div>
     {/if}
-    <div class="terrain" aria-hidden="true" style:--grass={grass} style:--dirt={soil}>
-        {#each bumps as b, i (i)}<span style:height="calc(var(--ground) + {b} * var(--tile))"></span>{/each}
-    </div>
+    {#if hills}
+        <div class="terrain" aria-hidden="true" style:--grass={grass} style:--dirt={soil} style:--stone={rock}>
+            <div class="strip">
+                {#each [0, 1] as copy (copy)}
+                    <div class="land">
+                        {#each heights as h, i (i)}
+                            <span class="col" style:height="calc({h} * var(--tile))">
+                                {#if trees.has(i)}<span class="tree"><PixelArt sprite={tree} width="calc(var(--tile) * 2.5)" /></span>{/if}
+                            </span>
+                        {/each}
+                    </div>
+                {/each}
+            </div>
+        </div>
+    {:else}
+        <div class="terrain" aria-hidden="true" style:--grass={grass} style:--dirt={soil}>
+            {#each bumps as b, i (i)}<span class="flat" style:height="calc(var(--ground) + {b} * var(--tile))"></span>{/each}
+        </div>
+    {/if}
     <div class="rainfall" aria-hidden="true"></div>
     <div class="content">{@render children?.()}</div>
 </div>
 
 <style>
     .world {
+        /* Tone and blur for the scenery, changed by night, rain and the blur prop. */
+        --bright: 1;
+        --sat: 1;
         position: relative;
         overflow: hidden;
         isolation: isolate;
         background: #78a6f7;
+        container-type: inline-size;
     }
     .sky { position: absolute; inset: 0; z-index: -3; transition: opacity 1.2s ease; }
     .day { background: linear-gradient(#5f93f2, #9cc2ff 70%, #c4dbff); }
@@ -79,23 +115,24 @@
     .rain .day { filter: saturate(0.35) brightness(0.8); }
     .night .dusk { opacity: 1; }
 
-    .stars { position: absolute; inset: 0; z-index: -2; opacity: 0; transition: opacity 1.2s ease; }
+    .stars { position: absolute; inset: 0; z-index: -2; opacity: 0; transition: opacity 1.2s ease; filter: blur(calc(var(--blur) / 3)); }
     .stars span { position: absolute; background: #fff; }
     .night .stars { opacity: 0.9; }
     .rain .stars { opacity: 0.2; }
 
     .orb {
         position: absolute; z-index: -2; width: clamp(2.25rem, 4.5vw, 3.75rem); top: var(--orb-top, 7%);
-        transition: transform 1.2s cubic-bezier(.5, 0, .3, 1.2), opacity 0.8s ease;
+        filter: blur(var(--blur)) brightness(var(--orb-bright, 1));
+        transition: transform 1.2s cubic-bezier(.5, 0, .3, 1.2), opacity 0.8s ease, filter 1s ease;
     }
     /* Pages can move the sun and moon with --orb-left / --orb-right (e.g. away from a title on phones). */
     .sun, .moon { left: var(--orb-left, 9%); right: var(--orb-right, auto); }
     .moon { transform: translateY(160%); opacity: 0; }
     .night .sun { transform: translateY(160%); opacity: 0; }
     .night .moon { transform: none; opacity: 1; }
-    .rain .orb { filter: brightness(0.7); }
+    .rain .orb { --orb-bright: 0.7; }
 
-    .clouds { position: absolute; inset: 0 0 auto; height: 45%; z-index: -1; }
+    .clouds { position: absolute; inset: 0 0 auto; height: 45%; z-index: -1; filter: blur(var(--blur)); }
     .cloud { position: absolute; left: 0; opacity: 0.9; animation: drift linear infinite; transition: filter 1s ease; }
     .rain .cloud, .night .cloud { filter: brightness(0.55); }
     .c1 { top: 12%; width: clamp(5rem, 11vw, 9rem); animation-duration: 80s; animation-delay: -20s; }
@@ -105,27 +142,47 @@
         from { transform: translateX(-12rem); }
         to { transform: translateX(calc(100cqw + 12rem)); }
     }
-    .world { container-type: inline-size; }
 
     .terrain {
         position: absolute; left: 0; right: 0; bottom: 0; z-index: 0;
         display: flex; align-items: flex-end;
+        filter: blur(var(--blur)) brightness(var(--bright)) saturate(var(--sat));
         transition: filter 1.2s ease;
     }
-    .terrain span {
+    /* Blur lets the sky show through at the edges; reach past them. */
+    .blurred .terrain { left: calc(var(--blur) * -3); right: calc(var(--blur) * -3); bottom: calc(var(--blur) * -3); }
+    .night { --bright: 0.45; --sat: 0.8; }
+    .rain { --bright: 0.75; --sat: 0.8; }
+    .night.rain { --bright: 0.4; --sat: 0.7; }
+
+    .flat {
         flex: none;
         width: var(--tile);
         background: var(--grass) top / var(--tile) var(--tile) no-repeat, var(--dirt) 0 var(--tile) / var(--tile) var(--tile) repeat;
         image-rendering: pixelated;
     }
-    .night .terrain { filter: brightness(0.45) saturate(0.8); }
-    .rain .terrain { filter: brightness(0.75) saturate(0.8); }
-    .night.rain .terrain { filter: brightness(0.4) saturate(0.7); }
+
+    /* Panorama hills */
+    .strip { display: flex; width: max-content; animation: pan 160s linear infinite; }
+    .land { display: flex; align-items: flex-end; }
+    .col {
+        position: relative;
+        flex: none;
+        width: var(--tile);
+        background-image: var(--grass), var(--dirt), var(--dirt), var(--stone);
+        background-size: var(--tile) var(--tile);
+        background-repeat: no-repeat, no-repeat, no-repeat, repeat;
+        background-position: 0 0, 0 var(--tile), 0 calc(var(--tile) * 2), 0 calc(var(--tile) * 3);
+        image-rendering: pixelated;
+    }
+    .tree { position: absolute; bottom: 100%; left: calc(var(--tile) * -0.75); }
+    @keyframes pan { to { transform: translateX(-50%); } }
 
     .rainfall {
         position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' fill='rgb%28175%2C200%2C255%29' fill-opacity='0.6'%3E%3Crect x='60' y='38' width='2' height='16'/%3E%3Crect x='123' y='12' width='2' height='11'/%3E%3Crect x='156' y='137' width='2' height='11'/%3E%3Crect x='69' y='149' width='2' height='10'/%3E%3Crect x='174' y='129' width='2' height='13'/%3E%3Crect x='6' y='22' width='2' height='16'/%3E%3Crect x='78' y='17' width='2' height='13'/%3E%3Crect x='15' y='141' width='2' height='16'/%3E%3Crect x='9' y='144' width='2' height='11'/%3E%3Crect x='42' y='161' width='2' height='10'/%3E%3Crect x='108' y='149' width='2' height='16'/%3E%3Crect x='9' y='56' width='2' height='10'/%3E%3Crect x='105' y='34' width='2' height='14'/%3E%3Crect x='78' y='36' width='2' height='18'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='130' height='130' fill='rgb%28175%2C200%2C255%29' fill-opacity='0.4'%3E%3Crect x='21' y='78' width='2' height='18'/%3E%3Crect x='129' y='46' width='2' height='11'/%3E%3Crect x='111' y='48' width='2' height='15'/%3E%3Crect x='18' y='16' width='2' height='10'/%3E%3Crect x='117' y='52' width='2' height='17'/%3E%3Crect x='129' y='109' width='2' height='15'/%3E%3Crect x='87' y='116' width='2' height='15'/%3E%3Crect x='57' y='63' width='2' height='12'/%3E%3Crect x='45' y='20' width='2' height='14'/%3E%3C/svg%3E");
         background-size: 180px 180px, 130px 130px;
+        filter: blur(calc(var(--blur) / 3));
         transition: opacity 0.8s ease;
         animation: fall 0.5s linear infinite;
     }

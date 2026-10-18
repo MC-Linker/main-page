@@ -6,7 +6,7 @@
     import type { Sprite } from '$lib/pixel/sprites';
     import PixelArt from '$lib/pixel/PixelArt.svelte';
     import McButton from '$lib/mc/McButton.svelte';
-    import Panorama from '../Panorama.svelte';
+    import McWorld from '$lib/mc/McWorld.svelte';
     import BrandIcon from '../BrandIcon.svelte';
 
     /** The FAQ as a written book: contents, one page per question, and a last page. */
@@ -78,7 +78,7 @@
 {/snippet}
 
 <section id="faq" class="faq" aria-labelledby="faq-title">
-    <Panorama />
+    <McWorld class="world" tile={36} hills blur={3} clouds={false} />
     <div class="shade" aria-hidden="true"></div>
 
     <header class="section-head">
@@ -133,7 +133,7 @@
         overflow: hidden;
         padding: clamp(3rem, 6vw, 4rem) 1rem clamp(4rem, 8vw, 6rem);
     }
-    .faq :global(.panorama) { z-index: -2; }
+    .faq :global(.world) { position: absolute; inset: 0; z-index: -2; }
     /* Like opening a book in game: the world stays, dimmed, behind it. */
     .shade { position: absolute; inset: 0; z-index: -1; background: linear-gradient(rgb(0 0 0 / 0.55), rgb(0 0 0 / 0.7)); }
     .section-head { margin-bottom: 1.75rem; }

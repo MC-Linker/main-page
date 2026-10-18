@@ -10,6 +10,8 @@
     import McWorld from '$lib/mc/McWorld.svelte';
     import McChat from '$lib/mc/McChat.svelte';
     import McButton from '$lib/mc/McButton.svelte';
+    import McLogo from '$lib/mc/McLogo.svelte';
+    import DcBackdrop from '$lib/discord/DcBackdrop.svelte';
     import DcWindow from '$lib/discord/DcWindow.svelte';
     import DcMessage from '$lib/discord/DcMessage.svelte';
     import DcComposer from '$lib/discord/DcComposer.svelte';
@@ -118,38 +120,38 @@
 <svelte:window onkeydown={shortcuts} />
 
 <section id="top" class="hero" bind:this={stage} aria-labelledby="hero-title">
-    <McWorld class="mc-bg" night={bridge.night} rain={bridge.rain} tile={34} />
-    <div class="dc-bg" aria-hidden="true"></div>
+    <!-- Like the title screen: both worlds out of focus behind the menu. -->
+    <McWorld class="mc-bg" night={bridge.night} rain={bridge.rain} tile={34} hills blur={3} />
+    <div class="dc-bg" aria-hidden="true"><DcBackdrop /></div>
 
     <h1 id="hero-title" class="title">
         <span class="word mc">
-            <span class="mc-logo">Minecraft</span>
-            <span class="splash mc-text" aria-hidden="true">{splash}</span>
+            <McLogo text="Minecraft" />
+            <span class="splash on-mc mc-text" aria-hidden="true">{splash}</span>
         </span>
         <span class="link-logo" class:pulsing bind:this={logo}>
             <img src="/logo.svg" alt="" width="160" height="160" />
             <span class="sr-only">linked with</span>
         </span>
-        <span class="word dc">Discord</span>
+        <span class="word dc">
+            Discord
+            <span class="splash on-dc mc-text" aria-hidden="true">{splash}</span>
+        </span>
     </h1>
+    <p class="edition mojang">Linked by <span class="brand">MC Linker</span></p>
+    <p class="motd mc-text">Chat, stats and moderation, both ways. No bot to host, no config files.</p>
 
     <!-- The game's title menu, right between the two worlds. -->
-    <div class="center" in:fly={{ y: 16, duration: 500, delay: 150 }}>
-        <p class="motd mc-text">
-            MC Linker connects your Minecraft server with Discord.
-            <span>Chat, stats and moderation, both ways. No bot to host, no config files.</span>
-        </p>
-        <nav class="menu" aria-label="Get started">
-            <McButton href={links.invite} external size="lg" variant="discord"><BrandIcon brand="discord" size="1.15em" /> Add to Discord</McButton>
-            <McButton href="#install" size="lg">Get the Plugin</McButton>
-            <div class="row">
-                <McButton href={links.guide} size="lg">Guide</McButton>
-                <McButton href={links.support} external size="lg">Support...</McButton>
-            </div>
-            <McButton href="#setup" size="lg">How does it work?</McButton>
-        </nav>
+    <nav class="menu" aria-label="Get started" in:fly={{ y: 16, duration: 500, delay: 150 }}>
+        <McButton href={links.invite} external size="lg" variant="discord"><BrandIcon brand="discord" size="1.15em" /> Add to Discord</McButton>
+        <McButton href="#install" size="lg">Get the Plugin</McButton>
+        <div class="row">
+            <McButton href={links.guide} size="lg">Guide</McButton>
+            <McButton href={links.support} external size="lg">Support...</McButton>
+        </div>
+        <McButton href="#setup" size="lg">How does it work?</McButton>
         <p class="fine mc-text">Free · Paper, Spigot, Fabric, Forge &amp; NeoForge · <span class="nowrap">1.8 – 26.2</span></p>
-    </div>
+    </nav>
 
     <div class="mc-side">
         <p class="hint mc-text">{#if keyboard.current}<kbd>T</kbd> to chat · {/if}try <code>/time set night</code></p>
@@ -184,6 +186,9 @@
             {/if}
         </div>
     </div>
+
+    <p class="corner left mc-text">MC Linker · Minecraft 1.8 – 26.2</p>
+    <p class="corner right mc-text">Not an official Minecraft product.</p>
 </section>
 
 <style>
@@ -194,10 +199,9 @@
         display: grid;
         /* Two equal middle columns put the seam (and the logo) at exactly 50%. */
         grid-template-columns: 1fr minmax(9.5rem, 13.5rem) minmax(9.5rem, 13.5rem) 1fr;
-        grid-template-rows: auto auto;
+        grid-template-rows: auto auto auto auto;
         align-content: center;
-        row-gap: clamp(1rem, 6vh, 4.5rem);
-        min-height: max(100svh, 44rem);
+        min-height: max(100svh, 46rem);
         padding: 1.5rem 0 var(--hud-space);
         isolation: isolate;
         overflow: hidden;
@@ -215,12 +219,13 @@
         position: absolute;
         inset: 0 0 0 calc(50% - 12px);
         z-index: -2;
-        background:
-            radial-gradient(60rem 30rem at 85% 0%, rgb(88 101 242 / 0.22), transparent 60%),
-            var(--color-dc-3);
+        overflow: hidden;
+        background: #313338;
     }
+    /* Darken the blurred app a little so the real window stands out. */
+    .dc-bg::after { content: ''; position: absolute; inset: 0; background: radial-gradient(60rem 30rem at 85% 0%, rgb(88 101 242 / 0.2), transparent 60%), rgb(17 18 20 / 0.35); }
 
-    /* ── Title ─────────────────────────────────────────────────────────── */
+    /* ── Title, like the game's logo ───────────────────────────────────── */
     .title {
         grid-column: 1 / -1;
         grid-row: 1;
@@ -231,29 +236,35 @@
         font-weight: 400;
         line-height: 1;
     }
-    .word { color: #fff; }
-    .word.mc {
-        position: relative;
-        justify-self: end;
-        padding-right: 1.25rem;
-        font-size: clamp(2.3rem, 5.2vw, 6rem);
-        --mc-shadow: 0.07em;
+    .word { position: relative; color: #fff; }
+    .word.mc { justify-self: end; padding-right: 1.25rem; font-size: clamp(2.4rem, 5.5vw, 6.4rem); }
+    .word.dc {
+        justify-self: start;
+        padding-left: 1.25rem;
+        font-family: var(--font-sans);
+        font-size: clamp(2.5rem, 5.8vw, 6.6rem);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        /* A blurple 3D edge, to match the stone logo on the other side. */
+        text-shadow: 0 0.035em 0 #4752c4, 0 0.07em 0 #3b43a8, 0 0.105em 0 #2f368a, 0 0.17em 0.12em rgb(0 0 0 / 0.45);
     }
-    .word.dc { justify-self: start; padding-left: 1.25rem; font-family: var(--font-sans); font-size: clamp(2.5rem, 5.8vw, 6.6rem); font-weight: 800; letter-spacing: -0.03em; }
+    /* The yellow splash text, at the end of the logo like in the game. */
     .splash {
         position: absolute;
-        right: 1.5rem;
-        bottom: -0.55em;
-        font-size: max(0.22em, 0.9rem);
+        font-family: var(--font-pixel);
+        font-size: max(0.2em, 0.95rem);
+        font-weight: 400;
+        letter-spacing: 0;
         white-space: nowrap;
-        color: var(--color-mc-yellow);
-        --mc-shadow: 0.12em;
-        transform: rotate(-12deg);
-        transform-origin: center;
+        color: #ffff00;
+        text-shadow: 0.1em 0.1em 0 #3f3f00;
+        transform: rotate(-20deg);
         animation: splash 0.55s ease-in-out infinite alternate;
         pointer-events: none;
     }
-    @keyframes splash { to { transform: rotate(-12deg) scale(1.08); } }
+    .splash.on-dc { left: calc(100% - 0.35em); bottom: 0.2em; transform-origin: left center; }
+    .splash.on-mc { display: none; right: -0.4rem; bottom: -0.15em; }
+    @keyframes splash { to { transform: rotate(-20deg) scale(1.1); } }
     .link-logo {
         position: relative;
         display: grid;
@@ -271,48 +282,68 @@
     .link-logo.pulsing img { transform: scale(1.14) rotate(-10deg); }
     @keyframes bob { 50% { transform: translateY(-6px); } }
 
-    /* ── Menu ──────────────────────────────────────────────────────────── */
-    .center {
-        grid-column: 2 / 4;
+    /* Like "Java Edition" under the game's logo. */
+    .edition {
+        grid-column: 1 / -1;
         grid-row: 2;
+        justify-self: center;
+        margin: clamp(0.4rem, 1.5vh, 1rem) 0 0;
+        font-size: clamp(1rem, 1.5vw, 1.5rem);
+        letter-spacing: 0.28em;
+        color: #fff;
+        text-shadow: 0.1em 0.1em 0 rgb(0 0 0 / 0.6);
+    }
+    .edition .brand { color: var(--color-grass-light); }
+    .motd {
+        grid-column: 1 / -1;
+        grid-row: 3;
+        justify-self: center;
+        max-width: 36rem;
+        margin: 0.6rem 1rem 0;
+        text-align: center;
+        font-size: clamp(0.95rem, 0.4vw + 0.75rem, 1.15rem);
+        color: #e8e8e8;
+        text-wrap: balance;
+    }
+
+    /* ── Menu: plain stacked buttons, as on the title screen ───────────── */
+    .menu {
+        grid-column: 2 / 4;
+        grid-row: 4;
         align-self: center;
         display: flex;
         flex-direction: column;
-        align-items: stretch;
-        gap: 0.9rem;
-        padding: 1.1rem 1.1rem 1rem;
-        text-align: center;
-        /* Like the game dimming the world behind its menu. */
-        background: rgb(0 0 0 / 0.42);
-        border: 2px solid rgb(0 0 0 / 0.35);
-        box-shadow: inset 0 0 0 2px rgb(255 255 255 / 0.06);
-        backdrop-filter: blur(6px);
+        gap: 0.55rem;
+        margin-top: clamp(1.5rem, 5vh, 3.5rem);
     }
-    .motd { margin: 0; font-size: 1.05rem; line-height: 1.45; color: #fff; text-wrap: balance; }
-    .motd span { display: block; margin-top: 0.3rem; color: #d0d0d0; font-size: 0.95rem; }
-    .menu { display: flex; flex-direction: column; gap: 0.5rem; }
     .menu :global(.mc-btn) { width: 100%; padding: 0 0.75rem; }
     .menu :global(.mc-btn.lg) { min-height: clamp(3rem, 5.6vh, 3.75rem); font-size: clamp(1.1rem, 1.1vw + 0.4rem, 1.35rem); }
-    .motd { font-size: clamp(1.05rem, 0.6vw + 0.6rem, 1.25rem); }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
-    .fine { margin: 0; font-size: 0.8rem; color: #e0e0e0; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; }
+    .fine { display: none; margin: 0.4rem 0 0; text-align: center; font-size: 0.8rem; color: #e0e0e0; }
     .nowrap { white-space: nowrap; }
+
+    /* The game's version and copyright lines, in the bottom corners. */
+    .corner { position: absolute; bottom: 0.6rem; z-index: 3; margin: 0; font-size: 0.85rem; color: #fff; }
+    .corner.left { left: 0.8rem; }
+    .corner.right { right: 0.8rem; }
+    @media (max-width: 1399px) { .corner { display: none; } }
 
     /* ── The two chats ─────────────────────────────────────────────────── */
     .mc-side, .dc-side {
-        grid-row: 2;
+        grid-row: 4;
         align-self: end;
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
         width: min(100%, 36rem);
         min-width: 0;
+        margin-top: clamp(1.5rem, 5vh, 3.5rem);
     }
     .mc-side { grid-column: 1; justify-self: end; padding: 0 var(--gutter) 0 1rem; }
     .dc-side { grid-column: 4; justify-self: start; padding: 0 1rem 0 var(--gutter); position: relative; }
     /* New lines push older ones up; the oldest drop off the top. */
-    .mc-chat { display: flex; flex-direction: column; justify-content: flex-end; max-height: clamp(14rem, calc(100svh - 33rem), 30rem); overflow: hidden; }
-    .hint { margin: 0; font-size: 0.85rem; color: #e9ecef; }
+    .mc-chat { display: flex; flex-direction: column; justify-content: flex-end; max-height: clamp(12rem, calc(100svh - 36rem), 28rem); overflow: hidden; }
+    .hint { margin: 0; font-size: 0.85rem; color: #e9ecef; text-shadow: 0 1px 2px rgb(0 0 0 / 0.6); }
     .mc-side .hint { color: #fff; }
     .hint kbd {
         display: inline-grid; place-items: center; min-width: 1.4em; height: 1.4em; padding: 0 0.3em;
@@ -324,7 +355,7 @@
 
     .dc-end { position: relative; }
     .dc-list {
-        height: clamp(8.5rem, calc(100svh - 36rem), 24rem);
+        height: clamp(8.5rem, calc(100svh - 39rem), 22rem);
         overflow-y: auto;
         overscroll-behavior: contain;
         scrollbar-width: thin;
@@ -365,39 +396,41 @@
     /* Smaller laptops: a narrower menu leaves the chats enough room. */
     @media (max-width: 1279px) {
         .hero { grid-template-columns: 1fr 9.75rem 9.75rem 1fr; }
-        .center { padding-inline: 0.85rem; }
     }
 
     /* Tablets: the menu under the title, the chats side by side below it. */
     @media (max-width: 1023px) {
-        .hero { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto; align-content: start; padding-top: 2rem; }
-        .center { grid-column: 1 / -1; grid-row: 2; justify-self: center; width: min(25rem, calc(100% - 2rem)); }
-        .mc-side, .dc-side { grid-row: 3; align-self: start; width: min(100%, 32rem); margin-top: 1rem; }
+        .hero { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto auto auto; align-content: start; padding-top: 2rem; }
+        .menu { grid-column: 1 / -1; grid-row: 4; justify-self: center; width: min(25rem, calc(100% - 2rem)); }
+        .mc-side, .dc-side { grid-row: 5; align-self: start; width: min(100%, 32rem); }
         .mc-side { grid-column: 1; }
         .dc-side { grid-column: 2; }
     }
 
-    /* Phones: Minecraft on top, Discord below, the logo on the seam between them. */
+    /* Phones: Minecraft on top (logo, menu, chat), Discord below, the link on the seam between them. */
     @media (max-width: 860px) {
         .hero {
             grid-template-columns: 1fr;
-            grid-template-rows: auto auto auto auto auto;
-            row-gap: 0;
+            grid-template-rows: repeat(7, auto);
             min-height: 0;
             padding: 0 0 var(--hud-space);
         }
-        .hero :global(.mc-bg) { position: relative; inset: auto; grid-column: 1; grid-row: 1 / 4; mask: none; }
-        .dc-bg { position: relative; inset: auto; grid-column: 1; grid-row: 4 / -1; margin-bottom: calc(-1 * var(--hud-space)); }
+        .hero :global(.mc-bg) { position: relative; inset: auto; grid-column: 1; grid-row: 1 / 6; mask: none; }
+        .dc-bg { position: relative; inset: auto; grid-column: 1; grid-row: 6 / -1; margin-bottom: calc(-1 * var(--hud-space)); }
         .title { display: contents; }
         .title > * { grid-column: 1; }
-        .word.mc { grid-row: 1; justify-self: center; padding: 3.5rem 0 0; }
-        .splash { right: -0.5rem; bottom: -1.2rem; }
-        .center { grid-column: 1; grid-row: 2; width: min(24rem, calc(100% - 2rem)); margin-top: 2.25rem; }
-        .mc-side { grid-column: 1; grid-row: 3; justify-self: stretch; width: auto; margin: 1.75rem 0 0; padding: 0 1rem calc(var(--logo) / 2 + 1.5rem); }
+        .word.mc { grid-row: 1; justify-self: center; padding: 3.5rem 0 0; font-size: clamp(2.6rem, 13vw, 4rem); }
+        .splash.on-mc { display: block; right: -0.6rem; bottom: auto; top: 2.4rem; transform-origin: center; }
+        .splash.on-dc { display: none; }
+        .edition { grid-row: 2; font-size: 0.9rem; letter-spacing: 0.14em; }
+        .motd { grid-row: 3; font-size: 0.95rem; }
+        .menu { grid-column: 1; grid-row: 4; justify-self: center; width: min(24rem, calc(100% - 2rem)); margin-top: 1.75rem; }
+        .fine { display: block; }
+        .mc-side { grid-column: 1; grid-row: 5; justify-self: stretch; width: auto; margin: 2rem 0 0; padding: 0 1rem calc(var(--logo) / 2 + 1.5rem); }
         .mc-chat { max-height: 13rem; }
-        .link-logo { grid-row: 4; justify-self: center; align-self: start; margin-top: calc(var(--logo) / -2); z-index: 2; }
-        .word.dc { grid-row: 4; justify-self: center; padding: calc(var(--logo) / 2 + 0.75rem) 0 0; }
-        .dc-side { grid-column: 1; grid-row: 5; justify-self: stretch; width: auto; margin: 1.25rem 0 0; padding: 0 1rem 1rem; }
+        .link-logo { grid-row: 6; justify-self: center; align-self: start; margin-top: calc(var(--logo) / -2); z-index: 2; }
+        .word.dc { grid-row: 6; justify-self: center; padding: calc(var(--logo) / 2 + 0.75rem) 0 0; }
+        .dc-side { grid-column: 1; grid-row: 7; justify-self: stretch; width: auto; margin: 1.25rem 0 0; padding: 0 1rem 1rem; }
         .dc-list { height: 15rem; }
     }
 </style>

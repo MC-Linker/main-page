@@ -96,7 +96,7 @@
     .timer { position: relative; display: flex; justify-content: center; transform: rotate(1.5deg); }
     .sticker-badge {
         position: absolute; top: -1.1rem; right: 0.5rem; display: grid; place-items: center; width: 3.4rem; height: 3.4rem;
-        border: var(--sticker); border-radius: 50%; background: var(--color-gold); font-family: var(--font-pixel); font-weight: 700; font-size: 1.1rem;
+        border: var(--sticker); border-radius: 50%; background: var(--color-gold); font-family: var(--font-logo); font-size: 1.15rem; padding-top: 0.1em;
         transform: rotate(12deg); box-shadow: 3px 3px 0 var(--color-ink);
     }
     @media (max-width: 860px) {

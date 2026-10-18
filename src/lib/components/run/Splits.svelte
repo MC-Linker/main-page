@@ -52,7 +52,7 @@
         font-family: var(--font-pixel);
     }
     header { padding: 0.75rem 1rem 0.6rem; text-align: center; background: linear-gradient(#2a2c31, #17181b); border-bottom: 1px solid #333; }
-    .title { font-size: 1.05rem; }
+    .title { font-family: var(--font-mojang); font-size: 1rem; text-transform: uppercase; letter-spacing: 0.08em; }
     .cat { margin-top: 0.15rem; font-size: 0.85rem; color: #aab; }
     .cat span { margin-left: 0.6rem; color: #778; }
     ol { margin: 0; padding: 0.35rem 0; list-style: none; }

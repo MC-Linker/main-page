@@ -22,6 +22,8 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
+	<link rel="preload" href="/fonts/minecraft-seven.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+	<link rel="preload" href="/fonts/minecrafter.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
 	<title>MC Linker · Link Minecraft and Discord in under a minute</title>
 	<meta name="description" content={description} />
 	<meta name="keywords" content="Discord, Minecraft, Bot, Link, Chat bridge, Plugin, Mod" />

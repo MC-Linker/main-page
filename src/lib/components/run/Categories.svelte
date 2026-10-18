@@ -67,7 +67,8 @@
     }
     .card:hover { transform: rotate(0deg) translate(-2px, -2px); box-shadow: 7px 7px 0 var(--color-ink); }
     .top { display: flex; align-items: center; justify-content: space-between; }
-    .cat { font-family: var(--font-pixel); font-weight: 700; font-size: 1.6rem; }
+    /* Minecraft-style bold: the glyph again, one pixel to the right. */
+    .cat { font-family: var(--font-pixel); font-size: 1.6rem; letter-spacing: 0.0625em; text-shadow: 0.0625em 0 0 currentColor; }
     .icon { width: 2.2rem; }
     .title { font-weight: 800; font-size: 1.1rem; }
     .text { font-size: 0.95rem; line-height: 1.5; color: var(--color-ink-soft); }

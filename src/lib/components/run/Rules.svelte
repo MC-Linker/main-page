@@ -27,7 +27,7 @@
     h2 { margin: 0 0 2.5rem; text-align: center; font-size: clamp(2.2rem, 5vw, 3.6rem); font-weight: 900; letter-spacing: -0.03em; }
     ol { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); gap: 2rem 3rem; margin: 0; padding: 0; list-style: none; }
     li { display: flex; gap: 1rem; padding-top: 1rem; border-top: var(--sticker); }
-    .n { font-family: var(--font-pixel); font-weight: 700; font-size: 2rem; line-height: 1; color: var(--color-grass); }
+    .n { flex: none; min-width: 3.1rem; font-family: var(--font-logo); font-size: 2.2rem; line-height: 1; color: var(--color-grass); }
     h3 { margin: 0; font-size: 1.5rem; font-weight: 900; letter-spacing: -0.02em; }
     p { margin: 0.35rem 0 0; line-height: 1.55; color: var(--color-ink-soft); }
 </style>

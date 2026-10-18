@@ -138,7 +138,7 @@
     <div class="mc-side">
         <p class="hint mc-text">{#if keyboard.current}<kbd>T</kbd> to chat · {/if}try <code>/time set night</code></p>
         <div class="mc-chat" bind:this={mcEnd}>
-            <McChat bind:this={mcChat} lines={bridge.mc} max={10} onsubmit={fromMinecraft} label="Minecraft chat (demo)" placeholder={keyboard.current ? 'Press T to chat' : 'Tap to chat'} />
+            <McChat bind:this={mcChat} lines={bridge.mc} max={18} onsubmit={fromMinecraft} label="Minecraft chat (demo)" placeholder={keyboard.current ? 'Press T to chat' : 'Tap to chat'} />
         </div>
     </div>
 
@@ -154,7 +154,7 @@
                     </discord-messages>
                 </div>
                 {#snippet footer()}
-                    <DcComposer bind:this={composer} placeholder="Message #minecraft-chat" commands={demoCommands} onsubmit={fromDiscord} label="Discord message (demo)" />
+                    <DcComposer bind:this={composer} placeholder="Message #minecraft-chat" commands={demoCommands} onsubmit={fromDiscord} label="Discord message (demo)" hint="Try a slash command!" />
                     <div class="typing" aria-live="polite">
                         {#if bridge.typing}<span transition:fade={{ duration: 150 }}><i></i><i></i><i></i> <b>{bridge.typing}</b> is typing…</span>{/if}
                     </div>
@@ -172,15 +172,15 @@
 
 <style>
     .hero {
-        --logo: clamp(5rem, 7.5vw, 7.5rem);
-        --gutter: clamp(1rem, 2.5vw, 2.5rem);
+        --logo: clamp(5rem, 7.5vw, 9rem);
+        --gutter: clamp(1.25rem, 3.5vw, 4.5rem);
         position: relative;
         display: grid;
         /* Two equal middle columns put the seam (and the logo) at exactly 50%. */
-        grid-template-columns: 1fr minmax(9.5rem, 12.5rem) minmax(9.5rem, 12.5rem) 1fr;
+        grid-template-columns: 1fr minmax(9.5rem, 13.5rem) minmax(9.5rem, 13.5rem) 1fr;
         grid-template-rows: auto auto;
         align-content: center;
-        row-gap: clamp(1rem, 3vh, 2rem);
+        row-gap: clamp(1rem, 6vh, 4.5rem);
         min-height: max(100svh, 44rem);
         padding: 1.5rem 0 var(--hud-space);
         isolation: isolate;
@@ -220,10 +220,10 @@
         position: relative;
         justify-self: end;
         padding-right: 1.25rem;
-        font-size: clamp(2.3rem, 5.2vw, 4.9rem);
+        font-size: clamp(2.3rem, 5.2vw, 6rem);
         --mc-shadow: 0.07em;
     }
-    .word.dc { justify-self: start; padding-left: 1.25rem; font-family: var(--font-sans); font-size: clamp(2.5rem, 5.8vw, 5.4rem); font-weight: 800; letter-spacing: -0.03em; }
+    .word.dc { justify-self: start; padding-left: 1.25rem; font-family: var(--font-sans); font-size: clamp(2.5rem, 5.8vw, 6.6rem); font-weight: 800; letter-spacing: -0.03em; }
     .splash {
         position: absolute;
         right: 1.5rem;
@@ -276,6 +276,8 @@
     .motd span { display: block; margin-top: 0.3rem; color: #d0d0d0; font-size: 0.95rem; }
     .menu { display: flex; flex-direction: column; gap: 0.5rem; }
     .menu :global(.mc-btn) { width: 100%; padding: 0 0.75rem; }
+    .menu :global(.mc-btn.lg) { min-height: clamp(3rem, 5.6vh, 3.75rem); font-size: clamp(1.1rem, 1.1vw + 0.4rem, 1.35rem); }
+    .motd { font-size: clamp(1.05rem, 0.6vw + 0.6rem, 1.25rem); }
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
     .fine { margin: 0; font-size: 0.8rem; color: #e0e0e0; }
     .nowrap { white-space: nowrap; }
@@ -287,13 +289,13 @@
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
-        width: min(100%, 30rem);
+        width: min(100%, 36rem);
         min-width: 0;
     }
     .mc-side { grid-column: 1; justify-self: end; padding: 0 var(--gutter) 0 1rem; }
     .dc-side { grid-column: 4; justify-self: start; padding: 0 1rem 0 var(--gutter); position: relative; }
     /* New lines push older ones up; the oldest drop off the top. */
-    .mc-chat { display: flex; flex-direction: column; justify-content: flex-end; max-height: 18rem; overflow: hidden; }
+    .mc-chat { display: flex; flex-direction: column; justify-content: flex-end; max-height: clamp(14rem, calc(100svh - 33rem), 30rem); overflow: hidden; }
     .hint { margin: 0; font-size: 0.85rem; color: #e9ecef; }
     .mc-side .hint { color: #fff; }
     .hint kbd {
@@ -306,7 +308,7 @@
 
     .dc-end { position: relative; }
     .dc-list {
-        height: clamp(8.5rem, calc(100svh - 34rem), 12rem);
+        height: clamp(8.5rem, calc(100svh - 36rem), 24rem);
         overflow-y: auto;
         overscroll-behavior: contain;
         scrollbar-width: thin;

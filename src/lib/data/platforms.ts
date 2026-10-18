@@ -1,7 +1,8 @@
 import { links } from './links';
 import type { Brand } from './brands';
 
-export type Download = { name: string; href: string; brand?: Brand };
+/** `color` is the site's brand colour, used for its download button. */
+export type Download = { name: string; href: string; brand?: Brand; color: string; recommended?: boolean };
 
 export type Platform = {
     id: string;
@@ -13,10 +14,10 @@ export type Platform = {
     downloads: Download[];
 };
 
-const modrinth: Download = { name: 'Modrinth', href: links.plugin.modrinth, brand: 'modrinth' };
-const curseforge: Download = { name: 'CurseForge', href: links.plugin.curseforge, brand: 'curseforge' };
-const hangar: Download = { name: 'Hangar', href: links.plugin.hangar };
-const spigot: Download = { name: 'SpigotMC', href: links.plugin.spigot, brand: 'spigot' };
+const modrinth: Download = { name: 'Modrinth', href: links.plugin.modrinth, brand: 'modrinth', color: '#1bae5a', recommended: true };
+const curseforge: Download = { name: 'CurseForge', href: links.plugin.curseforge, brand: 'curseforge', color: '#e1592c' };
+const hangar: Download = { name: 'Hangar', href: links.plugin.hangar, color: '#2d6be0' };
+const spigot: Download = { name: 'SpigotMC', href: links.plugin.spigot, brand: 'spigot', color: '#d99a06' };
 
 export const platforms: Platform[] = [
     {

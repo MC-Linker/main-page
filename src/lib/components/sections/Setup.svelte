@@ -57,7 +57,7 @@
                     <p class="versions mc-text">Minecraft {current.versions}{#if current.alsoWorksOn}<br /><span class="also">Also works on {current.alsoWorksOn}</span>{/if}</p>
                     <div class="downloads">
                         {#each current.downloads as d (d.name)}
-                            <McButton href={d.href} external>
+                            <McButton href={d.href} external color={d.color} badge={d.recommended ? 'Recommended' : undefined}>
                                 {#if d.brand}<BrandIcon brand={d.brand} size="1.1em" />{/if}
                                 {d.name}
                             </McButton>
@@ -158,7 +158,7 @@
     .panel { margin-top: -2px; padding: 1rem; border: 2px solid #000; background: rgb(0 0 0 / 0.45); box-shadow: inset 0 0 0 2px rgb(255 255 255 / 0.08); }
     .versions { margin: 0 0 0.8rem !important; color: #fff !important; }
     .also { font-size: 0.85rem; color: #bbb; }
-    .downloads { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .downloads { display: flex; flex-wrap: wrap; gap: 0.75rem 0.5rem; padding-top: 0.5rem; }
     .step .more { margin: 0.9rem 0 0; font-size: 0.85rem; color: #adb5bd; }
     .more a { color: var(--color-grass-light); }
 

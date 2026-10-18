@@ -7,8 +7,12 @@
         onsubmit: (text: string) => void;
         input?: HTMLInputElement;
         label?: string;
+        /** A small bubble pointing at the "/" button, until a command is started. */
+        hint?: string;
     };
-    let { placeholder, commands = [], onsubmit, input = $bindable(), label = placeholder }: Props = $props();
+    let { placeholder, commands = [], onsubmit, input = $bindable(), label = placeholder, hint }: Props = $props();
+    let hinted = $state(false);
+    $effect(() => { if(value.startsWith('/')) hinted = true; });
 
     let value = $state('');
     let active = $state(0);
@@ -99,7 +103,10 @@
             onfocus={() => (focused = true)}
             onblur={() => (focused = false)}
         />
-        <span class="kbd" aria-hidden="true">/</span>
+        <button type="button" class="kbd" aria-label="Show commands" title="Commands" onmousedown={e => e.preventDefault()} onclick={() => start('/')}>/</button>
+        {#if hint && !hinted && !open}
+            <span class="hint-bubble" aria-hidden="true">{hint}</span>
+        {/if}
     </div>
 </div>
 
@@ -120,10 +127,25 @@
     }
     input::placeholder { color: #6d6f78; }
     .field:has(input:focus-visible) { outline: 2px solid var(--color-dc-blurple); outline-offset: 0; }
+    .field { position: relative; }
     .kbd {
-        display: grid; place-items: center; width: 1.25rem; height: 1.25rem; flex: none;
-        border: 1px solid #4e5058; border-radius: 4px; font-size: 0.75rem; color: var(--color-dc-muted);
+        display: grid; place-items: center; width: 1.75rem; height: 1.75rem; flex: none; padding: 0; cursor: pointer;
+        border: 1px solid #4e5058; border-radius: 6px; background: none; font: inherit; font-size: 0.85rem; font-weight: 700; color: var(--color-dc-muted);
     }
+    .kbd:hover, .kbd:focus-visible { color: #fff; border-color: var(--color-dc-blurple); background: rgb(88 101 242 / 0.25); }
+    /* Points down at the "/" button. */
+    .hint-bubble {
+        position: absolute; right: -0.25rem; bottom: calc(100% + 0.6rem); z-index: 4;
+        padding: 0.4rem 0.65rem; border-radius: 6px; white-space: nowrap; pointer-events: none;
+        background: var(--color-dc-blurple); color: #fff; font-size: 0.8rem; font-weight: 600;
+        box-shadow: 0 6px 16px rgb(0 0 0 / 0.4);
+        animation: hint-bob 1.4s ease-in-out infinite;
+    }
+    .hint-bubble::after {
+        content: ''; position: absolute; right: 0.95rem; top: 100%;
+        border: 6px solid transparent; border-top-color: var(--color-dc-blurple);
+    }
+    @keyframes hint-bob { 50% { transform: translateY(-4px); } }
     .suggest {
         position: absolute; left: 0; right: 0; bottom: calc(100% + 0.5rem); z-index: 5;
         margin: 0; padding: 0.5rem; list-style: none;

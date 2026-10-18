@@ -47,7 +47,7 @@
         <p class="get mc-text">Download for {current.name}</p>
         <div class="row downloads">
             {#each current.downloads as d (d.name)}
-                <McButton href={d.href} external>{#if d.brand}<BrandIcon brand={d.brand} size="1em" />{/if}{d.name}</McButton>
+                <McButton href={d.href} external color={d.color} badge={d.recommended ? 'Recommended' : undefined}>{#if d.brand}<BrandIcon brand={d.brand} size="1em" />{/if}{d.name}</McButton>
             {/each}
         </div>
         <div class="row">

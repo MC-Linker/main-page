@@ -23,9 +23,9 @@
         <div class="logo">
             <h1 id="title-heading" class="wordmark">
                 <img src="/logo.svg" alt="" width="96" height="96" />
-                <span class="mc-text">MC LINKER</span>
+                <span class="mc-logo">MC LINKER</span>
             </h1>
-            <p class="edition mc-text">Discord Edition</p>
+            <p class="edition mojang">Discord Edition</p>
             <p class="splash mc-text" aria-hidden="true">{splash}</p>
         </div>
 
@@ -66,15 +66,14 @@
     .wordmark { display: flex; align-items: center; justify-content: center; gap: 0.6rem; margin: 0; font-weight: 400; white-space: nowrap; }
     .wordmark img { width: clamp(3.5rem, 9vw, 5.5rem); height: auto; filter: drop-shadow(0 4px 0 rgb(0 0 0 / 0.4)); }
     .wordmark span {
-        font-size: clamp(2.4rem, 10vw, 5.75rem);
-        font-weight: 700;
+        font-size: clamp(2.6rem, 11vw, 6.25rem);
         line-height: 1;
         color: #e8e8e8;
         letter-spacing: 0.02em;
         /* Extruded stone letters, like the Minecraft logo. */
         text-shadow: 0 2px 0 #9a9a9a, 0 4px 0 #6f6f6f, 0 6px 0 #4a4a4a, 0 8px 0 #2b2b2b, 0 10px 14px rgb(0 0 0 / 0.6);
     }
-    .edition { margin: 0.6rem 0 0; font-size: clamp(0.9rem, 2.3vw, 1.2rem); color: #fff; letter-spacing: 0.35em; text-transform: uppercase; }
+    .edition { margin: 0.75rem 0 0; font-size: clamp(1rem, 2.6vw, 1.4rem); color: #fff; letter-spacing: 0.3em; text-shadow: 0.1em 0.1em 0 rgb(0 0 0 / 0.5); }
     .splash {
         position: absolute; right: -2.5rem; bottom: 0.6rem; margin: 0;
         color: var(--color-mc-yellow); font-size: clamp(0.85rem, 2.2vw, 1.15rem); white-space: nowrap;
@@ -101,7 +100,8 @@
     .corner.left { left: 0.75rem; }
     .corner.right { right: 0.75rem; }
     @media (max-width: 560px) {
-        .splash { right: -0.5rem; bottom: -1rem; }
-        .corner.right { display: none; }
+        .logo { padding-bottom: 1.6rem; }
+        .splash { right: -0.25rem; bottom: -0.2rem; }
+        .corner { display: none; }
     }
 </style>

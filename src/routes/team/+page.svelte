@@ -30,7 +30,7 @@
 {/snippet}
 
 <header class="head">
-    <h1 class="mc-text">The team</h1>
+    <h1 class="mc-logo">The team</h1>
     <p>A small crew who like Minecraft, Discord and building things that link the two.</p>
 </header>
 
@@ -45,19 +45,19 @@
 
 <style>
     .head { padding: 8rem 1rem 2.5rem; text-align: center; background: linear-gradient(90deg, #2d4a12 0 50%, #232a6b 50% 100%); }
-    h1 { margin: 0; font-size: clamp(2.4rem, 6vw, 3.75rem); font-weight: 700; color: #fff; }
+    h1 { margin: 0; font-size: clamp(2.4rem, 6vw, 3.75rem); color: #fff; }
     .head p { margin: 0.75rem auto 0; max-width: 32rem; color: #e9ecef; }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 1.25rem; max-width: 64rem; margin: 3rem auto 0; padding: 0 1rem; }
     .small-grid { max-width: 42rem; margin-bottom: 6rem; }
-    .thanks { margin: 4rem 0 0; text-align: center; font-size: 1.8rem; color: #fff; }
+    .thanks { margin: 4rem 0 0; text-align: center; font-size: 1.8rem; font-weight: 400; color: #fff; }
     .profile { position: relative; border-radius: 12px; overflow: hidden; background: #232428; box-shadow: 0 0 0 1px rgb(255 255 255 / 0.05), 0 16px 36px rgb(0 0 0 / 0.35); }
     .banner { height: 5.5rem; }
     .avatar { position: absolute; top: 2.25rem; left: 1rem; width: 5.5rem; height: 5.5rem; border-radius: 50%; border: 6px solid #232428; background: #232428; object-fit: cover; }
     .body { padding: 3.6rem 1.1rem 1.2rem; }
-    h2 { margin: 0; font-size: 1.3rem; color: #fff; }
+    h2 { margin: 0; font-size: 1.3rem; font-weight: 700; color: #fff; }
     .gh { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.875rem; color: var(--color-dc-muted); text-decoration: none; }
     .gh:hover { color: #fff; }
-    h3 { margin: 1rem 0 0.35rem; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-dc-header); }
+    h3 { margin: 1rem 0 0.35rem; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-dc-header); }
     p { margin: 0; font-size: 0.9rem; line-height: 1.5; color: var(--color-dc-text); }
     .roles { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0; padding: 0; list-style: none; }
     .roles li { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.2rem 0.5rem; border-radius: 4px; background: #2e3035; font-size: 0.8rem; }

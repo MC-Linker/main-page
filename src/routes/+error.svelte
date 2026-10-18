@@ -32,7 +32,7 @@
         min-height: 100svh; padding: 6rem 1rem 4rem; text-align: center;
         background: radial-gradient(circle, rgb(120 0 0 / 0.55), rgb(60 0 0 / 0.85)), #1a0505;
     }
-    h1 { margin: 0; font-size: clamp(3rem, 9vw, 5.5rem); color: #fff; font-weight: 700; --mc-shadow: 0.08em; }
+    h1 { margin: 0; font-size: clamp(3rem, 9vw, 5.5rem); color: #fff; --mc-shadow: 0.08em; }
     .cause { margin: 0; color: #fff; font-size: 1.15rem; }
     .cause code { font-family: inherit; color: var(--color-mc-yellow); }
     .score { margin: 0; color: #fff; }

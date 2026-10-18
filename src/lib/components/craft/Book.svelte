@@ -32,7 +32,7 @@
 
 <style>
     .faq { padding: clamp(4rem, 9vw, 7rem) 1rem; }
-    h2 { margin: 0 0 2rem; text-align: center; font-size: clamp(2rem, 5vw, 3.25rem); font-weight: 700; color: #fff; }
+    h2 { margin: 0 0 2rem; text-align: center; font-size: clamp(2rem, 5vw, 3.25rem); color: #fff; }
     .book {
         position: relative; width: min(26rem, 100%); min-height: 24rem; margin: 0 auto; padding: 2.5rem 2rem 4rem;
         background: #f3e7c9;
@@ -46,7 +46,7 @@
     p { margin: 0; font-family: var(--font-sans); font-size: 1rem; line-height: 1.6; }
     p :global(a) { color: #2a4fb8; }
     p :global(code) { font-family: var(--font-pixel); background: rgb(0 0 0 / 0.08); padding: 0 0.2em; }
-    p :global(em) { font-style: normal; font-weight: 700; }
+    p :global(em) { font-style: normal; letter-spacing: 0.0625em; text-shadow: 0.0625em 0 0 currentColor; }
     .toc { margin: 0; padding-left: 1.3rem; display: flex; flex-direction: column; gap: 0.5rem; }
     .toc button { border: 0; padding: 0; background: none; color: #2a4fb8; text-align: left; cursor: pointer; font: inherit; font-size: 0.98rem; text-decoration: underline; text-underline-offset: 3px; }
     .turn { position: absolute; left: 1.5rem; right: 1.5rem; bottom: 1rem; display: flex; justify-content: space-between; }

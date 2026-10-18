@@ -54,7 +54,7 @@
 
 <style>
     .servers { padding: clamp(4rem, 9vw, 7rem) 1rem; background: rgb(0 0 0 / 0.35); }
-    h2 { margin: 0; text-align: center; font-size: clamp(2rem, 5vw, 3.25rem); font-weight: 700; color: #fff; }
+    h2 { margin: 0; text-align: center; font-size: clamp(2rem, 5vw, 3.25rem); color: #fff; }
     .sub { margin: 0.75rem auto 2rem; text-align: center; color: #ccc; }
     .list { max-width: 40rem; margin: 0 auto; padding: 0.4rem; list-style: none; background: rgb(0 0 0 / 0.45); border-top: 2px solid #000; border-bottom: 2px solid #000; }
     .list:focus-visible { outline: 2px solid var(--color-mc-yellow); }

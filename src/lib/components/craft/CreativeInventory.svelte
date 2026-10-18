@@ -78,7 +78,7 @@
                     </div>
                     {#if selected.preview.mc}
                         <div class="mc">
-                            <span class="label mc-text">In Minecraft</span>
+                            <span class="label mojang">In Minecraft</span>
                             <div class="mc-box"><McChat lines={selected.preview.mc.map((text, id) => ({ id, text: text.replace(/^> /, '&f') }))} /></div>
                         </div>
                     {/if}
@@ -92,7 +92,7 @@
 <style>
     .features { padding: clamp(4rem, 9vw, 7rem) 1rem; }
     .head { text-align: center; margin-bottom: 2.5rem; }
-    h2 { margin: 0; font-size: clamp(2rem, 5vw, 3.25rem); font-weight: 700; color: #fff; }
+    h2 { margin: 0; font-size: clamp(2rem, 5vw, 3.25rem); color: #fff; }
     .head p { margin: 0.75rem auto 0; max-width: 34rem; color: #ccc; }
 
     .layout { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 2rem; max-width: 70rem; margin: 0 auto; }
@@ -113,7 +113,7 @@
 
     .preview { width: min(30rem, 100%); padding: 1.25rem; background: rgb(0 0 0 / 0.45); border: 2px solid rgb(255 255 255 / 0.1); }
     .p-head { display: flex; align-items: center; gap: 0.9rem; }
-    h3 { margin: 0; font-size: 1.5rem; font-weight: 700; }
+    h3 { margin: 0; font-size: 1.5rem; }
     .lore { margin: 0.15rem 0 0; color: #d58ae0; font-style: italic; }
     .cmds { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.9rem 0 0; padding: 0; list-style: none; }
     .cmds code { padding: 0.15rem 0.45rem; background: rgb(255 255 85 / 0.12); color: var(--color-mc-yellow); font-size: 0.85rem; }

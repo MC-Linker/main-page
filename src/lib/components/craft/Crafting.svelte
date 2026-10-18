@@ -158,7 +158,7 @@
 <style>
     .craft { padding: clamp(4rem, 9vw, 7rem) 1rem; }
     .head { text-align: center; margin-bottom: 2.5rem; }
-    h2 { margin: 0; font-size: clamp(2rem, 5vw, 3.25rem); font-weight: 700; color: #fff; }
+    h2 { margin: 0; font-size: clamp(2rem, 5vw, 3.25rem); color: #fff; }
     .head p { margin: 0.75rem auto 0; max-width: 32rem; color: #ccc; }
 
     .layout { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 2.5rem; max-width: 64rem; margin: 0 auto; }

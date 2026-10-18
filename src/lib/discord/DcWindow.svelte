@@ -36,6 +36,7 @@
         box-shadow: 0 0 0 1px rgb(255 255 255 / 0.04), 0 18px 40px rgb(0 0 0 / 0.35);
         overflow: hidden;
         color: var(--color-dc-text);
+        font-family: var(--font-discord);
         text-align: left;
     }
     .sidebar { flex: none; width: 13rem; background: var(--color-dc-2); padding: 0.75rem 0.5rem; }

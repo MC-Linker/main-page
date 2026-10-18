@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.css';
+	import '@skyra/discord-components-core';
 	import '@fontsource-variable/pixelify-sans';
 	import '@fontsource-variable/dm-sans';
 	import 'nprogress/nprogress.css';

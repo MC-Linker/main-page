@@ -35,8 +35,8 @@ export type DcMsg = {
     embeds?: Embed[];
     interaction?: Interaction;
     buttons?: DcButtonData[];
-    /** Shown instead of a timestamp. */
-    time?: string;
+    /** "Only you can see this" messages. */
+    ephemeral?: boolean;
 };
 
 export type SlashCommand = {

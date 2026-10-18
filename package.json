@@ -27,6 +27,7 @@
 		"vite-plugin-devtools-json": "^1.0.0"
 	},
 	"dependencies": {
+		"@skyra/discord-components-core": "^4.0.2",
 		"@types/nprogress": "^0.2.3",
 		"mdsvex": "^0.12.6",
 		"nprogress": "^0.2.0"

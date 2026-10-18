@@ -1,7 +1,7 @@
 import type { Sprite } from './sprites';
 
-/** Turns a sprite into an SVG data URI for use as a CSS background tile. */
-export function spriteUri(sprite: Sprite): string {
+/** Turns a sprite into an SVG data URI (for <img> sources and avatars). */
+export function spriteDataUri(sprite: Sprite): string {
     const h = sprite.rows.length;
     const w = Math.max(...sprite.rows.map(r => r.length));
     let rects = '';
@@ -17,5 +17,8 @@ export function spriteUri(sprite: Sprite): string {
         }
     });
     const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${w} ${h}' width='${w}' height='${h}' shape-rendering='crispEdges'>${rects}</svg>`;
-    return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+    return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
+
+/** The sprite as a CSS `url(...)` value, for background tiles. */
+export const spriteUri = (sprite: Sprite) => `url("${spriteDataUri(sprite)}")`;

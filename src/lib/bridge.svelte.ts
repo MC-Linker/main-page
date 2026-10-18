@@ -143,7 +143,7 @@ export class Bridge {
                     author: bot,
                     interaction: { ...you, command: `/${name}` },
                     content: 'In this demo you can try `/command`, `/serverinfo`, `/inventory`, `/message`, `/ban` and `/help`. The real bot has a lot more.',
-                    time: 'Only you can see this',
+                    ephemeral: true,
                 });
         }
     }

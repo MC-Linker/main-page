@@ -95,13 +95,15 @@
         </div>
         <div class="side dc">
             <DcWindow channel="general">
+                <discord-messages no-background>
                 {#key connected}
                     <div in:fly={{ y: 8, duration: 200 }}>
-                        <DcMessage compact msg={connected
+                        <DcMessage msg={connected
                             ? { id: 2, author: bot, interaction: { user: 'you', avatar: { letter: 'Y', color: '#5865f2' }, command: '/connect' }, embeds: [{ ...embedStyle.success, title: 'Connected to Server', description: 'Successfully connected to the plugin.' }] }
                             : { id: 1, author: bot, interaction: { user: 'you', avatar: { letter: 'Y', color: '#5865f2' }, command: '/connect' }, embeds: [{ ...embedStyle.step, title: 'Server Verification', description: ':step: Install the Discord-Linker plugin on your Minecraft server.\nThen join your server as an operator and execute the following command: ```' + code + '```\n**You have 3 minutes to run the command.**' }] }} />
                     </div>
                 {/key}
+                </discord-messages>
             </DcWindow>
         </div>
     </div>

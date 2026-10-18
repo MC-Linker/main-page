@@ -18,6 +18,12 @@
 	font-display: swap;
 }
 
+/* Discord's font, as in the guide (served by the discord-components project). */
+@font-face { font-family: "Whitney"; src: url("https://cdn.skyra.pw/whitney-font/v2/Book.woff") format("woff"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Whitney"; src: url("https://cdn.skyra.pw/whitney-font/v2/Medium.woff") format("woff"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "Whitney"; src: url("https://cdn.skyra.pw/whitney-font/v2/Semibold.woff") format("woff"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "Whitney"; src: url("https://cdn.skyra.pw/whitney-font/v2/Bold.woff") format("woff"); font-weight: 700; font-display: swap; }
+
 @theme {
 	/* In-game text. Pixelify only fills in glyphs Minecraft Seven doesn't have (like arrows). */
 	--font-pixel: "Minecraft Seven", "Pixelify Sans Variable", ui-monospace, monospace;
@@ -26,6 +32,8 @@
 	/* The Mojang Studios logo font, for small uppercase labels. */
 	--font-mojang: "Mojang Studios", "Minecraft Seven", ui-monospace, monospace;
 	--font-sans: "DM Sans Variable", "DM Sans", ui-sans-serif, system-ui, sans-serif;
+	/* The same stack discord-components uses for messages. */
+	--font-discord: "gg sans", "Noto Sans", Whitney, "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
 
 	/* Minecraft side */
 	--color-grass: #6f9e2d;
@@ -132,6 +140,11 @@ body {
 	text-transform: uppercase;
 	letter-spacing: 0.06em;
 }
+
+/* Discord messages come from @skyra/discord-components-core. Hide them until the
+   components have loaded, so they never flash unstyled. */
+discord-messages:not(:defined) { visibility: hidden; }
+discord-messages { display: block; }
 
 /* Jumping to a section (hotbar, #links) skips some of its top padding. */
 main > section[id]:not(#top) { scroll-margin-top: -2rem; }

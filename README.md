@@ -25,7 +25,9 @@ src/
       sections/    The home page, top to bottom: Hero, Setup, Features, Download, Faq, FinalCta
       hud/         The hotbar navigation, item tooltip and advancement toasts
       inventory/   Inventory slot and item icon
-    discord/       Discord look-alike UI (messages, embeds, composer)
+    discord/       Discord UI. Messages and embeds come from @skyra/discord-components-core (also used by the guide);
+                   DcMessage maps our message data onto it. DcWindow (channel frame) and DcComposer (input with
+                   slash-command suggestions) fill in what the library does not have.
     mc/            Minecraft look-alike UI (world, chat, buttons)
     pixel/         Original pixel art drawn in code (heads, blocks, items)
   routes/

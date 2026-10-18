@@ -83,7 +83,7 @@
                     {/if}
                     <div class="world">
                         <span class="label dc-label">In Discord</span>
-                        <div class="dc-box"><DcMessage compact msg={{ ...selected.preview.dc, id: 1 }} /></div>
+                        <discord-messages no-background class="dc-box"><DcMessage msg={{ ...selected.preview.dc, id: 1 }} /></discord-messages>
                     </div>
                 </div>
                 <McButton href={selected.guide}>Read the guide</McButton>
@@ -128,6 +128,5 @@
     .label { display: block; margin-bottom: 0.35rem; font-size: 0.8rem; color: #bbb; }
     .dc-label { font-family: var(--font-sans); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; }
     .mc-box { padding: 0.75rem; background: linear-gradient(#78a6f7, #b4d3ff); border: 3px solid #000; font-size: 0.9rem; text-shadow: initial; }
-    .dc-box { padding: 0.5rem 0.9rem; border-radius: 8px; background: var(--color-dc); color: var(--color-dc-text); font-family: var(--font-sans); line-height: 1.375; }
-    .dc-box :global(.embed) { max-width: 100%; }
+    .dc-box { display: block; padding: 0.5rem 1rem; background: var(--color-dc); border-radius: 8px; line-height: 1.375; text-shadow: none; }
 </style>

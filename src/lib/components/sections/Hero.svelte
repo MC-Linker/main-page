@@ -147,9 +147,11 @@
         <div class="dc-end" bind:this={dcEnd}>
             <DcWindow channel="minecraft-chat" topic="Linked with play.example.net · {bridge.online.length} online" class="dc-window">
                 <div class="dc-list" bind:this={dcList} aria-live="polite" aria-label="Discord channel (demo)">
-                    {#each bridge.dc as msg (msg.id)}
-                        <div in:fly={{ y: 10, duration: 220 }}><DcMessage {msg} compact /></div>
-                    {/each}
+                    <discord-messages no-background>
+                        {#each bridge.dc as msg (msg.id)}
+                            <div in:fly={{ y: 10, duration: 220 }}><DcMessage {msg} /></div>
+                        {/each}
+                    </discord-messages>
                 </div>
                 {#snippet footer()}
                     <DcComposer bind:this={composer} placeholder="Message #minecraft-chat" commands={demoCommands} onsubmit={fromDiscord} label="Discord message (demo)" />

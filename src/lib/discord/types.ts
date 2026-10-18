@@ -1,0 +1,80 @@
+import type { Look, LookName } from '$lib/pixel/sprites';
+
+export type Avatar = { image: string } | { head: LookName | Look } | { letter: string; color: string };
+
+export type Author = {
+    name: string;
+    avatar: Avatar;
+    /** Role colour for the name. */
+    color?: string;
+    tag?: 'APP';
+    verified?: boolean;
+};
+
+export type EmbedField = { name: string; value: string; inline?: boolean };
+
+export type Embed = {
+    color: string;
+    author?: { name: string; icon?: string; avatar?: Avatar };
+    title?: string;
+    description?: string;
+    fields?: EmbedField[];
+    image?: string;
+    imageAlt?: string;
+    footer?: string;
+};
+
+export type Interaction = { user: string; avatar: Avatar; command: string };
+
+export type DcButtonData = { label: string; style?: 'primary' | 'secondary' | 'danger' | 'success' | 'link' };
+
+export type DcMsg = {
+    id: number;
+    author: Author;
+    content?: string;
+    embeds?: Embed[];
+    interaction?: Interaction;
+    buttons?: DcButtonData[];
+    /** Shown instead of a timestamp. */
+    time?: string;
+};
+
+export type SlashCommand = {
+    name: string;
+    description: string;
+    /** Values offered after the command name, like the bot's tab-completion. */
+    suggestions?: string[];
+};
+
+/** discord.js colour names used by the bot. */
+export const colors = {
+    blue: '#3498db',
+    orange: '#e67e22',
+    yellow: '#fee75c',
+    pink: '#e91e63',
+    darkPurple: '#71368a',
+    darkGold: '#c27c0e',
+    green: '#57f287',
+    red: '#ed4245',
+    blurple: '#5865f2',
+    brand: '#729e34',
+} as const;
+
+export const bot: Author = { name: 'MC Linker', avatar: { image: '/logo.png' }, tag: 'APP', verified: true };
+
+/** Embed colours and authors used by the bot (see the bot's language file). */
+export const embedStyle = {
+    success: { color: '#43611a', author: { name: 'Success', icon: '/emoji/success.png' } },
+    warning: { color: '#f1c40f', author: { name: 'Warning', icon: '/emoji/warning.png' } },
+    error: { color: '#9e3436', author: { name: 'Error', icon: '/emoji/error.png' } },
+    step: { color: '#f88239' },
+} as const;
+
+export const success = (title: string, description?: string, extra: Partial<Embed> = {}): Embed =>
+    ({ ...embedStyle.success, title, description, ...extra });
+
+/** The webhook identity the bot uses for system messages in chat channels. */
+export const chatWebhook: Author = { name: 'MC Linker Chat', avatar: { image: '/logo.png' }, tag: 'APP' };
+
+let nextId = 1;
+export const msgId = () => nextId++;

@@ -1,6 +1,7 @@
 <script lang="ts">
     import { fade } from 'svelte/transition';
     import { featureItems, rarityColor, tabs, type FeatureItem } from '$lib/data/items';
+    import { tooltip } from '$lib/ui.svelte';
     import McButton from '$lib/mc/McButton.svelte';
     import McChat from '$lib/mc/McChat.svelte';
     import DcMessage from '$lib/discord/DcMessage.svelte';
@@ -34,7 +35,13 @@
         <div class="inv">
             <div class="tabs" role="tablist" aria-label="Feature categories">
                 {#each tabs as t (t.id)}
-                    <button role="tab" type="button" class="tab" aria-selected={tab === t.id} aria-label={t.name} title={t.name} onclick={() => (tab = t.id)}>
+                    <!-- Like the game's creative tabs: the name shows in a tooltip above the tab. -->
+                    <button role="tab" type="button" class="tab" aria-selected={tab === t.id} aria-label={t.name}
+                        onclick={() => (tab = t.id)}
+                        onpointerenter={e => tooltip.showAbove({ id: t.id, name: t.name, lore: [], icon: t.icon }, e.currentTarget)}
+                        onpointerleave={() => tooltip.hide()}
+                        onfocus={e => tooltip.showAbove({ id: t.id, name: t.name, lore: [], icon: t.icon }, e.currentTarget)}
+                        onblur={() => tooltip.hide()}>
                         <ItemIcon icon={t.icon} size="1.5rem" />
                     </button>
                 {/each}

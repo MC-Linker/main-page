@@ -123,3 +123,23 @@ export const commandBlock: Sprite = {
     rows: ['oooooooo', 'obbbbbbo', 'obkkkkbo', 'obkgkkbo', 'obkkgkbo', 'obkgkkbo', 'obbbbbbo', 'oooooooo'],
     palette: { o: '#7a4a2a', b: '#c98b5b', k: '#1d1d1d', g: '#e8e8e8' },
 };
+
+export const stone: Sprite = {
+    rows: ['ssSsslss', 'sSssssSs', 'sslssSss', 'Ssssssls', 'ssSlssss', 'lsssSsss', 'ssssslSs', 'sSlsssss'],
+    palette: { s: '#7d7d7d', S: '#686868', l: '#929292' },
+};
+
+export const deepslate: Sprite = {
+    rows: ['dddDdddd', 'DDdddlld', 'ddddDddd', 'ldddddDD', 'dDDddddd', 'ddddlldd', 'DdddddDd', 'ddlDdddd'],
+    palette: { d: '#4d4d55', D: '#3c3c43', l: '#5f5f69' },
+};
+
+export const bedrock: Sprite = {
+    rows: ['bBbkbBbb', 'kbbBkbbB', 'bBkbbbkb', 'bbbBbkbb', 'Bkbbbbbk', 'bbkBbBbb', 'kbbbkbbB', 'bBbbbkbb'],
+    palette: { b: '#575757', B: '#7a7a7a', k: '#2b2b2b' },
+};
+
+export const diamondOre: Sprite = {
+    rows: ['ssSsslss', 'sSmmssSs', 'smlmsSss', 'Ssmmssls', 'ssSlssss', 'lssmmSss', 'sssmlmSs', 'sSlsmmss'],
+    palette: { s: '#7d7d7d', S: '#686868', l: '#d5fff6', m: '#4aedd9' },
+};

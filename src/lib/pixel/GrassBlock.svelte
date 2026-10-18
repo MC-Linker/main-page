@@ -3,10 +3,11 @@
     import { grassSide, grassTop } from './sprites';
 
     /** Isometric grass block built from three pixel faces. */
-    let { size = 64, class: className = '' }: { size?: number; class?: string } = $props();
+    let { size = 64, class: className = '' }: { size?: number | string; class?: string } = $props();
+    const s = $derived(typeof size === 'number' ? `${size}px` : size);
 </script>
 
-<div class="block-wrap {className}" style:--s="{size}px" aria-hidden="true">
+<div class="block-wrap {className}" style:--s={s} aria-hidden="true">
     <div class="cube">
         <div class="face top"><PixelArt sprite={grassTop} width="100%" /></div>
         <div class="face left"><PixelArt sprite={grassSide} width="100%" /></div>

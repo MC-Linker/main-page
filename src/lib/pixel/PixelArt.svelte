@@ -35,7 +35,7 @@
 
 <svg
     viewBox="0 0 {w} {h}"
-    width={width ?? `${w * scale}px`}
+    style:width={width ?? `${w * scale}px`}
     style:aspect-ratio="{w} / {h}"
     shape-rendering="crispEdges"
     class="pixel-art {className}"

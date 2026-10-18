@@ -1,41 +1,42 @@
 <script lang="ts">
-	import "../app.css";
-	import "nprogress/nprogress.css";
-
-	import { ModeWatcher, setMode } from "mode-watcher";
+	import '../app.css';
+	import '@fontsource-variable/pixelify-sans';
+	import '@fontsource-variable/dm-sans';
+	import 'nprogress/nprogress.css';
+	import nProgress from 'nprogress';
 	import { navigating } from '$app/state';
-
-	import nProgress from "nprogress";
 	import favicon from '$lib/assets/favicon.ico';
+	import Nav from '$lib/components/Nav.svelte';
+	import Footer from '$lib/components/Footer.svelte';
 
-    import Navbar from "$lib/components/navbar.svelte";
-    import Footer from "$lib/components/footer.svelte";
+	let { children } = $props();
 
-	nProgress.configure({ parent: "body", minimum: 0.4, trickleSpeed: 200, showSpinner: false, easing: "ease-out", speed: 300 });
+	nProgress.configure({ minimum: 0.4, trickleSpeed: 200, showSpinner: false });
 	$effect(() => {
-		if(navigating.to) nProgress.start()
+		if(navigating.to) nProgress.start();
 		else nProgress.done();
 	});
 
-	let { children } = $props();
-	setMode("dark");
+	const description = 'MC Linker links your Minecraft server with Discord in under a minute. Two-way chat, inventories, stats, moderation, role sync and more. No bot to host, no config files.';
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
-	<title>MC Linker</title>
-
-	<meta content="MC Linker" property="og:title" />
-	<meta content="Moderate and connect your Minecraft server with Discord! This bot allows you to view Minecraft statistics, advancements, and even inventories of members in Discord. Also supports a powerful two-way chat with Minecraft, command execution and many other helpful features." property="og:description" />
-	<meta content="https://mclinker.com/logo.png" property="og:image" />
-	<meta content="#729e34" data-react-helmet="true" name="theme-color" />
-
-	<meta name="description" content="Link your Minecraft server with Discord">
-	<meta name="keywords" content="Discord, Minecraft, Bot, Link">
-	<meta name="author" content="TheAnnoying, Lianecx">
+	<title>MC Linker · Link Minecraft and Discord in under a minute</title>
+	<meta name="description" content={description} />
+	<meta name="keywords" content="Discord, Minecraft, Bot, Link, Chat bridge, Plugin, Mod" />
+	<meta name="author" content="Lianecx, TheAnnoying" />
+	<meta name="theme-color" content="#8cbf3f" />
+	<meta property="og:title" content="MC Linker" />
+	<meta property="og:description" content={description} />
+	<meta property="og:image" content="https://mclinker.com/logo.png" />
+	<meta property="og:url" content="https://mclinker.com" />
+	<meta name="twitter:card" content="summary" />
 </svelte:head>
 
-<ModeWatcher />
-<Navbar />
-{@render children?.()}
+<a class="skip-link" href="#main">Skip to content</a>
+<Nav />
+<main id="main">
+	{@render children?.()}
+</main>
 <Footer />

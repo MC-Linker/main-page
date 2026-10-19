@@ -136,7 +136,7 @@ body {
 	text-shadow: var(--mc-shadow) var(--mc-shadow) 0 rgb(0 0 0 / 0.55);
 }
 
-/* Small labels in the Mojang Studios font. It reads best in capitals. */
+/* Small labels in the Mojang Studios font. It only has capitals (see scripts/mojang-capitals.py). */
 .mojang {
 	font-family: var(--font-mojang);
 	font-weight: 400;

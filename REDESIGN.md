@@ -30,7 +30,7 @@ This file explains the redesign: what we learned about the project, the decision
 - **Content from one place:** `src/lib/data/*` holds links, features, platforms, FAQ and guide URLs, all checked against the bot and plugin source.
 - **Short links:** `/invite`, `/discord`, `/guide`, `/plugin`, `/privacy`, `/terms`, `/tos` redirect to the right place.
 - **Original pixel art:** player heads, items and blocks are drawn in code (`PixelArt`), not copied from Minecraft textures. Real bot output screenshots are only used where they show actual bot output.
-- **Fonts:** the Minecraft fonts from the bot repo (`resources/fonts`): Minecraft Seven for in-game text, Minecrafter for logo words and the Mojang Studios font for small labels, self-hosted as subset woff2 files. DM Sans (OFL) for body text. Pixelify Sans only fills in symbols the Minecraft font lacks.
+- **Fonts:** the Minecraft fonts from the bot repo (`resources/fonts`): Minecraft Seven for in-game text, Minecrafter for logo words and the Mojang Studios font for small labels, self-hosted as subset woff2 files. The Mojang font draws B, D, M, N, Q, T and Y as lowercase letters, so those seven are redrawn as capitals in the same style (`scripts/mojang-capitals.py`). DM Sans (OFL) for body text. Pixelify Sans only fills in symbols the Minecraft font lacks.
 - **Accessible and fast:** semantic HTML, keyboard support, `prefers-reduced-motion` turns off auto-play, works at phone width with no horizontal scroll.
 - **Pages kept:** Team, Terms, Privacy (restyled). The 404 page gets a playful "You died!" treatment.
 

@@ -36,7 +36,9 @@ src/
     md/            Terms and privacy (copied from the bot repo's TERMS.md / PRIVACY.md)
     invite/ discord/ support/ guide/ plugin/ privacy/ terms/ tos/   Short-link redirects
 static/
-  fonts/           Minecraft Seven, Minecrafter and the Mojang Studios font (from the bot repo, subset to woff2)
+  fonts/           Minecraft Seven, Minecrafter and the Mojang Studios font (from the bot repo, subset to woff2).
+                   The Mojang font gets real capitals for B, D, M, N, Q, T and Y from scripts/mojang-capitals.py
+                   (the original draws them as lowercase letters)
   logo.png         Also used by the bot as the chat webhook avatar, keep the path
   emoji/           The bot's custom emoji, used in the simulated embeds
 ```

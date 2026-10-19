@@ -11,7 +11,6 @@
 	import { dirt, stone } from '$lib/pixel/sprites';
 	import Hotbar from '$lib/components/hud/Hotbar.svelte';
 	import Tooltip from '$lib/components/hud/Tooltip.svelte';
-	import Toasts from '$lib/components/hud/Toasts.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 
 	let { children } = $props();
@@ -51,4 +50,3 @@
 <Footer />
 <Hotbar />
 <Tooltip />
-<Toasts />

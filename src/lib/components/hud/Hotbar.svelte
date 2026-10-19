@@ -3,7 +3,7 @@
     import { goto } from '$app/navigation';
     import { page } from '$app/state';
     import { links } from '$lib/data/links';
-    import { toasts, tooltip } from '$lib/ui.svelte';
+    import { tooltip } from '$lib/ui.svelte';
     import type { Item, ItemIcon as Icon } from '$lib/data/items';
     import type { Sprite } from '$lib/pixel/sprites';
     import { book, chest, craftingTable, discordBlock, letter, map } from '$lib/pixel/items';
@@ -15,12 +15,12 @@
      * "This page" jumps to sections of the home page (keys 1 to 4) and follows
      * your scroll position; "Links" leaves the page.
      */
-    type Section = { id: string; name: string; title: string; icon: Icon; advancement?: string };
+    type Section = { id: string; name: string; title: string; icon: Icon };
     const sections: Section[] = [
         { id: 'top', name: 'Home', title: 'Minecraft, linked with Discord', icon: { block: 'grass' } },
-        { id: 'setup', name: 'Setup', title: 'Linked in three steps', icon: { sprite: craftingTable }, advancement: 'Getting an Upgrade' },
-        { id: 'features', name: 'Features', title: 'Everything in the inventory', icon: { sprite: chest }, advancement: 'Window Shopping' },
-        { id: 'faq', name: 'FAQ', title: 'Questions? Read the book.', icon: { sprite: book }, advancement: 'Bookworm' },
+        { id: 'setup', name: 'Setup', title: 'Linked in three steps', icon: { sprite: craftingTable } },
+        { id: 'features', name: 'Features', title: 'Everything in the inventory', icon: { sprite: chest } },
+        { id: 'faq', name: 'FAQ', title: 'Questions? Read the book.', icon: { sprite: book } },
     ];
 
     type Link = { name: string; title: string; hint: string; href: string; icon: Icon; newTab?: boolean; cta?: boolean };
@@ -56,11 +56,7 @@
             const el = document.getElementById(s.id);
             if(el && el.getBoundingClientRect().top <= line) i = n;
         });
-        if(i !== current) {
-            current = i;
-            const s = sections[i];
-            if(s.advancement) toasts.advancement(s.advancement, s.icon);
-        }
+        current = i;
         const max = document.documentElement.scrollHeight - window.innerHeight;
         progress = max > 0 ? Math.min(1, window.scrollY / max) : 0;
     }

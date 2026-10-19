@@ -5,8 +5,6 @@
     import { Bridge, demoCommands } from '$lib/bridge.svelte';
     import { links } from '$lib/data/links';
     import { reducedMotion } from '$lib/motion';
-    import { toasts } from '$lib/ui.svelte';
-    import { discordBlock } from '$lib/pixel/items';
     import McWorld from '$lib/mc/McWorld.svelte';
     import McChat from '$lib/mc/McChat.svelte';
     import McButton from '$lib/mc/McButton.svelte';
@@ -90,14 +88,12 @@
     }
 
     function fromMinecraft(text: string) {
-        toasts.advancement('Hello, Discord!', { sprite: discordBlock });
         // Chat and /dm show up in Discord; other commands change the world right here.
         reveal(!text.startsWith('/') || /^\/dm\b/i.test(text) ? dcEnd : undefined);
         void bridge.runMinecraft(text);
     }
 
     function fromDiscord(text: string) {
-        toasts.advancement('Hello, Minecraft!', { block: 'grass' });
         // Chat and these commands act in Minecraft; the rest only answer in Discord.
         reveal(!text.startsWith('/') || /^\/(command|message|ban)\b/i.test(text) ? mcEnd : undefined);
         void bridge.runDiscord(text);

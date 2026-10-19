@@ -20,10 +20,10 @@ src/
   lib/
     data/          Links, features, inventory items, platforms, FAQ and team. Edit content here.
     bridge.svelte.ts  The hero's pretend server: chat bridge, slash commands, demo script
-    ui.svelte.ts   Shared UI state: the item tooltip and the advancement toasts
+    ui.svelte.ts   Shared UI state: the item tooltip
     components/
       sections/    The home page, top to bottom: Hero, Setup, Features, Faq, FinalCta
-      hud/         The hotbar navigation, item tooltip and advancement toasts
+      hud/         The hotbar navigation and item tooltip
       inventory/   Inventory slot and item icon
     discord/       Discord UI. Messages and embeds come from @skyra/discord-components-core (also used by the guide);
                    DcMessage maps our message data onto it. DcWindow (channel frame) and DcComposer (input with

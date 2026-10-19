@@ -41,23 +41,3 @@ class TooltipState {
 }
 
 export const tooltip = new TooltipState();
-
-export type Toast = { id: number; title: string; name: string; icon: Item['icon'] };
-
-/** "Advancement Made!" toasts in the top right. */
-class ToastState {
-    list = $state<Toast[]>([]);
-    private seen = new Set<string>();
-    private id = 0;
-
-    advancement(name: string, icon: Item['icon'], title = 'Advancement Made!') {
-        if(this.seen.has(name)) return;
-        this.seen.add(name);
-        const t = { id: ++this.id, title, name, icon };
-        // At most two at a time, so they never cover much of the page.
-        this.list = [...this.list.slice(-1), t];
-        setTimeout(() => { this.list = this.list.filter(x => x.id !== t.id); }, 4200);
-    }
-}
-
-export const toasts = new ToastState();

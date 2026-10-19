@@ -6,6 +6,8 @@
     import McWorld from '$lib/mc/McWorld.svelte';
     import McLogo from '$lib/mc/McLogo.svelte';
     import BrandIcon from '$lib/components/BrandIcon.svelte';
+    import LinkPreview from '$lib/components/LinkPreview.svelte';
+    import { teamEmbed } from '$lib/linkPreview';
 
     // Role colours, like rank tags on a Minecraft server.
     const rankColor: Record<string, string> = {
@@ -30,6 +32,7 @@
     <title>The team · MC Linker</title>
     <meta name="description" content="The people who build MC Linker." />
 </svelte:head>
+<LinkPreview title="The team · MC Linker" description="The people who build MC Linker." path="/team" embed={teamEmbed()} />
 
 {#snippet card(m: Member, small = false)}
     <article class="profile" class:small>

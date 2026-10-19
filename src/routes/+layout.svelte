@@ -35,11 +35,6 @@
 	<meta name="keywords" content="Discord, Minecraft, Bot, Link, Chat bridge, Plugin, Mod" />
 	<meta name="author" content="Lianecx, TheAnnoying" />
 	<meta name="theme-color" content="#6f9e2d" />
-	<meta property="og:title" content="MC Linker" />
-	<meta property="og:description" content={description} />
-	<meta property="og:image" content="https://mclinker.com/logo.png" />
-	<meta property="og:url" content="https://mclinker.com" />
-	<meta name="twitter:card" content="summary" />
 	{@html `<style>${textures}</style>`}
 </svelte:head>
 

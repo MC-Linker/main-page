@@ -1,6 +1,13 @@
 <script lang="ts">
+    import { page } from '$app/state';
+    import LinkPreview from '$lib/components/LinkPreview.svelte';
+    import { legalEmbed } from '$lib/linkPreview';
+
     let { children, title, description } = $props();
+    const path = page.url.pathname.replace(/\/$/, '');
 </script>
+
+<LinkPreview title="{title} · MC Linker" {description} {path} embed={legalEmbed(title, description, path)} />
 
 <svelte:head>
     <title>{title} · MC Linker</title>

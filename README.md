@@ -21,6 +21,8 @@ src/
     data/          Links, features, inventory items, platforms, FAQ and team. Edit content here.
     bridge.svelte.ts  The hero's pretend server: chat bridge, slash commands, demo script
     ui.svelte.ts   Shared UI state: the item tooltip
+    linkPreview.ts Discord link previews (component embeds: text, screenshots and link buttons), one per page.
+                   Rendered with Open Graph tags by components/LinkPreview.svelte. Test a URL at discord.com/developers/embeds
     components/
       sections/    The home page, top to bottom: Hero, Setup, Features, Faq, FinalCta
       hud/         The hotbar navigation and item tooltip

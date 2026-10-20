@@ -22,6 +22,7 @@
         justify-content: center;
         padding: clamp(3rem, 6vw, 4.5rem) clamp(1rem, 4vw, 3rem);
         background: var(--color-ink);
+        border-top: 2px solid rgb(255 255 255 / 0.1);
     }
     .copy p { margin: 0 0 1rem; color: #ced4da; line-height: 1.55; }
     .copy em { font-style: normal; color: #fff; font-weight: 600; }

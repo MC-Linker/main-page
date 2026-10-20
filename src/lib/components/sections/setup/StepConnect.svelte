@@ -79,7 +79,7 @@
     .band::before, .band::after { content: ''; grid-row: 1 / -1; z-index: 0; margin-bottom: calc(-1 * clamp(3rem, 6vw, 5rem)); }
     .band::before {
         grid-column: 1;
-        background: linear-gradient(rgb(0 0 0 / 0.55), rgb(0 0 0 / 0.55)), var(--tex-dirt) 0 0 / 64px 64px;
+        background: linear-gradient(rgb(6 6 8 / 0.6), rgb(6 6 8 / 0.6)), var(--tex-deepslate) 0 0 / 64px 64px;
         image-rendering: pixelated;
         mask: var(--seam-mask);
     }
@@ -109,6 +109,6 @@
         .side.mc, .side.dc { grid-column: 1; justify-content: stretch; }
         .side > :global(*) { max-width: none; }
         .side.dc { grid-row: 2; background: var(--color-dc-3); }
-        .side.mc { grid-row: 3; padding-bottom: 2.5rem; background: linear-gradient(rgb(0 0 0 / 0.55), rgb(0 0 0 / 0.55)), var(--tex-dirt) 0 0 / 64px 64px; image-rendering: pixelated; }
+        .side.mc { grid-row: 3; padding-bottom: 2.5rem; background: linear-gradient(rgb(6 6 8 / 0.6), rgb(6 6 8 / 0.6)), var(--tex-deepslate) 0 0 / 64px 64px; image-rendering: pixelated; }
     }
 </style>

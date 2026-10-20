@@ -31,7 +31,7 @@
     </div>
 
     <p class="screen-title mc-text" id="software-title">Select your server software</p>
-    <div class="screen">
+    <div>
         <ul class="list" role="listbox" aria-labelledby="software-title" tabindex="0" onkeydown={listKeys}>
             {#each platforms as p (p.id)}
                 <li role="option" aria-selected={platform === p.id} class:selected={platform === p.id}>
@@ -73,8 +73,6 @@
     .copy p { margin: 0 0 1rem; color: #ced4da; line-height: 1.55; }
     code { padding: 0.05em 0.35em; border-radius: 5px; background: rgb(255 255 255 / 0.1); font-size: 0.9em; }
     .screen-title { margin: 1.5rem 0 0.75rem; text-align: center; font-size: 1.1rem; color: #fff; }
-    /* The darker band the list sits in, like the game's multiplayer screen. */
-    .screen { margin: 0 -1rem; padding: 0.75rem 1rem; background: rgb(0 0 0 / 0.55); border-block: 2px solid #000; box-shadow: inset 0 2px 0 rgb(255 255 255 / 0.06); }
     .list { max-width: 42rem; margin: 0 auto; padding: 0; list-style: none; }
     .list:focus-visible { outline: 2px solid var(--color-mc-yellow); }
     .list button {

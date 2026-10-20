@@ -112,7 +112,7 @@
         </span>
     </h1>
     <p class="edition mojang">Linked by <span class="brand">MC Linker</span></p>
-    <p class="motd mc-text">Easiest Minecraft–Discord link! NO bot setup or config files. Chat bridges, stats, commands and more!</p>
+    <p class="motd mc-text">Easiest Minecraft–Discord link! Add chat bridges, view stats and inventories, run commands and more!</p>
 
     <!-- The game's title menu, right between the two worlds. -->
     <nav class="menu" aria-label="Get started" in:fly={{ y: 16, duration: 500, delay: 150 }}>

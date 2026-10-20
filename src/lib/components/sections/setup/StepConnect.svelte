@@ -54,12 +54,6 @@
         <StepHeading step={3} world="both">Run <code>/connect</code>, paste the code</StepHeading>
         <p>Discord gives you a code. Run it on your server as an operator and the two are linked. That's it.</p>
     </div>
-    <div class="side mc">
-        <div class="console" aria-label="Minecraft chat">
-            <McChat lines={connected ? mcLines : []} />
-            <div class="fake-input mc-text">{typed || ' '}{#if typed}<i class="caret"></i>{/if}</div>
-        </div>
-    </div>
     <div class="side dc">
         <DcWindow channel="general">
             <discord-messages no-background>
@@ -71,19 +65,26 @@
             </discord-messages>
         </DcWindow>
     </div>
+    <div class="side mc">
+        <div class="console" aria-label="Minecraft chat">
+            <McChat lines={connected ? mcLines : []} />
+            <div class="fake-input mc-text">{typed || ' '}{#if typed}<i class="caret"></i>{/if}</div>
+        </div>
+    </div>
 </div>
 
 <style>
-    /* Minecraft on the left, Discord on the right, the step's intro across the seam. */
+    /* Discord on the left, Minecraft on the right (the order you use them in), the step's intro across the seam. */
     .band { position: relative; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr; padding-bottom: clamp(3rem, 6vw, 5rem); }
     .band::before, .band::after { content: ''; grid-row: 1 / -1; z-index: 0; margin-bottom: calc(-1 * clamp(3rem, 6vw, 5rem)); }
+    /* Flipped so the seam's stepped edge faces the Discord half. */
     .band::before {
-        grid-column: 1;
+        grid-column: 2; z-index: 1; transform: scaleX(-1);
         background: linear-gradient(rgb(6 6 8 / 0.6), rgb(6 6 8 / 0.6)), var(--tex-deepslate) 0 0 / 64px 64px;
         image-rendering: pixelated;
         mask: var(--seam-mask);
     }
-    .band::after { grid-column: 2; margin-left: calc(-1 * var(--seam-width)); background: var(--color-dc-3); }
+    .band::after { grid-column: 1; margin-right: calc(-1 * var(--seam-width)); background: var(--color-dc-3); }
     .intro {
         grid-column: 1 / -1; grid-row: 1; position: relative; z-index: 1; justify-self: center;
         width: min(36rem, calc(100% - 2rem)); margin-top: clamp(2.5rem, 5vw, 3.5rem); padding: 1.4rem 1.6rem;
@@ -93,8 +94,8 @@
     code { padding: 0.05em 0.35em; border-radius: 5px; background: rgb(255 255 255 / 0.1); font-size: 0.9em; white-space: nowrap; }
     .side { position: relative; z-index: 1; grid-row: 2; display: flex; align-items: flex-start; padding: clamp(2rem, 5vw, 3.5rem) clamp(1rem, 4vw, 3.5rem) 0; min-width: 0; }
     .side > :global(*) { width: 100%; max-width: 30rem; }
-    .side.mc { grid-column: 1; justify-content: flex-end; }
-    .side.dc { grid-column: 2; justify-content: flex-start; }
+    .side.dc { grid-column: 1; justify-content: flex-end; }
+    .side.mc { grid-column: 2; justify-content: flex-start; }
     .console { display: flex; flex-direction: column; gap: 0.4rem; min-height: 9rem; justify-content: flex-end; padding: 1rem; background: rgb(0 0 0 / 0.35); border: 3px solid #000; }
     .fake-input { padding: 0.3rem 0.5rem; background: rgb(0 0 0 / 0.6); color: #fff; min-height: 1.9rem; overflow-wrap: anywhere; }
     .caret { display: inline-block; width: 0.5em; height: 2px; margin-left: 2px; background: #fff; animation: caret 1s steps(1) infinite; }

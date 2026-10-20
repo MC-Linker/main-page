@@ -39,7 +39,7 @@
     }
     .left { justify-self: end; padding-right: 1rem; --mc-shadow: 0.07em; font-size: 0.85em; }
     .right { justify-self: start; padding-left: 1rem; font-weight: 800; letter-spacing: -0.03em; }
-    .logo { width: clamp(6rem, 12vw, 9rem); height: auto; filter: drop-shadow(0 5px 0 rgb(0 0 0 / 0.35)); }
+    .logo { width: clamp(4.5rem, 9vw, 7rem); height: auto; filter: drop-shadow(0 5px 0 rgb(0 0 0 / 0.35)); }
     .side { grid-row: 2; display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 1.5rem 1rem clamp(6rem, 12vw, 8rem); }
     .side.mc { grid-column: 1; }
     .side.dc { grid-column: 2; }

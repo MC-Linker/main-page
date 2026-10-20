@@ -100,7 +100,7 @@
 
     <h1 id="hero-title" class="title">
         <span class="word mc">
-            <img class="wordmark" src="/brands/minecraft-logo.svg" alt="Minecraft" width="1639" height="281" />
+            <img class="wordmark" src="/brands/minecraft-logo.png" alt="Minecraft" width="1499" height="261" />
             <span class="splash on-mc mc-text" aria-hidden="true">{splash}</span>
         </span>
         <span class="link-logo" class:pulsing bind:this={logo}>
@@ -182,7 +182,8 @@
         grid-column: 1 / -1;
         grid-row: 1;
         display: grid;
-        grid-template-columns: 1fr auto 1fr;
+        /* The logo sits on the seam and overlaps both halves; each word is centred in its own half. */
+        grid-template-columns: 1fr 0 1fr;
         align-items: center;
         margin: 0;
         font-weight: 400;
@@ -190,8 +191,7 @@
     }
     /* font-size only scales the splash text; the logos are sized by width. */
     .word { position: relative; display: block; color: #fff; font-size: clamp(2.5rem, 5.8vw, 6.6rem); }
-    .word.mc { justify-self: end; padding-right: 1.25rem; }
-    .word.dc { justify-self: start; padding-left: 1.5rem; }
+    .word.mc, .word.dc { justify-self: center; }
     .wordmark { display: block; height: auto; filter: drop-shadow(0 6px 0 rgb(0 0 0 / 0.3)); }
     .word.mc .wordmark { width: clamp(15rem, 30vw, 40rem); }
     .word.dc .wordmark { width: clamp(12rem, 25vw, 34rem); }
@@ -215,7 +215,8 @@
         position: relative;
         display: grid;
         place-items: center;
-        width: calc(var(--logo) * 1.6);
+        justify-self: center;
+        width: calc(var(--logo) * 1.3);
         height: var(--logo);
         animation: bob 4s ease-in-out infinite;
     }

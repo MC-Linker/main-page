@@ -5,15 +5,19 @@
     import '@fontsource-variable/dm-sans';
     import 'nprogress/nprogress.css';
     import nProgress from 'nprogress';
+    import { onMount } from 'svelte';
     import { navigating } from '$app/state';
     import favicon from '$lib/assets/favicon.ico';
     import Footer from '$lib/components/Footer.svelte';
     import Hotbar from '$lib/components/hud/Hotbar.svelte';
     import Tooltip from '$lib/components/hud/Tooltip.svelte';
     import { site } from '$lib/data';
+    import { fixNarrowEmbeds } from '$lib/discord/narrow';
     import { textureVars } from '$lib/pixel/textures';
 
     let { children } = $props();
+
+    onMount(fixNarrowEmbeds);
 
     // A thin progress bar while the next page loads.
     nProgress.configure({ minimum: 0.4, trickleSpeed: 200, showSpinner: false });

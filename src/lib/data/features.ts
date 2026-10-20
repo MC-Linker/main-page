@@ -248,7 +248,7 @@ export const features: Feature[] = [
                     {
                         label: 'General Information',
                         embeds: [serverInfo({
-                            title: 'Server Information', thumbnail: '/logo.png', footer: 'Server IP: testing.mclinker.com (1.21.4)',
+                            title: 'Server Information', thumbnail: '/logo.png', image: '/showcase/serverlist.png', footer: 'Server IP: testing.mclinker.com (1.21.4)',
                             fields: [
                                 { name: 'Name', value: 'Example SMP', inline: true },
                                 { name: 'MOTD', value: 'Welcome to the Example SMP!', inline: true },
@@ -259,7 +259,7 @@ export const features: Feature[] = [
                     {
                         label: 'World Information',
                         embeds: [serverInfo({
-                            title: 'World Information',
+                            title: 'World Information', image: '/showcase/serverlist.png',
                             fields: [
                                 { name: 'Spawn Coordinates', value: 'Players will spawn at `0, 64, 0` in world: `world`' },
                                 { name: 'Allow End/Nether', value: 'End: `Enabled`\nNether: `Enabled`' },
@@ -271,7 +271,7 @@ export const features: Feature[] = [
                     {
                         label: 'Admin Information', style: 'danger',
                         embeds: [serverInfo({
-                            title: 'Admin Information',
+                            title: 'Admin Information', image: '/showcase/serverlist.png',
                             fields: [
                                 { name: 'Plugins', value: 'Discord-Linker\nLuckPerms\nEssentialsX', inline: true },
                                 { name: 'Datapacks', value: 'Vanilla', inline: true },

@@ -1,58 +1,52 @@
 <script lang="ts">
-    import { MediaQuery } from 'svelte/reactivity';
     import BrandIcon from '$lib/components/BrandIcon.svelte';
     import { faq, guide, links } from '$lib/data';
-    import McBook, { type PageSide } from '$lib/mc/McBook.svelte';
-    import McButton from '$lib/mc/McButton.svelte';
     import McWorld from '$lib/mc/McWorld.svelte';
+    import OreButton from '$lib/ore/OreButton.svelte';
+    import { chevron } from '$lib/ore/sprites';
+    import PixelArt from '$lib/pixel/PixelArt.svelte';
 
-    // The FAQ as a written book: contents, one page per question, and a last page.
-    type Page = { kind: 'contents' } | { kind: 'answer'; index: number } | { kind: 'end' };
-    const pages: Page[] = [{ kind: 'contents' }, ...faq.map((_, index) => ({ kind: 'answer' as const, index })), { kind: 'end' }];
-
-    // Wide screens open the book flat: two pages at a time.
-    const wide = new MediaQuery('(min-width: 900px)', true);
+    // Ore UI's collapsible rows, one open at a time. The first starts open.
+    let open = $state(faq.map((_, i) => i === 0));
 </script>
 
-{#snippet bookPage(n: number, { go, side }: { go: (n: number) => void; side: PageSide })}
-    {@const p = pages[n]}
-    {#if p.kind === 'contents'}
-        <h3 class="bold">Questions</h3>
-        <ol class="toc">
-            {#each faq as f, i (f.q)}
-                <li><button type="button" class="link" onclick={() => go(i + 1)}>{f.q}</button></li>
-            {/each}
-        </ol>
-    {:else if p.kind === 'answer'}
-        <h3 class="bold">{faq[p.index].q}</h3>
-        <p class="answer">{@html faq[p.index].a}</p>
-    {:else}
-        <h3 class="bold">More answers</h3>
-        <p class="answer">The guide has a longer <a href={guide('help/faq')}>FAQ</a> and a <a href={guide('help/troubleshooting')}>troubleshooting</a> page for when something doesn't work.</p>
-        <p class="answer">Thanks for reading!</p>
-        <p class="sign">- The MC Linker team</p>
-    {/if}
-    <!-- Back to the contents. On an open spread, the left page has the link. -->
-    {#if p.kind !== 'contents' && side !== 'right'}
-        <button type="button" class="link to-contents" onclick={() => go(0)}>Contents</button>
-    {/if}
-{/snippet}
-
 <section id="faq" class="faq" aria-labelledby="faq-title">
+    <!-- Like the game's menus: the world stays, out of focus and dimmed, behind the panels. -->
     <McWorld class="world" tile={36} hills blur={3} clouds={false} />
     <div class="shade" aria-hidden="true"></div>
 
     <header class="section-head">
-        <p class="kicker mojang">Help</p>
-        <h2 id="faq-title" class="mc-text">Questions? Read the book.</h2>
-        <p>Turn the pages with the arrows{wide.current ? ' or your arrow keys' : ', or swipe'}.</p>
+        <p class="kicker ore-text">Help</p>
+        <h2 id="faq-title" class="ore-title">Questions and answers</h2>
+        <p>The short version. The guide has the long one.</p>
     </header>
 
-    <McBook count={pages.length} label="Questions and answers" spread={wide.current} page={bookPage} />
+    <div class="layout">
+        <div class="list">
+            {#each faq as f, i (f.q)}
+                <details name="faq" bind:open={open[i]}>
+                    <summary class="q ore-face ore-dark" class:sunk={open[i]}>
+                        <span class="q-in">
+                            <span class="q-text ore-text">{f.q}</span>
+                            <span class="arrow" aria-hidden="true"><PixelArt sprite={chevron('#ffffff')} width="100%" /></span>
+                        </span>
+                    </summary>
+                    <div class="a">{@html f.a}</div>
+                </details>
+            {/each}
+        </div>
 
-    <div class="done">
-        <McButton href={links.guide} size="lg">Read the guide</McButton>
-        <McButton href={links.support} external size="lg" variant="discord"><BrandIcon brand="discord" size="1em" /> Ask on Discord</McButton>
+        <aside class="ore-card raised more" aria-labelledby="more-title">
+            <h3 id="more-title" class="ore-header ore-title">More answers</h3>
+            <div class="more-body">
+                <p>The guide has a longer <a href={guide('help/faq')}>FAQ</a> and a <a href={guide('help/troubleshooting')}>troubleshooting</a> page for when something doesn't work.</p>
+                <p>Or ask the team on the support server. They're quick.</p>
+                <div class="buttons">
+                    <OreButton href={links.guide} variant="secondary">Read the guide</OreButton>
+                    <OreButton href={links.support} external variant="discord"><BrandIcon brand="discord" size="1.1em" /> Ask on Discord</OreButton>
+                </div>
+            </div>
+        </aside>
     </div>
 </section>
 
@@ -61,28 +55,44 @@
         position: relative;
         isolation: isolate;
         overflow: hidden;
-        padding: clamp(3rem, 6vw, 4rem) 1rem clamp(4rem, 8vw, 6rem);
+        padding: clamp(4rem, 9vw, 6.5rem) 1rem clamp(4rem, 8vw, 6rem);
     }
     .faq :global(.world) { position: absolute; inset: 0; z-index: -2; }
-    /* Like opening a book in game: the world stays, dimmed, behind it. */
-    .shade { position: absolute; inset: 0; z-index: -1; background: linear-gradient(rgb(0 0 0 / 0.55), rgb(0 0 0 / 0.7)); }
-    .section-head { margin-bottom: 1.75rem; }
+    .shade { position: absolute; inset: 0; z-index: -1; background: linear-gradient(rgb(30 30 31 / 0.72), rgb(30 30 31 / 0.85)); }
+    .section-head { margin-bottom: clamp(2rem, 5vw, 3rem); }
+    .section-head :global(p:not(.kicker)) { color: #e6e8eb; }
 
-    /* ── What's written on the pages ───────────────────────────────────── */
-    h3 { margin: 0 0 0.75em; font-size: 1em; font-weight: 400; line-height: 1.4; }
-    /* Minecraft's bold: the glyph again, one pixel to the right. */
-    .bold { letter-spacing: 0.0625em; text-shadow: 0.0625em 0 0 currentColor; }
-    .answer { margin: 0 0 0.75em; }
-    .answer :global(a), .link { color: #0000aa; text-decoration: underline; text-underline-offset: 0.18em; text-decoration-thickness: 0.0625em; }
-    .answer :global(a:hover), .link:hover { color: #5555ff; }
-    .answer :global(code) { font-family: inherit; color: #5a4a2a; }
-    .answer :global(em) { font-style: normal; letter-spacing: 0.0625em; text-shadow: 0.0625em 0 0 currentColor; }
-    .link { padding: 0; border: 0; background: none; font: inherit; text-align: left; cursor: pointer; }
-    .toc { margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.35em; line-height: 1.4; list-style: none; counter-reset: q; }
-    .toc li { display: grid; grid-template-columns: 1.6em 1fr; }
-    .toc li::before { counter-increment: q; content: counter(q) '.'; color: #4d4535; }
-    .sign { margin: 1.5em 0 0; text-align: right; color: #4d4535; }
-    .to-contents { position: absolute; left: 50%; bottom: calc(var(--u) * 7); transform: translateX(-50%); font-size: 0.85em; }
+    .layout { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 1.5rem; align-items: start; max-width: 64rem; margin: 0 auto; }
 
-    .done { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 17rem)); justify-content: center; gap: 0.6rem; margin-top: 2rem; }
+    /* ── Questions ─────────────────────────────────────────────────────── */
+    .list { display: flex; flex-direction: column; gap: 0.6rem; }
+    .q { display: block; list-style: none; cursor: pointer; }
+    .q::-webkit-details-marker { display: none; }
+    .q-in { display: flex; align-items: center; gap: 1rem; min-height: 3.25rem; padding: 0.6rem 1rem; }
+    .q-text { flex: 1; font-size: 1rem; line-height: 1.35; }
+    .arrow { flex: none; width: calc(7 * var(--t)); transition: transform 0.15s ease; }
+    details[open] .arrow { transform: rotate(180deg); }
+    /* The answer hangs under its question, in the same frame. */
+    .a {
+        margin-top: calc(-1 * var(--t));
+        padding: 1rem 1.1rem 1.1rem;
+        border: var(--t) solid #1e1e1f;
+        background: var(--color-ore-dark);
+        color: var(--color-ore-white);
+        line-height: 1.65;
+    }
+    .a :global(a), .more a { color: #a6dd94; }
+    .a :global(code) { font-family: var(--font-pixel); color: var(--color-mc-yellow); }
+    .a :global(em) { font-style: normal; font-weight: 600; color: #fff; }
+
+    /* ── More answers ──────────────────────────────────────────────────── */
+    .more { overflow: hidden; }
+    .more h3 { margin: 0; padding: 0.8rem 1rem calc(0.8rem + 3 * var(--t)); font-size: 1.2rem; }
+    .more-body { padding: 1rem 1.1rem 1.25rem; }
+    .more p { margin: 0 0 0.75rem; color: var(--color-ore-white); line-height: 1.6; }
+    .buttons { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 1.1rem; }
+
+    @media (max-width: 860px) {
+        .layout { grid-template-columns: 1fr; }
+    }
 </style>

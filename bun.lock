@@ -12,6 +12,7 @@
       },
       "devDependencies": {
         "@fontsource-variable/dm-sans": "^5.3.0",
+        "@fontsource-variable/noto-sans": "^5.3.0",
         "@fontsource-variable/pixelify-sans": "^5.3.0",
         "@sveltejs/adapter-cloudflare": "^7.0.0",
         "@sveltejs/kit": "^2.22.0",
@@ -101,6 +102,8 @@
     "@esbuild/win32-x64": ["@esbuild/win32-x64@0.25.9", "", { "os": "win32", "cpu": "x64" }, "sha512-PPOl1mi6lpLNQxnGoyAfschAodRFYXJ+9fs6WHXz7CSWKbOqiMZsubC+BQsVKuul+3vKLuwTHsS2c2y9EoKwxQ=="],
 
     "@fontsource-variable/dm-sans": ["@fontsource-variable/dm-sans@5.3.0", "", {}, "sha512-BpUG5bqePiDFMBM4ZtLSlPdAIOM990uB1dlXzIf4aw21yQR7BmykedLXXXMqGWsR18aMLOsbWccwJNh3ztTQaA=="],
+
+    "@fontsource-variable/noto-sans": ["@fontsource-variable/noto-sans@5.3.0", "", {}, "sha512-e3ZuxzY9AL2psXPZlhwhnYrHUHv6PMoyK9MQ7croF0CUgURLqu9EMjW7q2FgVLwij1tjLsIHQrnwQ8aUcg4BiA=="],
 
     "@fontsource-variable/pixelify-sans": ["@fontsource-variable/pixelify-sans@5.3.0", "", {}, "sha512-rOF07QCyHg9xb4UZF3lpXOM4UO+zo3y8tXvO7T+vy40GVt/GU8HL+/YWE029CMsbhOwk4plRDY9G8BU5cWs1ig=="],
 

@@ -6,9 +6,9 @@
     import BrandIcon from '$lib/components/BrandIcon.svelte';
     import { links } from '$lib/data';
     import DcBackdrop from '$lib/discord/DcBackdrop.svelte';
-    import McButton from '$lib/mc/McButton.svelte';
     import McChat from '$lib/mc/McChat.svelte';
     import McWorld from '$lib/mc/McWorld.svelte';
+    import OreButton from '$lib/ore/OreButton.svelte';
     import { Bridge, type Direction } from './hero/bridge.svelte';
     import DemoChannel from './hero/DemoChannel.svelte';
     import { flyPacket } from './hero/packet';
@@ -114,15 +114,15 @@
     <p class="edition mojang">Linked by <span class="brand">MC Linker</span></p>
     <p class="motd mc-text">Easiest Minecraft–Discord link! Add chat bridges, view stats and inventories, run commands and more!</p>
 
-    <!-- The game's title menu, right between the two worlds. -->
-    <nav class="menu" aria-label="Get started" in:fly={{ y: 16, duration: 500, delay: 150 }}>
-        <McButton href={links.invite} external size="lg" variant="discord"><BrandIcon brand="discord" size="1.15em" /> Add to Discord</McButton>
-        <McButton href="#install" size="lg">Get the Plugin</McButton>
+    <!-- The game's title menu, right between the two worlds. The header bar takes over once it scrolls away. -->
+    <nav class="menu" aria-label="Get started" data-title-menu in:fly={{ y: 16, duration: 500, delay: 150 }}>
+        <OreButton href={links.invite} external variant="discord" hero size="lg"><BrandIcon brand="discord" size="1.15em" /> Add to Discord</OreButton>
+        <OreButton href="#install" hero size="lg">Get the Plugin</OreButton>
         <div class="row">
-            <McButton href={links.guide} size="lg">Guide</McButton>
-            <McButton href={links.support} external size="lg">Support...</McButton>
+            <OreButton href={links.guide} variant="secondary" size="lg">Guide</OreButton>
+            <OreButton href={links.support} external variant="secondary" size="lg">Support</OreButton>
         </div>
-        <McButton href="#setup" size="lg">How does it work?</McButton>
+        <OreButton href="#setup" variant="secondary" size="lg">How does it work?</OreButton>
         <p class="fine mc-text">Free · Paper, Spigot, Fabric, Forge &amp; NeoForge · <span class="nowrap">1.8 – 26.2</span></p>
     </nav>
 
@@ -157,7 +157,7 @@
         /* The last row takes all the height that's left, so the chats can fill it. */
         grid-template-rows: auto auto auto 1fr;
         min-height: max(100svh, 46rem);
-        padding: clamp(1.5rem, 4svh, 3rem) 0 var(--hud-space);
+        padding: clamp(1.5rem, 4svh, 3rem) 0 clamp(2.5rem, 6svh, 4rem);
         isolation: isolate;
         overflow: hidden;
     }
@@ -241,7 +241,7 @@
         color: #fff;
         text-shadow: 0.1em 0.1em 0 rgb(0 0 0 / 0.6);
     }
-    .edition .brand { color: var(--color-grass-light); }
+    .edition .brand { color: var(--color-mc-green); }
     .motd {
         grid-column: 2 / 4;
         grid-row: 3;
@@ -266,8 +266,8 @@
         gap: 0.55rem;
         margin-top: clamp(1.5rem, 5vh, 3.5rem);
     }
-    .menu :global(.mc-btn) { width: 100%; padding: 0 0.75rem; }
-    .menu :global(.mc-btn.lg) { min-height: clamp(3rem, 5.6vh, 3.75rem); font-size: clamp(1.1rem, 1.1vw + 0.4rem, 1.35rem); }
+    .menu :global(.ore-btn) { width: 100%; padding-inline: 0.75rem; }
+    .menu :global(.ore-btn.lg) { min-height: clamp(3rem, 5.6vh, 3.75rem); font-size: clamp(1.05rem, 0.9vw + 0.45rem, 1.25rem); }
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; }
     .fine { display: none; margin: 0.4rem 0 0; text-align: center; font-size: 0.8rem; color: #e0e0e0; }
     .nowrap { white-space: nowrap; }
@@ -302,10 +302,11 @@
     .dc-end { flex: 1; min-height: 0; display: flex; flex-direction: column; }
     .hint { margin: 0; font-size: 0.85rem; color: #e9ecef; text-shadow: 0 1px 2px rgb(0 0 0 / 0.6); }
     .mc-side .hint { color: #fff; }
+    /* A key, like the game's keyboard hints: a small light keycap. */
     .hint kbd {
-        display: inline-grid; place-items: center; min-width: 1.4em; height: 1.4em; padding: 0 0.3em;
-        border-radius: 4px; background: rgb(0 0 0 / 0.45); border: 1px solid rgb(255 255 255 / 0.25);
-        font-family: var(--font-pixel); font-size: 0.85em;
+        display: inline-grid; place-items: center; min-width: 1.5em; height: 1.5em; padding: 0 0.3em var(--t);
+        border: var(--t) solid #1e1e1f; background: #d0d1d4; box-shadow: inset 0 calc(-1 * var(--t)) 0 #58585a;
+        color: #000; font-family: var(--font-pixel); font-size: 0.85em; text-shadow: none;
     }
     .hint code { font-family: var(--font-pixel); color: var(--color-mc-yellow); }
     .dc-side .hint code { font-family: var(--font-sans); color: #c9cdfb; }
@@ -314,8 +315,8 @@
     .hero :global(.packet) {
         position: absolute; left: -6px; top: -6px; z-index: 10;
         width: 12px; height: 12px; pointer-events: none;
-        background: var(--color-grass-light);
-        box-shadow: 0 0 0 2px #233d0c, 0 0 18px 4px rgb(140 191 63 / 0.7);
+        background: var(--color-ore-green-light);
+        box-shadow: 0 0 0 2px var(--color-ore-green-dark), 0 0 18px 4px rgb(99 157 82 / 0.75);
     }
     .hero :global(.packet.toMinecraft) {
         background: #8b95ff;
@@ -344,10 +345,10 @@
             grid-template-columns: 1fr;
             grid-template-rows: repeat(7, auto);
             min-height: 0;
-            padding: 0 0 var(--hud-space);
+            padding: 0;
         }
         .hero :global(.mc-bg) { position: relative; inset: auto; grid-column: 1; grid-row: 1 / 6; mask: none; }
-        .dc-bg { position: relative; inset: auto; grid-column: 1; grid-row: 6 / -1; margin-bottom: calc(-1 * var(--hud-space)); }
+        .dc-bg { position: relative; inset: auto; grid-column: 1; grid-row: 6 / -1; }
         .title { display: contents; }
         .title > * { grid-column: 1; }
         .word.mc { grid-row: 1; justify-self: center; padding: 3.5rem 0 0; font-size: clamp(2.6rem, 13vw, 4rem); }

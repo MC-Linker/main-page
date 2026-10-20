@@ -2,15 +2,14 @@
     import '../app.css';
     import '@skyra/discord-components-core';
     import '@fontsource-variable/pixelify-sans';
-    import '@fontsource-variable/dm-sans';
+    import '@fontsource-variable/noto-sans';
     import 'nprogress/nprogress.css';
     import nProgress from 'nprogress';
     import { onMount } from 'svelte';
-    import { navigating } from '$app/state';
+    import { navigating, page } from '$app/state';
     import favicon from '$lib/assets/favicon.ico';
     import Footer from '$lib/components/Footer.svelte';
-    import Hotbar from '$lib/components/hud/Hotbar.svelte';
-    import Tooltip from '$lib/components/hud/Tooltip.svelte';
+    import OreNav from '$lib/components/nav/OreNav.svelte';
     import { site } from '$lib/data';
     import { fixNarrowEmbeds } from '$lib/discord/narrow';
     import { textureVars } from '$lib/pixel/textures';
@@ -30,7 +29,6 @@
 <svelte:head>
     <link rel="icon" href={favicon} />
     <link rel="preload" href="/fonts/minecraft-seven.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
-    <link rel="preload" href="/fonts/minecrafter.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
     <title>MC Linker · Link Minecraft and Discord</title>
     <meta name="description" content={site.description} />
     <meta name="keywords" content="Discord, Minecraft, Bot, Link, Chat bridge, Plugin, Mod" />
@@ -40,9 +38,13 @@
 </svelte:head>
 
 <a class="skip-link" href="#main">Skip to content</a>
-<main id="main">
+<OreNav />
+<!-- The home page starts with the title screen, which has no header bar; other pages start under it. -->
+<main id="main" class:under-nav={page.url.pathname !== '/' || page.status >= 400}>
     {@render children?.()}
 </main>
 <Footer />
-<Hotbar />
-<Tooltip />
+
+<style>
+    .under-nav { padding-top: var(--nav-h); }
+</style>

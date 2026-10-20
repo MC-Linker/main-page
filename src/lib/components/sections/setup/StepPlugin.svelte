@@ -1,117 +1,84 @@
 <script lang="ts">
     import BrandIcon from '$lib/components/BrandIcon.svelte';
     import { platformNotes, platforms } from '$lib/data';
-    import McButton from '$lib/mc/McButton.svelte';
+    import OreButton from '$lib/ore/OreButton.svelte';
+    import OreMenuRow from '$lib/ore/OreMenuRow.svelte';
+    import { radioOff, radioOn } from '$lib/ore/sprites';
     import PixelArt from '$lib/pixel/PixelArt.svelte';
-    import StepHeading from './StepHeading.svelte';
+    import StepCard from './StepCard.svelte';
 
-    // Picking the server software, like the game's server list.
+    // Picking the server software, like a list of choices in an Ore UI screen.
     let platform = $state(platforms[0].id);
     const current = $derived(platforms.find(p => p.id === platform)!);
+    let list: HTMLElement;
 
-    // The list works like one control: arrow keys move the selection.
+    // The list works like one control: arrow keys move the choice (and focus) up and down.
     function listKeys(e: KeyboardEvent) {
-        const i = platforms.findIndex(p => p.id === platform);
-        if(e.key === 'ArrowDown') {
-            e.preventDefault();
-            platform = platforms[(i + 1) % platforms.length].id;
-        }
-        if(e.key === 'ArrowUp') {
-            e.preventDefault();
-            platform = platforms[(i - 1 + platforms.length) % platforms.length].id;
-        }
+        const step = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1 : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 0;
+        if(!step) return;
+        e.preventDefault();
+        const i = (platforms.findIndex(p => p.id === platform) + step + platforms.length) % platforms.length;
+        platform = platforms[i].id;
+        list.querySelectorAll<HTMLElement>('[role="radio"]')[i]?.focus();
     }
 </script>
 
-<!-- Step 2 happens in Minecraft: the server list screen. -->
-<div id="install" class="band">
-    <div class="copy">
-        <StepHeading step={2} world="minecraft">Install the Discord-Linker plugin</StepHeading>
-        <p>Pick your server software, download the file and drop it into your <code>{current.folder}</code> folder. Then restart the server.</p>
-    </div>
-
-    <p class="screen-title mc-text" id="software-title">Select your server software</p>
-    <div>
-        <ul class="list" role="listbox" aria-labelledby="software-title" tabindex="0" onkeydown={listKeys}>
-            {#each platforms as p (p.id)}
-                <li role="option" aria-selected={platform === p.id} class:selected={platform === p.id}>
-                    <button type="button" onclick={() => (platform = p.id)} tabindex="-1">
-                        <span class="icon"><PixelArt sprite={p.icon} width="100%" /></span>
-                        <span class="info">
-                            <span class="name mc-text">{p.name}</span>
-                            <span class="motd mc-text">Minecraft {p.versions} · goes in <span class="folder">{p.folder}/</span></span>
-                            {#if p.alsoWorksOn}<span class="motd mc-text dim">Also: {p.alsoWorksOn}</span>{/if}
-                        </span>
-                        <span class="ping" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
-                    </button>
-                </li>
-            {/each}
-        </ul>
-    </div>
-
-    <div class="downloads">
-        <p class="get mc-text">Download for {current.name}</p>
-        <div class="buttons">
-            {#each current.downloads as d (d.name)}
-                {#if d.disabled}
-                    <McButton disabled badge="Coming soon">
-                        {#if d.brand}<BrandIcon brand={d.brand} size="1em" />{/if}{d.name}
-                    </McButton>
-                {:else}
-                    <McButton href={d.href} external color={d.color} badge={d.recommended ? 'Recommended' : undefined}>
-                        {#if d.brand}<BrandIcon brand={d.brand} size="1em" />{/if}{d.name}
-                    </McButton>
-                {/if}
-            {/each}
+<!-- Step 2 happens in Minecraft: pick your server software and download the plugin or mod. -->
+<StepCard step={2} world="minecraft" id="install">
+    {#snippet title()}Install the Discord-Linker plugin{/snippet}
+    <div class="split">
+        <div>
+            <p class="label ore-text" id="software-title">Server software</p>
+            <!-- svelte-ignore a11y_interactive_supports_focus -->
+            <div class="list" role="radiogroup" aria-labelledby="software-title" bind:this={list} onkeydown={listKeys}>
+                {#each platforms as p (p.id)}
+                    <OreMenuRow
+                        role="radio" tabindex={platform === p.id ? 0 : -1} selected={platform === p.id} chevron={false}
+                        title={p.name} subtitle="Minecraft {p.versions} · goes in {p.folder}/"
+                        onclick={() => (platform = p.id)}
+                    >
+                        {#snippet icon()}<PixelArt sprite={p.icon} width="100%" />{/snippet}
+                        {#snippet trailing()}<span class="radio" aria-hidden="true"><PixelArt sprite={platform === p.id ? radioOn : radioOff} width="100%" /></span>{/snippet}
+                    </OreMenuRow>
+                {/each}
+            </div>
         </div>
-        <ul class="notes mc-text">{#each platformNotes as n (n)}<li>{n}</li>{/each}</ul>
+
+        <div class="downloads">
+            <p class="label ore-text">Download for {current.name}</p>
+            <div class="buttons">
+                {#each current.downloads as d (d.name)}
+                    <OreButton
+                        href={d.href} external disabled={d.disabled}
+                        variant={d.recommended ? 'primary' : 'secondary'} hero={d.recommended} size={d.recommended ? 'lg' : 'md'}
+                        badge={d.disabled ? 'Coming soon' : d.recommended ? 'Recommended' : undefined}
+                        class={d.recommended ? 'wide' : ''}
+                    >
+                        {#if d.brand}<BrandIcon brand={d.brand} size="1.1em" />{/if}{d.name}
+                    </OreButton>
+                {/each}
+            </div>
+            <p class="drop">Drop the file into your <code class="ore-tag">{current.folder}/</code> folder, then restart the server.</p>
+            <ul class="notes">
+                {#if current.alsoWorksOn}<li>Also works on {current.alsoWorksOn}.</li>{/if}
+                {#each platformNotes as n (n)}<li>{n}</li>{/each}
+            </ul>
+        </div>
     </div>
-</div>
+</StepCard>
 
 <style>
-    .band {
-        padding: clamp(3rem, 6vw, 4.5rem) 1rem;
-        background: linear-gradient(rgb(0 0 0 / 0.55), rgb(0 0 0 / 0.55)), var(--tex-dirt) 0 0 / 64px 64px;
-        image-rendering: pixelated;
-    }
-    .band :global(img), .band :global(svg) { image-rendering: auto; }
-    .copy { max-width: 36rem; margin: 0 auto; text-align: center; }
-    .copy p { margin: 0 0 1rem; color: #ced4da; line-height: 1.55; }
-    code { padding: 0.05em 0.35em; border-radius: 5px; background: rgb(255 255 255 / 0.1); font-size: 0.9em; }
-    .screen-title { margin: 1.5rem 0 0.75rem; text-align: center; font-size: 1.1rem; color: #fff; }
-    .list { max-width: 42rem; margin: 0 auto; padding: 0; list-style: none; }
-    .list:focus-visible { outline: 2px solid var(--color-mc-yellow); }
-    .list button {
-        display: flex; align-items: center; gap: 0.9rem; width: 100%; padding: 0.4rem; border: 2px solid transparent;
-        background: none; color: inherit; text-align: left; cursor: pointer; font: inherit;
-    }
-    .list li.selected button { border-color: #fff; background: rgb(0 0 0 / 0.5); }
-    .list button:hover { background: rgb(255 255 255 / 0.06); }
-    .icon { width: 3.5rem; height: 3.5rem; flex: none; padding: 0.4rem; background: rgb(255 255 255 / 0.08); }
-    .info { display: flex; flex-direction: column; min-width: 0; flex: 1; }
-    .name { font-size: 1.1rem; color: #fff; }
-    .motd { font-size: 0.9rem; color: #aaa; }
-    .motd.dim { color: #777; }
-    .folder { color: var(--color-mc-yellow); }
-    /* The connection bars, always full. */
-    .ping { display: inline-flex; align-items: flex-end; gap: 2px; height: 0.9rem; align-self: flex-start; margin-top: 0.3rem; }
-    .ping i { width: 3px; background: #55ff55; box-shadow: 1px 1px 0 #153f15; }
-    .ping i:nth-child(1) { height: 20%; }
-    .ping i:nth-child(2) { height: 40%; }
-    .ping i:nth-child(3) { height: 60%; }
-    .ping i:nth-child(4) { height: 80%; }
-    .ping i:nth-child(5) { height: 100%; }
-    .downloads { max-width: 42rem; margin: 1.5rem auto 0; }
-    .get { margin: 0 0 0.9rem; font-size: 0.95rem; color: #ddd; }
-    .buttons { display: flex; flex-wrap: wrap; gap: 0.9rem 0.5rem; }
-    .buttons > :global(*) { flex: 1 1 9rem; }
-    .notes { margin: 1rem 0 0; padding-left: 1.2rem; font-size: 0.85rem; color: #aaa; }
+    .split { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 1.5rem 2rem; }
+    .label { margin: 0 0 0.6rem; font-size: 0.95rem; color: var(--color-mc-gray); }
+    .list { display: flex; flex-direction: column; gap: calc(2 * var(--t)); }
+    .radio { display: block; width: calc(13 * var(--t)); }
+    .buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr)); gap: 1.1rem 0.6rem; margin-top: 1rem; }
+    .buttons :global(.wide) { grid-column: 1 / -1; }
+    .drop { margin: 1.25rem 0 0; color: var(--color-ore-white); line-height: 1.8; }
+    .drop code { font-size: 0.9rem; color: var(--color-mc-yellow); }
+    .notes { margin: 0.75rem 0 0; padding-left: 1.1rem; font-size: 0.875rem; line-height: 1.55; color: #a3a4a6; }
 
-    @media (max-width: 520px) {
-        .list button { gap: 0.6rem; padding: 0.35rem; }
-        .icon { width: 2.6rem; height: 2.6rem; padding: 0.3rem; }
-        .name { font-size: 1rem; }
-        .motd { font-size: 0.8rem; }
-        .buttons > :global(*) { flex-basis: calc(50% - 0.25rem); }
+    @media (max-width: 860px) {
+        .split { grid-template-columns: minmax(0, 1fr); }
     }
 </style>

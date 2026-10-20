@@ -6,11 +6,11 @@
     import DcMessage from '$lib/discord/DcMessage.svelte';
     import { bot, colors, type DcMsg } from '$lib/discord/types';
     import { rarityColor } from '$lib/mc/item';
-    import McButton from '$lib/mc/McButton.svelte';
     import McChat from '$lib/mc/McChat.svelte';
     import McItemIcon from '$lib/mc/McItemIcon.svelte';
-    import McSlot from '$lib/mc/McSlot.svelte';
-    import { tooltipHandlers } from '$lib/ui.svelte';
+    import OreButton from '$lib/ore/OreButton.svelte';
+    import OreRadioGroup from '$lib/ore/OreRadioGroup.svelte';
+    import OreSegments from '$lib/ore/OreSegments.svelte';
 
     type TabId = (typeof featureTabs)[number]['id'];
     let tab = $state<TabId>('all');
@@ -24,15 +24,6 @@
         if(!q) return true;
         return [f.name, ...f.lore, ...f.commands].join(' ').toLowerCase().includes(q);
     }));
-
-    // Phones get six bigger slots per row instead of nine, so they're easy to tap.
-    const narrow = new MediaQuery('(max-width: 560px)', false);
-    const cols = $derived(narrow.current ? 6 : 9);
-    // Always fill whole rows (at least two), like a real inventory.
-    const slots = $derived.by<(Feature | null)[]>(() => {
-        const rows = Math.max(2, Math.ceil(shown.length / cols));
-        return [...shown, ...Array(rows * cols - shown.length).fill(null)];
-    });
 
     // Messages with pages (/userinfo, /serverinfo): the buttons switch the page and admin buttons answer privately.
     let page = $state(0);
@@ -59,158 +50,156 @@
     // The world a feature starts in comes first.
     const worlds = $derived((selected.from === 'discord' ? ['discord', 'minecraft'] : ['minecraft', 'discord']) as ('discord' | 'minecraft')[]);
 
-    let preview = $state<HTMLElement>();
+    // Phones: the details are under the list, so picking something scrolls to them.
+    const narrow = new MediaQuery('(max-width: 900px)', false);
+    // Small screens: icons only on the tabs.
+    const compact = new MediaQuery('(max-width: 1100px)', false);
+    let detail = $state<HTMLElement>();
     function pick(item: Feature) {
         selected = item;
         page = 0;
         followUp = null;
-        // On phones the preview is below the inventory: bring it into view.
-        if(narrow.current) setTimeout(() => preview?.scrollIntoView({ block: 'nearest', behavior: scrollBehavior() }), 60);
+        if(narrow.current) setTimeout(() => detail?.scrollIntoView({ block: 'start', behavior: scrollBehavior() }), 60);
     }
 </script>
 
 <section id="features" class="features" aria-labelledby="features-title">
     <header class="section-head">
-        <p class="kicker mojang">Features</p>
-        <h2 id="features-title" class="mc-text">Everything MC Linker can do</h2>
-        <p>Pick an item to see how it looks in Minecraft and in Discord.</p>
+        <p class="kicker ore-text">Features</p>
+        <h2 id="features-title" class="ore-title">Everything MC Linker can do</h2>
+        <p>Pick a feature to see how it looks in Minecraft and in Discord.</p>
     </header>
 
-    <div class="layout">
-        <div class="inv">
-            <div class="tabs" role="tablist" aria-label="Feature categories">
-                {#each featureTabs as t (t.id)}
-                    <!-- Like the game's creative tabs: the name shows in a tooltip above the tab. -->
-                    <button role="tab" type="button" class="tab" aria-selected={tab === t.id} aria-label={t.name}
-                        onclick={() => (tab = t.id)}
-                        {...tooltipHandlers({ id: t.id, name: t.name, lore: [], icon: t.icon }, { above: true })}>
-                        <McItemIcon icon={t.icon} size="1.5rem" />
-                    </button>
-                {/each}
-            </div>
-            <div class="mc-panel panel" role="tabpanel" aria-label={tabName}>
-                <div class="panel-head">
-                    <p class="mc-panel-title">{tabName}</p>
-                    {#if tab === 'all'}
-                        <input class="search mc-text" placeholder="Search..." aria-label="Search features" bind:value={query} />
-                    {/if}
-                </div>
-                <div class="grid">
-                    {#each slots as item, i (item?.id ?? `empty-${i}`)}
-                        <McSlot
-                            {item}
-                            selected={item?.id === selected.id}
-                            extra={item ? [...item.commands.map(c => `&e${c}`), '&8Click to preview'] : []}
-                            onclick={() => item && pick(item)}
-                        />
-                    {/each}
-                </div>
-                {#if shown.length === 0}<p class="none">Nothing found. Try "chat", "roles" or "/ban".</p>{/if}
-            </div>
-            <p class="tip mc-text">{featureTabs.length - 1} tabs · {features.length} items · all free</p>
-        </div>
+    <div class="browser">
+        <OreSegments
+            items={featureTabs.map(t => ({ id: t.id, label: t.name }))} selected={tab} onselect={id => (tab = id as TabId)}
+            look="tabs" mode="tabs" label="Feature categories" controls="feature-list" fill iconOnly={compact.current} class="tabs"
+        >
+            {#snippet icon(s)}<McItemIcon icon={featureTabs.find(t => t.id === s.id)!.icon} size="1.5rem" />{/snippet}
+        </OreSegments>
 
-        <!-- The selected item, shown like a big item tooltip. -->
-        {#key selected.id}
-            <article class="mc-tooltip preview" bind:this={preview} in:fade={{ duration: 180 }} aria-live="polite">
-                <header class="p-head">
-                    <McItemIcon icon={selected.icon} glint={selected.glint} size="2.75rem" />
-                    <div>
-                        <h3 style:color={rarityColor[selected.rarity ?? 'common']}>{selected.name}</h3>
-                        <p class="lore">{selected.lore.join(' ')}</p>
-                    </div>
-                </header>
-                {#if selected.commands.length}
-                    <ul class="cmds">{#each selected.commands as c (c)}<li>{c}</li>{/each}</ul>
+        <div class="ore-card panel">
+            <div class="catalog" id="feature-list" role="tabpanel" aria-label={tabName}>
+                {#if tab === 'all'}
+                    <label class="search">
+                        <span class="sr-only">Search features</span>
+                        <input class="ore-field" type="search" placeholder="Search..." bind:value={query} />
+                    </label>
                 {/if}
-                {#if selected.preview.options}
-                    <div class="options">
-                        {#each selected.preview.options as group (group.title)}
-                            <p class="label mojang">{group.title}</p>
-                            <ul>{#each group.choices as c (c.name)}<li><span class="choice">{c.name}</span> – {c.text}</li>{/each}</ul>
+                <ul class="tiles">
+                    {#each shown as item (item.id)}
+                        {@const on = item.id === selected.id}
+                        <li>
+                            <button type="button" class="tile ore-face {on ? 'ore-green sunk marked' : 'ore-dark'}" aria-pressed={on} onclick={() => pick(item)}>
+                                <span class="tile-in">
+                                    <McItemIcon icon={item.icon} glint={item.glint} size="2.25rem" />
+                                    <span class="tile-name ore-text">{item.name}</span>
+                                </span>
+                            </button>
+                        </li>
+                    {/each}
+                </ul>
+                {#if shown.length === 0}<p class="none">Nothing found. Try "chat", "roles" or "/ban".</p>{/if}
+                <p class="count ore-text">{features.length} features · all free</p>
+            </div>
+
+            <!-- The selected feature: what it does, its commands, and how it looks in both worlds. -->
+            {#key selected.id}
+                <article class="ore-card dark raised detail" bind:this={detail} in:fade={{ duration: 160 }} aria-live="polite">
+                    <header class="d-head">
+                        <span class="slot"><McItemIcon icon={selected.icon} glint={selected.glint} size="2.5rem" /></span>
+                        <div>
+                            <h3 class="ore-title" style:color={rarityColor[selected.rarity ?? 'common']}>{selected.name}</h3>
+                            <p class="lore">{selected.lore.join(' ')}</p>
+                        </div>
+                    </header>
+                    {#if selected.commands.length}
+                        <ul class="cmds">{#each selected.commands as c (c)}<li class="ore-tag">{c}</li>{/each}</ul>
+                    {/if}
+                    {#if selected.preview.options}
+                        <div class="options">
+                            {#each selected.preview.options as group (group.title)}
+                                <div class="option">
+                                    <p class="label ore-text">{group.title}</p>
+                                    <OreRadioGroup label={group.title} choices={group.choices} />
+                                </div>
+                            {/each}
+                        </div>
+                    {/if}
+                    <div class="worlds">
+                        {#each worlds as world (world)}
+                            {#if world === 'minecraft' && selected.preview.mc}
+                                <div class="world">
+                                    <p class="label ore-text">In Minecraft</p>
+                                    <div class="mc-box"><McChat lines={selected.preview.mc.map((text, id) => ({ id, text: text.replace(/^> /, '&f') }))} /></div>
+                                </div>
+                            {:else if world === 'discord' && hasDiscord}
+                                <div class="world">
+                                    <p class="label ore-text">In Discord</p>
+                                    {#if selected.preview.dc || paged}
+                                        <discord-messages no-background class="dc-box">
+                                            {#each selected.preview.dc ?? [] as msg, i (i)}<DcMessage msg={{ ...msg, id: i }} />{/each}
+                                            {#if paged}<DcMessage msg={paged} />{/if}
+                                            {#if followUpMsg}<DcMessage msg={followUpMsg} />{/if}
+                                        </discord-messages>
+                                    {/if}
+                                    {#each selected.preview.images ?? [] as img (img.src)}
+                                        <img class="shot" src={img.src} alt={img.alt} />
+                                    {/each}
+                                </div>
+                            {/if}
                         {/each}
                     </div>
-                {/if}
-                <div class="worlds">
-                    {#each worlds as world (world)}
-                        {#if world === 'minecraft' && selected.preview.mc}
-                            <div class="world">
-                                <span class="label mojang">In Minecraft</span>
-                                <div class="mc-box"><McChat lines={selected.preview.mc.map((text, id) => ({ id, text: text.replace(/^> /, '&f') }))} /></div>
-                            </div>
-                        {:else if world === 'discord' && hasDiscord}
-                            <div class="world">
-                                <span class="label dc-label">In Discord</span>
-                                {#if selected.preview.dc || paged}
-                                    <discord-messages no-background class="dc-box">
-                                        {#each selected.preview.dc ?? [] as msg, i (i)}<DcMessage msg={{ ...msg, id: i }} />{/each}
-                                        {#if paged}<DcMessage msg={paged} />{/if}
-                                        {#if followUpMsg}<DcMessage msg={followUpMsg} />{/if}
-                                    </discord-messages>
-                                {/if}
-                                {#each selected.preview.images ?? [] as img (img.src)}
-                                    <img class="shot" src={img.src} alt={img.alt} />
-                                {/each}
-                            </div>
-                        {/if}
-                    {/each}
-                </div>
-                <McButton href={selected.guide}>Read the guide</McButton>
-            </article>
-        {/key}
+                    <OreButton href={selected.guide} class="guide">Read the guide</OreButton>
+                </article>
+            {/key}
+        </div>
     </div>
 </section>
 
 <style>
-    .features {
-        padding: clamp(4rem, 9vw, 7rem) 1rem clamp(4rem, 9vw, 6rem);
-        /* The options-screen background: dark dirt. */
-        background: linear-gradient(rgb(0 0 0 / 0.7), rgb(0 0 0 / 0.7)), var(--tex-dirt) 0 0 / 64px 64px;
-        image-rendering: pixelated;
+    .features { padding: clamp(4rem, 9vw, 6.5rem) 1rem clamp(4rem, 8vw, 6rem); background: var(--color-ore-deep); }
+    .section-head { margin-bottom: clamp(2rem, 5vw, 3rem); }
+
+    .browser { max-width: 72rem; margin: 0 auto; }
+    .browser :global(.tabs) { position: relative; z-index: 1; margin-bottom: calc(-1 * var(--t)); }
+    .panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 1.25rem; align-items: start; padding: 1.25rem; }
+
+    /* ── The list: a search field and a grid of tiles ─────────────────── */
+    .search { display: block; margin-bottom: 0.9rem; }
+    .search input { display: block; width: 100%; height: 2.75rem; padding: calc(2 * var(--t)) 0.75rem 0; }
+    .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr)); gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+    .tile { display: block; width: 100%; height: 100%; min-height: 6rem; padding: 0.6rem 0.35rem; cursor: pointer; }
+    .tile-in { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; height: 100%; }
+    .tile-name { font-size: 0.875rem; line-height: 1.2; text-align: center; text-wrap: balance; }
+    .none { margin: 0.75rem 0 0; color: #b1b2b5; }
+    .count { margin: 1rem 0 0; font-size: 0.875rem; color: var(--color-mc-gray); }
+
+    /* ── The selected feature ──────────────────────────────────────────── */
+    .detail { padding: 1.25rem 1.25rem calc(1.25rem + 3 * var(--t)); scroll-margin-top: calc(var(--nav-h) + 1rem); }
+    .d-head { display: flex; align-items: center; gap: 1rem; }
+    /* The item in an inventory slot. */
+    .slot { display: grid; place-items: center; flex: none; width: 3.5rem; height: 3.5rem; border: var(--t) solid #1e1e1f; background: #8b8b8b; box-shadow: inset var(--t) var(--t) 0 #373737, inset calc(-1 * var(--t)) calc(-1 * var(--t)) 0 #fff; }
+    h3 { margin: 0; font-size: 1.5rem; line-height: 1.2; }
+    .lore { margin: 0.3rem 0 0; color: #d0d1d4; line-height: 1.5; }
+    .cmds { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0 0; padding: 0; list-style: none; }
+    .cmds li { color: var(--color-mc-yellow); font-size: 0.875rem; }
+    .label { margin: 0 0 0.45rem; font-size: 0.875rem; color: var(--color-mc-gray); }
+    .options { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.25rem; }
+    .worlds { display: flex; flex-direction: column; gap: 1rem; margin: 1.25rem 0; }
+    .worlds:empty { display: none; }
+    .mc-box { padding: 0.75rem; border: var(--t) solid #1e1e1f; background: linear-gradient(#78a6f7, #b4d3ff); font-size: 0.9rem; }
+    .dc-box { display: block; padding: 0.5rem 1rem; background: var(--color-dc); border-radius: 8px; line-height: 1.375; }
+    .shot { display: block; max-width: 100%; height: auto; margin-top: 0.5rem; border-radius: 8px; }
+    .detail :global(.guide) { margin-top: 0.25rem; }
+
+    @media (max-width: 900px) {
+        .panel { grid-template-columns: 1fr; padding: 1rem; }
     }
-    .features :global(img), .features :global(svg) { image-rendering: auto; }
-    .section-head { margin-bottom: 2.5rem; }
-
-    .layout { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 2rem; max-width: 72rem; margin: 0 auto; }
-    .inv { --cols: 9; --slot: clamp(2.1rem, 8.6vw, 3rem); max-width: 100%; }
-    .tabs { display: flex; gap: 2px; padding-left: 6px; }
-    .tab {
-        position: relative; top: 3px; display: grid; place-items: center; width: 3.25rem; height: 2.75rem; padding: 0; cursor: pointer;
-        background: #a0a0a0; border: 3px solid #000; border-bottom: 0; border-radius: 6px 6px 0 0;
-        box-shadow: inset 3px 3px 0 #dcdcdc;
-    }
-    .tab[aria-selected='true'] { z-index: 2; height: 3rem; background: var(--color-mc-ui); box-shadow: inset 3px 3px 0 #fff; }
-    .tab:hover { filter: brightness(1.08); }
-    .panel { width: max-content; max-width: 100%; }
-    .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.5rem; }
-    .panel-head .mc-panel-title { margin: 0; }
-    .search { box-sizing: border-box; width: 9rem; min-width: 0; margin: 0; padding: 0.2rem 0.4rem; border: 2px solid #000; background: #000; color: #fff; font-size: 1rem; text-shadow: none; }
-    .grid { display: grid; grid-template-columns: repeat(var(--cols), var(--slot)); gap: 2px; }
-    .none { margin: 0.5rem 0 0; font-size: 0.85rem; color: #3f3f3f; }
-    .tip { margin: 0.75rem 0 0; text-align: center; font-size: 0.85rem; color: #aaa; }
-
-    .preview { width: min(31rem, 100%); padding: 1.1rem 1.2rem 1.25rem; font-size: 1rem; scroll-margin: 1rem 0 var(--hud-space); }
-    .p-head { display: flex; align-items: center; gap: 0.9rem; }
-    h3 { margin: 0; font-size: 1.5rem; font-weight: 400; line-height: 1.2; }
-    .lore { margin: 0.2rem 0 0; color: #aa00aa; font-style: italic; }
-    .cmds { display: flex; flex-wrap: wrap; gap: 0.2rem 0.9rem; margin: 0.75rem 0 0; padding: 0; list-style: none; color: var(--color-mc-yellow); }
-    .worlds { display: flex; flex-direction: column; gap: 0.9rem; margin: 1rem 0 1.1rem; text-shadow: none; }
-    .label { display: block; margin-bottom: 0.35rem; font-size: 0.8rem; color: #bbb; }
-    .dc-label { font-family: var(--font-sans); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; }
-    .options { margin: 0.9rem 0 0; text-shadow: none; }
-    .options ul { margin: 0 0 0.6rem; padding: 0; list-style: none; color: #ddd; font-size: 0.95rem; }
-    .options li { margin: 0.2rem 0; }
-    .options .choice { color: var(--color-mc-yellow); }
-    .shot { display: block; max-width: 100%; height: auto; margin-top: 0.5rem; border-radius: 8px; image-rendering: auto; }
-    .mc-box { padding: 0.75rem; background: linear-gradient(#78a6f7, #b4d3ff); border: 3px solid #000; font-size: 0.9rem; text-shadow: initial; }
-    .dc-box { display: block; padding: 0.5rem 1rem; background: var(--color-dc); border-radius: 8px; line-height: 1.375; text-shadow: none; }
-
     @media (max-width: 560px) {
-        .inv { --cols: 6; --slot: min(2.9rem, calc((100vw - 4.75rem) / 6)); }
-        .tabs { padding-left: 2px; }
-        .tab { width: calc((100vw - 4rem) / 6 - 2px); max-width: 3.25rem; }
-        .panel-head { flex-wrap: wrap; gap: 0.4rem; }
-        .search { width: 100%; }
-        .preview { padding: 1rem; }
+        .panel { padding: 0.75rem; }
+        .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.4rem; }
+        .tile { min-height: 5.5rem; }
+        .detail { padding: 1rem 0.9rem calc(1rem + 3 * var(--t)); }
     }
 </style>

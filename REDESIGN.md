@@ -5,6 +5,7 @@ This file explains the redesign: what we learned about the project, the decision
 | Branch | Concept | One-liner |
 |---|---|---|
 | `claude/mclinker-website-final-jy15ja` | **Final** | Two Worlds' split-screen hero with Crafting Table's title menu between the chats, then setup, the feature inventory, the server list and the FAQ as a written book. Navigation is a labelled hotbar. |
+| `claude/mclinker-website-ore-ui-jy15ja` | **Ore UI** | Final, redrawn in Bedrock Edition's Ore UI: flat panels, green and white buttons that sink when pressed, tabs and toggle buttons. Navigation is an Ore UI header bar. |
 | `claude/mclinker-website-guide-redesign-jy15ja` | **Two Worlds** | The screen is split: Minecraft on the left, Discord on the right, the MC Linker logo links them. Every feature is shown happening on both sides at once. |
 | `claude/mclinker-website-crafting-jy15ja` | **Crafting Table** | The site plays like Minecraft's UI. You craft the link in a crafting grid, browse features as items in an inventory, and earn advancements while scrolling. |
 | `claude/mclinker-website-speedrun-jy15ja` | **Speedrun** | A light, bold, type-driven site built around "quick". A speedrun timer runs your setup with splits, and you can actually time your own run. |
@@ -95,4 +96,25 @@ On phones the link slots fold into one "Links" slot that opens a small list, so 
 **Link previews.** Posting a link to the site in Discord shows a custom preview built from Discord's new component embeds: the logo and pitch, four screenshots of the bot and buttons for Add to Discord, the plugin, the guide and support (home page); each member with their avatar and roles (team page); a short summary (terms and privacy). The guide does the same for every page.
 
 **Team page.** A title-screen header ("The Team" in the stone logo style over the blurred hills), then every member as a Discord profile card with their about text and roles, all visible at once. Each card's banner has the member's colour with a stone grain and a Minecraft nametag.
+
+## Ore UI
+
+[Ore UI](https://minecraft.wiki/w/Ore_UI) is the menu system Bedrock Edition has been moving to since 2020: the Play, Create New World and Settings screens, the death screen and more. This branch keeps Final's content and layout and draws all of Minecraft's menus in it. The game world itself (the panorama, the chat, item icons) and Discord stay as they were.
+
+**The look.** Colours, sizes and shapes come from the textures of bedrock-core's [ore-styled theme](https://bedrock-core.drav.dev/docs/ore-styled/theme) (MIT), redrawn in CSS with one texture pixel = 2px:
+
+- **Buttons:** a flat face, a light top-left edge, a shaded bottom-right one and a darker edge underneath that makes them stand up. Pressing pushes the face down into that edge. Green for the main action, light grey with black text for the rest, dark grey, red and purple as in the game, plus a blurple one built the same way for "Add to Discord". Hero buttons use the title font.
+- **Panels:** dark grey (`#48494a`) with a near-black outline; "raised" ones have a darker edge along the bottom. A light grey bar with black text is the title of a screen or a dialog.
+- **Controls:** dark tabs and light toggle buttons with fused borders, where the chosen one sinks in and gets a white line; list rows with a thumbnail, a title, a grey line and an arrow; radio buttons as diamonds; text fields that sit into the surface; a dropdown with a grey popup.
+- **Text:** flat, without the classic drop shadow. Mojangles (Minecraft Seven here) for controls, Minecraft Ten for titles (Minecraft Seven drawn bold here, since Minecraft Ten has no free licence) and Noto Sans, the game's "smooth font", for longer text.
+
+**What changed from Final:**
+
+1. **Navigation:** the hotbar became the header bar of an Ore UI screen: a back arrow, the trail ("MC Linker › Features"), the sections as toggle buttons (keys 1 to 4 still work), "Add to Discord" and a "Links" dropdown. Its bottom edge fills green as you scroll. On the home page it waits until the title screen's menu has scrolled away. On phones everything is in one "Menu" dropdown.
+2. **Hero:** the same split title screen, with Ore UI buttons (blurple "Add to Discord" and green "Get the Plugin" as hero buttons) and Bedrock's chat bar with a send button.
+3. **Setup:** each step is an Ore UI panel with a light title bar, its number and where it happens. Step 2 picks the server software from list rows with radio diamonds; Modrinth is the green (recommended) download, the others are light buttons, and CurseForge for plugins is greyed out until it's published.
+4. **Features:** a browse screen instead of the creative inventory: dark tabs for the categories, a search field, a grid of item tiles (the chosen one turns green) and a panel with the details. Role sync and join requirements show their choices as Ore UI radio buttons.
+5. **FAQ:** collapsible rows over the dimmed panorama instead of the written book, with a "More answers" panel next to them.
+6. **Last call to action:** an Ore UI dialog ("Link your worlds") over both worlds.
+7. **Other pages:** the team page and the legal pages sit under the header bar, and errors use the death screen with a green "Respawn" button.
 

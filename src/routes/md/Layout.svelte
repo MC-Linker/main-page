@@ -15,25 +15,25 @@
     <meta name="description" content={description} />
 </svelte:head>
 
-<header class="head">
-    <p class="crumb mc-text"><a href="/">MC Linker</a> / Legal</p>
-    <h1>{title}</h1>
-</header>
-<article class="prose prose-invert prose-zinc doc">
-    {@render children?.()}
-</article>
+<!-- An Ore UI screen: the header bar shows the trail, the text sits on a panel. -->
+<div class="legal">
+    <header class="head">
+        <p class="kicker ore-text">Legal</p>
+        <h1 class="ore-title">{title}</h1>
+    </header>
+    <article class="ore-card raised prose prose-invert prose-zinc doc">
+        {@render children?.()}
+    </article>
+</div>
 
 <style>
-    .head {
-        padding: 4.5rem 1rem 3rem;
-        text-align: center;
-        background: linear-gradient(90deg, #2d4a12 0 50%, #232a6b 50% 100%);
-    }
-    .crumb { margin: 0 0 0.5rem; color: #e9ecef; }
-    .crumb a { color: inherit; }
-    h1 { margin: 0; font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; color: #fff; letter-spacing: -0.02em; }
-    .doc { max-width: 46rem; margin: 0 auto; padding: 3rem 1rem 6rem; }
+    .legal { padding: 0 1rem clamp(4rem, 8vw, 6rem); background: var(--color-ore-deep); }
+    .head { padding: clamp(2.5rem, 6vw, 4rem) 0 2rem; text-align: center; }
+    .kicker { margin: 0 0 0.6rem; color: var(--color-mc-green); }
+    h1 { margin: 0; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.15; color: #fff; }
+    .doc { max-width: 48rem; margin: 0 auto; padding: clamp(1.25rem, 4vw, 2.5rem) clamp(1rem, 4vw, 2.5rem) calc(clamp(1.25rem, 4vw, 2.5rem) + 3 * var(--t)); }
     .doc :global(h1) { font-size: 1.6rem; margin-top: 2.5rem; }
-    .doc :global(a) { color: var(--color-grass-light); }
+    .doc :global(> :first-child) { margin-top: 0; }
+    .doc :global(a) { color: #a6dd94; }
     .doc :global(code::before), .doc :global(code::after) { content: none; }
 </style>

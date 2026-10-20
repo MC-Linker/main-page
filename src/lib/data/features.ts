@@ -34,7 +34,7 @@ export type Preview = {
     options?: { title: string; choices: { name: string; text: string }[] }[];
 };
 
-/** Every feature, as an item in the creative inventory (Features section). */
+/** Every feature, as an item in the Features section's list. */
 export type Feature = Item & {
     tab: 'chat' | 'players' | 'moderation' | 'server' | 'accounts';
     commands: string[];
@@ -380,9 +380,9 @@ export const features: Feature[] = [
     },
 ];
 
-/** The creative inventory's tabs. "all" shows everything and has the search field. */
+/** The feature list's tabs. "all" shows everything and has the search field. */
 export const featureTabs = [
-    { id: 'all', name: 'Search Items', icon: texture('book') },
+    { id: 'all', name: 'All', icon: texture('book') },
     { id: 'chat', name: 'Chat & Logs', icon: texture('oak_sign') },
     { id: 'players', name: 'Players', icon: texture('barrel') },
     { id: 'moderation', name: 'Moderation', icon: texture('iron_sword') },

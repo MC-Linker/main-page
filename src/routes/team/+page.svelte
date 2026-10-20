@@ -66,7 +66,7 @@
             {#each team.core as m (m.username)}{@render card(m)}{/each}
         </div>
 
-        <h2 class="thanks mc-text">Special thanks</h2>
+        <h2 class="thanks ore-title">Special thanks</h2>
         <div class="grid small-grid" aria-label="Special thanks">
             {#each team.specialThanks as m (m.username)}{@render card(m, true)}{/each}
         </div>
@@ -74,8 +74,7 @@
 </section>
 
 <style>
-    .team { background: linear-gradient(rgb(0 0 0 / 0.62), rgb(0 0 0 / 0.62)), var(--tex-dirt) 0 0 / 64px 64px; image-rendering: pixelated; }
-    .team :global(img) { image-rendering: auto; }
+    .team { background: var(--color-ore-deep); }
 
     /* ── Header ─────────────────────────────────────────────────────────── */
     .head {
@@ -87,7 +86,7 @@
         align-items: center;
         padding: clamp(3.5rem, 9vh, 6rem) 1rem clamp(3rem, 7vh, 4.5rem);
         text-align: center;
-        border-bottom: 2px solid #000;
+        border-bottom: var(--t) solid var(--color-ore-outline);
     }
     .head :global(.world) { position: absolute; inset: 0; z-index: -1; }
     .logo { display: block; width: clamp(16rem, 52vw, 36rem); height: auto; filter: drop-shadow(0 6px 0 rgb(0 0 0 / 0.3)); }
@@ -100,14 +99,14 @@
     }
     @keyframes splash { to { transform: rotate(-20deg) scale(1.1); } }
     .edition { margin: clamp(0.6rem, 1.5vh, 1rem) 0 0; font-size: clamp(0.95rem, 1.4vw, 1.35rem); letter-spacing: 0.24em; color: #fff; text-shadow: 0.1em 0.1em 0 rgb(0 0 0 / 0.6); }
-    .edition .brand { color: var(--color-grass-light); }
+    .edition .brand { color: var(--color-mc-green); }
     .lead { max-width: 34rem; margin: 0.8rem 0 0; font-size: clamp(0.95rem, 0.4vw + 0.75rem, 1.1rem); color: #f1f3f5; text-wrap: balance; }
 
     /* ── Cards ──────────────────────────────────────────────────────────── */
-    .cards { padding: clamp(2.5rem, 6vw, 4rem) 1rem calc(var(--hud-space) + 2.5rem); }
+    .cards { padding: clamp(2.5rem, 6vw, 4rem) 1rem clamp(4rem, 8vw, 6rem); }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18.5rem), 1fr)); gap: 1.25rem; max-width: 66rem; margin: 0 auto; }
     .small-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 18rem)); justify-content: center; }
-    .thanks { margin: 3.5rem 0 1.5rem; text-align: center; font-size: clamp(1.6rem, 3.5vw, 2.1rem); font-weight: 400; color: #fff; }
+    .thanks { margin: 3.5rem 0 1.5rem; text-align: center; font-size: clamp(1.6rem, 3.5vw, 2.1rem); color: #fff; }
 
     /* A Discord profile... */
     .profile {

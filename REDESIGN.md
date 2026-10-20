@@ -92,5 +92,7 @@ On phones the link slots fold into one "Links" slot that opens a small list, so 
 
 **Phones.** Everything stacks into one column: Minecraft on top, Discord below. Sending a message in one chat closes the keyboard and scrolls to the other chat so you can watch it arrive. The inventory shows six bigger slots per row and scrolls to the item you tap. The book shows one page and turns with a swipe. Text fields use 16px text so phones don't zoom in, tooltips only appear for a mouse, and the hotbar hides while you type. Held sideways, the hotbar gets slimmer.
 
+**Link previews.** Posting a link to the site in Discord shows a custom preview built from Discord's new component embeds: the logo and pitch, four screenshots of the bot and buttons for Add to Discord, the plugin, the guide and support (home page); each member with their avatar and roles (team page); a short summary (terms and privacy). The guide does the same for every page.
+
 **Team page.** A title-screen header ("The Team" in the stone logo style over the blurred hills), then every member as a Discord profile card with their about text and roles, all visible at once. Each card's banner has the member's colour with a stone grain and a Minecraft nametag.
 

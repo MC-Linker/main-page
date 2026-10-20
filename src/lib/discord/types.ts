@@ -52,6 +52,8 @@ export type DcMsg = {
     buttons?: DcButtonData[];
     /** More rows of buttons under `buttons`, like the admin actions under the page buttons. */
     buttonRows?: DcButtonData[][];
+    /** The bot's "is thinking..." placeholder while a slash command runs. */
+    thinking?: boolean;
     /** "Only you can see this" messages. */
     ephemeral?: boolean;
 };

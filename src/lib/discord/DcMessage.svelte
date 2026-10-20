@@ -35,6 +35,7 @@
     {:else if msg.reply}
         <discord-reply slot="reply" author={msg.reply.author} avatar={avatarUrl(msg.reply.avatar)} bot={msg.reply.bot || undefined}>{msg.reply.content}</discord-reply>
     {/if}
+    {#if msg.thinking}<span class="thinking">{msg.author.name} is thinking<i></i><i></i><i></i></span>{/if}
     {#if msg.content}{@html discordMarkdown(msg.content)}{/if}
     {#each msg.embeds ?? [] as e, i (i)}
         <discord-embed
@@ -74,3 +75,10 @@
         </discord-attachments>
     {/if}
 </discord-message>
+
+<style>
+    .thinking i { display: inline-block; width: 0.25em; height: 0.25em; margin-left: 0.18em; border-radius: 50%; background: currentColor; vertical-align: 0.1em; animation: dot 1.2s infinite both; }
+    .thinking i:nth-of-type(2) { animation-delay: 0.2s; }
+    .thinking i:nth-of-type(3) { animation-delay: 0.4s; }
+    @keyframes dot { 0%, 80%, 100% { opacity: 0.2; } 40% { opacity: 1; } }
+</style>

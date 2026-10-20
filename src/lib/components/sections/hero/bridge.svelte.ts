@@ -103,7 +103,16 @@ export class Bridge {
         if(i !== -1) this.dc[i] = { ...this.dc[i], ...patch };
     }
 
+    /** The "is thinking..." message of the slash command that is running, which the reply replaces. */
+    private pending: number | null = null;
+
     private botReply(command: string, embeds: Embed[], buttons?: DcMsg['buttons']) {
+        if(this.pending !== null) {
+            const id = this.pending;
+            this.pending = null;
+            this.dcEdit(id, { embeds, buttons, thinking: false });
+            return id;
+        }
         return this.dcPost({ author: bot, interaction: { ...you, command }, embeds, buttons });
     }
 
@@ -144,11 +153,21 @@ export class Bridge {
     }
 
     /** Handles whatever the visitor types into the Discord composer. */
-    async runDiscord(text: string) {
+    runDiscord(text: string) {
         if(!text.startsWith('/')) return this.discordChat(members.you, text);
+        // Slash commands run one after another, each with its own "is thinking..." message.
+        this.slashQueue = this.slashQueue.then(() => this.slash(text)).catch(() => {});
+        return this.slashQueue;
+    }
 
+    private slashQueue: Promise<void> = Promise.resolve();
+
+    private async slash(text: string) {
         const [name, ...rest] = text.slice(1).split(/\s+/);
         const arg = rest.join(' ');
+        // Like Discord: the app takes a moment to answer, and shows that it is thinking.
+        this.pending = this.dcPost({ author: bot, interaction: { ...you, command: `/${name}` }, thinking: true });
+        await sleep(900);
         switch(name.toLowerCase()) {
             case 'command': return this.remoteCommand(arg);
             case 'serverinfo': return this.serverInfo();
@@ -156,13 +175,15 @@ export class Bridge {
             case 'message': return this.message(rest[0], rest.slice(1).join(' '));
             case 'ban': return this.ban(rest[0], rest.slice(1).join(' '));
             case 'help': return this.help();
-            default:
-                this.dcPost({
-                    author: bot,
-                    interaction: { ...you, command: `/${name}` },
+            default: {
+                const id = this.pending!;
+                this.pending = null;
+                this.dcEdit(id, {
+                    thinking: false,
                     content: 'In this demo you can try `/command`, `/serverinfo`, `/inventory`, `/message`, `/ban` and `/help`. The real bot has a lot more.',
                     ephemeral: true,
                 });
+            }
         }
     }
 

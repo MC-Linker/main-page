@@ -127,28 +127,30 @@
         {#if cmd}
             <img class="app" src="/logo.png" alt="" width="22" height="22" />
             <span class="pill">/{cmd.name}</span>
-            {#if option}<span class="opt">{option}</span>{/if}
         {:else}
             <span class="plus" aria-hidden="true">+</span>
         {/if}
-        <input
-            bind:this={input}
-            bind:value={() => tail, v => (value = cmd ? `/${cmd.name} ${v}` : v)}
-            class:chip={!!option}
-            style:width={option ? `calc(${Math.max(tail.length, 1)}ch + 1.25rem)` : undefined}
-            placeholder={cmd ? '' : placeholder}
-            aria-label={label}
-            autocomplete="off"
-            spellcheck="false"
-            maxlength="200"
-            role="combobox"
-            aria-expanded={open}
-            aria-controls={listId}
-            aria-autocomplete="list"
-            onkeydown={keydown}
-            onfocus={() => (focused = true)}
-            onblur={() => (focused = false)}
-        />
+        <!-- In Discord the option's name and its value are one box. -->
+        <span class="param" class:boxed={!!option}>
+            {#if option}<span class="opt">{option}</span>{/if}
+            <input
+                bind:this={input}
+                bind:value={() => tail, v => (value = cmd ? `/${cmd.name} ${v}` : v)}
+                style:width={option ? `calc(${Math.max(tail.length, 4)}ch + 0.5rem)` : undefined}
+                placeholder={cmd ? '' : placeholder}
+                aria-label={label}
+                autocomplete="off"
+                spellcheck="false"
+                maxlength="200"
+                role="combobox"
+                aria-expanded={open}
+                aria-controls={listId}
+                aria-autocomplete="list"
+                onkeydown={keydown}
+                onfocus={() => (focused = true)}
+                onblur={() => (focused = false)}
+            />
+        </span>
         {#if !cmd}
             <button type="button" class="kbd" aria-label="Show commands" title="Commands" onmousedown={e => e.preventDefault()} onclick={() => start('/')}>/</button>
         {/if}
@@ -222,9 +224,13 @@
     .composer.stacked .field { border-radius: 0 0 8px 8px; }
     .field.command { gap: 0.4rem; padding-left: 0.65rem; cursor: text; }
     .app { flex: none; width: 1.375rem; height: 1.375rem; border-radius: 50%; }
-    .pill, .opt { flex: none; padding: 0.15rem 0.45rem; border-radius: 4px; background: var(--color-dc-2); font-size: 0.9375rem; line-height: 1.3; }
-    .pill { font-weight: 700; color: var(--color-dc-header); }
-    .opt { color: #b5bac1; }
-    input.chip { flex: none; max-width: 100%; height: auto; padding: 0.15rem 0.5rem; border-radius: 4px; background: #4e5058; line-height: 1.3; }
-    .field.command input:not(.chip) { padding-left: 0.25rem; }
+    .pill { flex: none; padding: 0.15rem 0.45rem; border-radius: 4px; background: var(--color-dc-2); font-size: 0.9375rem; line-height: 1.3; font-weight: 700; color: var(--color-dc-header); }
+    .param { display: flex; align-items: center; flex: 1; min-width: 0; height: 100%; }
+    .param.boxed {
+        flex: none; max-width: 100%; height: auto; gap: 0.5rem; padding: 0.1rem 0.25rem 0.1rem 0.5rem;
+        border: 1px solid transparent; border-radius: 4px; background: var(--color-dc-2); font-size: 0.9375rem; line-height: 1.3;
+    }
+    .param.boxed:focus-within { border-color: var(--color-dc-blurple); }
+    .param.boxed input { flex: none; height: 1.5rem; min-width: 0; max-width: 100%; }
+    .opt { flex: none; color: var(--color-dc-header); }
 </style>

@@ -1,6 +1,6 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
     import { fly } from 'svelte/transition';
-    import { inview } from '$lib/actions/inview';
     import { reducedMotion, sleep } from '$lib/browser';
     import DcMessage from '$lib/discord/DcMessage.svelte';
     import DcWindow from '$lib/discord/DcWindow.svelte';
@@ -8,31 +8,77 @@
     import McChat from '$lib/mc/McChat.svelte';
     import StepHeading from './StepHeading.svelte';
 
-    // /connect, played once when the step scrolls into view: Discord shows a code,
-    // it gets typed into Minecraft, and both sides say they're linked.
+    // /connect on a loop while the step is on screen: Discord shows a code, it gets typed into
+    // Minecraft, both sides say they're linked, and after a while the link is dropped and it starts over.
     const code = '/linker connect 803412896432:a8f3c';
     const you = { user: visitor.name, avatar: visitor.avatar, command: '/connect' };
 
-    let connected = $state(false);
+    type Phase = 'waiting' | 'linked' | 'disconnected';
+    let phase = $state<Phase>('waiting');
     let typed = $state('');
-    let started = false;
+    let dcSide = $state<HTMLElement>();
+    let mcSide = $state<HTMLElement>();
 
-    async function connect() {
-        if(started) return;
-        started = true;
+    /** Bumped to cancel a running loop. */
+    let run = 0;
+
+    async function play() {
+        const id = ++run;
+        // Sleeps for `ms` and tells the loop whether it was cancelled meanwhile.
+        const wait = async (ms: number) => {
+            await sleep(ms);
+            return id === run;
+        };
+        phase = 'waiting';
+        typed = '';
         if(reducedMotion.current) {
-            connected = true;
+            phase = 'linked';
             return;
         }
-        await sleep(900);
-        for(const ch of code) {
-            typed += ch;
-            await sleep(40);
+        while(id === run) {
+            if(!await wait(900)) return;
+            for(const ch of code) {
+                typed += ch;
+                if(!await wait(40)) return;
+            }
+            if(!await wait(400)) return;
+            typed = '';
+            phase = 'linked';
+            if(!await wait(6000)) return;
+            phase = 'disconnected';
+            if(!await wait(3500)) return;
+            phase = 'waiting';
+            if(!await wait(600)) return;
         }
-        await sleep(400);
-        typed = '';
-        connected = true;
     }
+
+    // It only plays while both halves are completely on screen (above the hotbar), and stops once the step is gone.
+    onMount(() => {
+        const ratios = new Map<Element, number>();
+        let playing = false;
+        const io = new IntersectionObserver(entries => {
+            for(const e of entries) ratios.set(e.target, e.intersectionRatio);
+            const all = [...ratios.values()];
+            if(all.length === 2 && all.every(r => r > 0.99)) {
+                if(!playing) {
+                    playing = true;
+                    void play();
+                }
+            }
+            else if(all.every(r => r === 0) && playing) {
+                playing = false;
+                run++;
+            }
+        }, { threshold: [0, 0.25, 0.5, 0.75, 0.99, 1], rootMargin: '0px 0px -120px 0px' });
+        if(dcSide && mcSide) {
+            io.observe(dcSide);
+            io.observe(mcSide);
+        }
+        return () => {
+            run++;
+            io.disconnect();
+        };
+    });
 
     const verification: DcMsg = {
         id: 1, author: bot, interaction: you,
@@ -42,32 +88,39 @@
         id: 2, author: bot, interaction: you,
         embeds: [{ ...embedStyle.success, title: 'Connected to Server', description: 'Successfully connected to the plugin.' }],
     };
+    const disconnected: DcMsg = {
+        id: 3, author: bot, interaction: { ...you, command: '/disconnect' },
+        embeds: [{ ...embedStyle.success, title: 'Disconnected From Plugin', description: 'The plugin connection was successfully disconnected.' }],
+    };
+    const dcMessages = { waiting: verification, linked, disconnected };
     const mcLines = [
         { id: 1, text: '&eAttempting to connect to the Discord bot...' },
         { id: 2, text: '&aSuccessfully connected to Discord!' },
+        { id: 3, text: '&cDisconnected from the Discord bot.' },
     ];
+    const shownMcLines = $derived(phase === 'waiting' ? [] : phase === 'linked' ? mcLines.slice(0, 2) : mcLines);
 </script>
 
 <!-- Step 3 happens in both worlds. -->
-<div class="band" use:inview={{ once: true, threshold: 0.35, onchange: v => v && connect() }}>
+<div class="band">
     <div class="intro">
         <StepHeading step={3} world="both">Run <code>/connect</code>, paste the code</StepHeading>
         <p>Discord gives you a code. Run it on your server as an operator and the two are linked. That's it.</p>
     </div>
-    <div class="side dc">
+    <div class="side dc" bind:this={dcSide}>
         <DcWindow channel="general">
             <discord-messages no-background>
-                {#key connected}
+                {#key phase}
                     <div in:fly={{ y: 8, duration: 200 }}>
-                        <DcMessage msg={connected ? linked : verification} />
+                        <DcMessage msg={dcMessages[phase]} />
                     </div>
                 {/key}
             </discord-messages>
         </DcWindow>
     </div>
-    <div class="side mc">
+    <div class="side mc" bind:this={mcSide}>
         <div class="console" aria-label="Minecraft chat">
-            <McChat lines={connected ? mcLines : []} />
+            <McChat lines={shownMcLines} />
             <div class="fake-input mc-text">{typed || ' '}{#if typed}<i class="caret"></i>{/if}</div>
         </div>
     </div>

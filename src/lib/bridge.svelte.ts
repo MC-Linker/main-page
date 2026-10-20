@@ -59,6 +59,7 @@ const eventEmbed = (p: Player, description: string, color: string): Embed => ({
 });
 
 type Direction = 'toDiscord' | 'toMinecraft';
+type InfoPage = 'server' | 'world' | 'admin';
 
 export class Bridge {
     mc = $state<McLine[]>([]);
@@ -68,6 +69,7 @@ export class Bridge {
     online = $state<string[]>(['Lianecx']);
     typing = $state<string | null>(null);
     dmToast = $state<string | null>(null);
+    banned = $state<string[]>([]);
 
     /** Replaced by the hero with the "message flies through the logo" animation. */
     transfer: (dir: Direction) => Promise<void> = async () => {};
@@ -81,12 +83,20 @@ export class Bridge {
     }
 
     dcPost(msg: Omit<DcMsg, 'id'>) {
-        this.dc.push({ ...msg, id: msgId() });
+        const id = msgId();
+        this.dc.push({ ...msg, id });
         if(this.dc.length > 30) this.dc.shift();
+        return id;
+    }
+
+    /** Changes a message in place, like the bot editing its reply after a button click. */
+    dcEdit(id: number, patch: Partial<Omit<DcMsg, 'id'>>) {
+        const i = this.dc.findIndex(m => m.id === id);
+        if(i !== -1) this.dc[i] = { ...this.dc[i], ...patch };
     }
 
     private botReply(command: string, embeds: Embed[], buttons?: DcMsg['buttons']) {
-        this.dcPost({ author: bot, interaction: { ...you, command }, embeds, buttons });
+        return this.dcPost({ author: bot, interaction: { ...you, command }, embeds, buttons });
     }
 
     // ── Minecraft → Discord ──────────────────────────────────────────────
@@ -195,8 +205,27 @@ export class Bridge {
         }]);
     }
 
+    /** /serverinfo has three pages; its buttons switch between them by editing the reply. */
     private serverInfo() {
-        this.botReply('/serverinfo', [{
+        const id = this.botReply('/serverinfo', []);
+        this.showInfoPage(id, 'server');
+    }
+
+    private showInfoPage(id: number, page: InfoPage) {
+        const pages: Record<InfoPage, { label: string; style?: 'danger'; embed: () => Embed }> = {
+            server: { label: 'Server Information', embed: () => this.serverEmbed() },
+            world: { label: 'World Information', embed: () => this.worldEmbed() },
+            admin: { label: 'Admin Information', style: 'danger', embed: () => this.adminEmbed() },
+        };
+        const others = (Object.keys(pages) as InfoPage[]).filter(p => p !== page);
+        this.dcEdit(id, {
+            embeds: [pages[page].embed()],
+            buttons: others.map(p => ({ label: pages[p].label, style: pages[p].style, onclick: () => this.showInfoPage(id, p) })),
+        });
+    }
+
+    private serverEmbed(): Embed {
+        return {
             ...embedStyle.success,
             color: colors.brand,
             title: 'Server Information',
@@ -204,9 +233,42 @@ export class Bridge {
                 { name: 'Name', value: 'Linker SMP', inline: true },
                 { name: 'MOTD', value: 'A cozy survival server', inline: true },
                 { name: 'Players', value: `${this.online.length}/20`, inline: true },
+                { name: 'Online', value: this.online.length ? this.online.join(', ') : 'Nobody' },
             ],
             footer: 'Server IP: play.example.net (26.2)',
-        }], [{ label: 'World Information' }, { label: 'Admin Information', style: 'danger' }]);
+        };
+    }
+
+    private worldEmbed(): Embed {
+        return {
+            ...embedStyle.success,
+            color: colors.brand,
+            title: 'World Information',
+            fields: [
+                { name: 'World', value: 'world', inline: true },
+                { name: 'Difficulty', value: 'Normal', inline: true },
+                { name: 'Hardcore', value: 'No', inline: true },
+                { name: 'Time', value: this.night ? 'Night 🌙' : 'Day ☀️', inline: true },
+                { name: 'Weather', value: this.rain ? 'Rain 🌧️' : 'Clear', inline: true },
+                { name: 'Spawn', value: '0, 64, 0', inline: true },
+            ],
+            footer: 'Try /command time set night, then check again',
+        };
+    }
+
+    private adminEmbed(): Embed {
+        return {
+            ...embedStyle.success,
+            color: colors.red,
+            title: 'Admin Information',
+            fields: [
+                { name: 'Operators', value: 'Lianecx', inline: true },
+                { name: 'Whitelist', value: 'Off', inline: true },
+                { name: 'Banned players', value: this.banned.length ? this.banned.join(', ') : 'None', inline: true },
+                { name: 'Plugins', value: 'Discord-Linker, EssentialsX, WorldEdit' },
+            ],
+            footer: 'Only server admins can see this page',
+        };
     }
 
     private inventory(user?: string) {
@@ -241,6 +303,7 @@ export class Bridge {
             return;
         }
         reason ||= 'Banned by an operator.';
+        if(!this.banned.includes(user)) this.banned.push(user);
         await this.transfer('toMinecraft');
         if(this.online.includes(user)) {
             this.online = this.online.filter(n => n !== user);

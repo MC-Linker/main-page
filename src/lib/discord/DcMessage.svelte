@@ -56,7 +56,9 @@
     {#if msg.buttons?.length}
         <discord-attachments slot="components">
             <discord-action-row>
-                {#each msg.buttons as b, i (i)}<discord-button type={buttonType[b.style ?? 'secondary']}>{b.label}</discord-button>{/each}
+                <!-- discord-button draws a real <button> inside, so it already works with the keyboard. -->
+                <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
+                {#each msg.buttons as b, i (i)}<discord-button type={buttonType[b.style ?? 'secondary']} disabled={b.disabled || undefined} onclick={b.disabled ? undefined : b.onclick}>{b.label}</discord-button>{/each}
             </discord-action-row>
         </discord-attachments>
     {/if}

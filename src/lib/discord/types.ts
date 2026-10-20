@@ -26,7 +26,12 @@ export type Embed = {
 
 export type Interaction = { user: string; avatar: Avatar; command: string };
 
-export type DcButtonData = { label: string; style?: 'primary' | 'secondary' | 'danger' | 'success' | 'link' };
+export type DcButtonData = {
+    label: string;
+    style?: 'primary' | 'secondary' | 'danger' | 'success' | 'link';
+    disabled?: boolean;
+    onclick?: () => void;
+};
 
 export type DcMsg = {
     id: number;

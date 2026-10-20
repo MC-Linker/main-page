@@ -258,7 +258,9 @@
     .menu {
         grid-column: 2 / 4;
         grid-row: 4;
-        align-self: center;
+        /* Right under the description, not floating in the middle of the screen. */
+        align-self: start;
+        margin-top: clamp(1.25rem, 3.5vh, 2.5rem);
         display: flex;
         flex-direction: column;
         gap: 0.55rem;
@@ -329,7 +331,7 @@
     @media (max-width: 1023px) {
         .hero { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto auto auto; align-content: start; padding-top: 2rem; }
         .motd { grid-column: 1 / -1; }
-        .menu { grid-column: 1 / -1; grid-row: 4; justify-self: center; width: min(25rem, calc(100% - 2rem)); }
+        .menu { grid-column: 1 / -1; grid-row: 4; justify-self: center; width: min(25rem, calc(100% - 2rem)); margin-top: 0; }
         .mc-side, .dc-side { grid-row: 5; align-self: start; width: 100%; contain: none; min-height: 0; }
         .mc-chat { flex: none; max-height: clamp(16rem, 50svh, 28rem); }
         .mc-side { grid-column: 1; }

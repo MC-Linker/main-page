@@ -24,6 +24,7 @@
         background: var(--color-ink);
         border-top: 2px solid rgb(255 255 255 / 0.1);
     }
+    .copy { text-align: center; }
     .copy p { margin: 0 0 1rem; color: #ced4da; line-height: 1.55; }
     .copy em { font-style: normal; color: #fff; font-weight: 600; }
     .copy .alt { margin-top: 0.75rem; font-size: 0.875rem; color: #adb5bd; }

@@ -69,7 +69,7 @@
     });
 
     // After every navigation: re-check the section, and watch the title menu if this page has one.
-    // Coming in to a section further down (/#features), the page passes the menu on its way there:
+    // Coming in to a section below the menu (/#features), the page passes the menu on its way there:
     // the bar stays until the menu has really gone, so it doesn't slide away and back.
     $effect(() => {
         void page.url.href;
@@ -78,7 +78,8 @@
         tick().then(() => {
             track();
             const menu = document.querySelector('[data-title-menu]');
-            const toSection = !!page.url.hash && page.url.hash !== '#top';
+            const target = page.url.hash ? document.getElementById(decodeURIComponent(page.url.hash.slice(1))) : null;
+            const toSection = !!menu && !!target && target.getBoundingClientRect().top >= menu.getBoundingClientRect().bottom;
             let settled = !toSection;
             menuInView = !!menu && !toSection;
             if(!menu) return;
@@ -165,9 +166,10 @@
         padding: 0 0.75rem calc(3 * var(--t));
         transition: transform 0.25s ease;
     }
-    /* Out of sight above the screen, unless you tab into it. Without JavaScript nothing would
-       bring it back, so on the home page the title menu is the navigation. */
-    :global(.js) .nav.away:not(:focus-within) { transform: translateY(calc(-100% - 4px)); }
+    /* Out of sight above the screen, unless you tab into it (keyboard focus only: a click or tap
+       leaves focus behind, which shouldn't keep it over the title). Without JavaScript nothing
+       would bring it back, so on the home page the title menu is the navigation. */
+    :global(.js) .nav.away:not(:has(:focus-visible)) { transform: translateY(calc(-100% - 4px)); }
     :global(html:not(.js)) .nav.away { display: none; }
 
     .nav :global(.back) { flex: none; width: 2.5rem; min-height: 2.5rem; padding: 0; }

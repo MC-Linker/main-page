@@ -98,6 +98,8 @@
         background: #8c8d90;
         box-shadow: 0 0.75rem 1.5rem rgb(0 0 0 / 0.4);
     }
+    /* Rows keep their height; the popup scrolls instead. */
+    .popup > :global(*) { flex-shrink: 0; }
     .popup.left { left: 0; }
     .popup.right { right: 0; }
 </style>

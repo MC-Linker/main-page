@@ -8,7 +8,6 @@
     import McWorld from '$lib/mc/McWorld.svelte';
     import McChat from '$lib/mc/McChat.svelte';
     import McButton from '$lib/mc/McButton.svelte';
-    import McLogo from '$lib/mc/McLogo.svelte';
     import DcBackdrop from '$lib/discord/DcBackdrop.svelte';
     import DcWindow from '$lib/discord/DcWindow.svelte';
     import DcMessage from '$lib/discord/DcMessage.svelte';
@@ -122,7 +121,7 @@
 
     <h1 id="hero-title" class="title">
         <span class="word mc">
-            <McLogo text="Minecraft" />
+            <img class="wordmark" src="/brands/minecraft-logo.svg" alt="Minecraft" width="1639" height="281" />
             <span class="splash on-mc mc-text" aria-hidden="true">{splash}</span>
         </span>
         <span class="link-logo" class:pulsing bind:this={logo}>
@@ -130,7 +129,7 @@
             <span class="sr-only">linked with</span>
         </span>
         <span class="word dc">
-            Discord
+            <img class="wordmark" src="/brands/discord-logo.svg" alt="Discord" width="635" height="96" />
             <span class="splash on-dc mc-text" aria-hidden="true">{splash}</span>
         </span>
     </h1>
@@ -234,18 +233,13 @@
         font-weight: 400;
         line-height: 1;
     }
-    .word { position: relative; color: #fff; }
-    .word.mc { justify-self: end; padding-right: 1.25rem; font-size: clamp(2.4rem, 5.5vw, 6.4rem); }
-    .word.dc {
-        justify-self: start;
-        padding-left: 1.25rem;
-        font-family: var(--font-sans);
-        font-size: clamp(2.5rem, 5.8vw, 6.6rem);
-        font-weight: 800;
-        letter-spacing: -0.03em;
-        /* A blurple 3D edge, to match the stone logo on the other side. */
-        text-shadow: 0 0.035em 0 #4752c4, 0 0.07em 0 #3b43a8, 0 0.105em 0 #2f368a, 0 0.17em 0.12em rgb(0 0 0 / 0.45);
-    }
+    /* font-size only scales the splash text; the logos are sized by width. */
+    .word { position: relative; display: block; color: #fff; font-size: clamp(2.5rem, 5.8vw, 6.6rem); }
+    .word.mc { justify-self: end; padding-right: 1.25rem; }
+    .word.dc { justify-self: start; padding-left: 1.5rem; }
+    .wordmark { display: block; height: auto; filter: drop-shadow(0 6px 0 rgb(0 0 0 / 0.3)); }
+    .word.mc .wordmark { width: clamp(15rem, 30vw, 40rem); }
+    .word.dc .wordmark { width: clamp(12rem, 25vw, 34rem); }
     /* The yellow splash text, at the end of the logo like in the game. */
     .splash {
         position: absolute;
@@ -260,7 +254,7 @@
         animation: splash 0.55s ease-in-out infinite alternate;
         pointer-events: none;
     }
-    .splash.on-dc { left: calc(100% - 0.35em); bottom: 0.2em; transform-origin: left center; }
+    .splash.on-dc { left: calc(100% - 0.15em); bottom: 0.25em; transform-origin: left center; }
     .splash.on-mc { display: none; right: -0.4rem; bottom: -0.15em; }
     @keyframes splash { to { transform: rotate(-20deg) scale(1.1); } }
     .link-logo {
@@ -431,6 +425,8 @@
         .title { display: contents; }
         .title > * { grid-column: 1; }
         .word.mc { grid-row: 1; justify-self: center; padding: 3.5rem 0 0; font-size: clamp(2.6rem, 13vw, 4rem); }
+        .word.mc .wordmark { width: min(82vw, 24rem); }
+        .word.dc .wordmark { width: min(58vw, 17rem); }
         .splash.on-mc { display: block; right: -0.6rem; bottom: auto; top: 2.4rem; transform-origin: center; }
         .splash.on-dc { display: none; }
         .edition { grid-row: 2; font-size: 0.9rem; letter-spacing: 0.14em; }

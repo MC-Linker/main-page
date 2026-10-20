@@ -30,6 +30,8 @@
 <style>
     .icon { position: relative; display: grid; place-items: center; width: var(--size); height: var(--size); }
     .icon > :global(svg), .icon > img { width: 100%; height: 100%; object-fit: contain; }
+    /* Item textures are 16px pixel art. */
+    .icon > img { image-rendering: pixelated; }
     .block { display: grid; place-items: center; width: 100%; height: 100%; }
     .glint {
         position: absolute; inset: 0; pointer-events: none;

@@ -10,8 +10,8 @@ const botEmoji = /:(step|success|warning|error|join|leave|death|command):/g;
 
 /**
  * A small subset of Discord markdown, rendered with discord-components'
- * elements where they work well: code blocks, inline code, bold, italic, links, @mentions,
- * #channels, the bot's emoji and line breaks. Input is escaped first, so
+ * elements where they work well: code blocks, inline code, bold, italic, links, headings, small text,
+ * @mentions, #channels, the bot's emoji and line breaks. Input is escaped first, so
  * it is safe for text visitors type.
  */
 export function discordMarkdown(text: string, inEmbed = false): string {
@@ -22,6 +22,9 @@ export function discordMarkdown(text: string, inEmbed = false): string {
         return `\uE000${blocks.length - 1}\uE000`;
     });
     out = out
+        // Headings and small text are blocks of their own, so they swallow their line break.
+        .replace(/^(#{1,3}) (.+)\n?/gm, (_, h: string, t: string) => `<discord-header level="${h.length}">${t}</discord-header>`)
+        .replace(/^-# (.+)\n?/gm, '<discord-subscript>$1</discord-subscript>')
         .replace(/`([^`]+)`/g, `<discord-code${embed}>$1</discord-code>`)
         // Plain <strong>/<em>: the library's <discord-bold> adds stray spaces around its text.
         .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')

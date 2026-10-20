@@ -4,6 +4,7 @@
     import { scrollBehavior } from '$lib/browser';
     import { type Feature, features, featureTabs } from '$lib/data';
     import DcMessage from '$lib/discord/DcMessage.svelte';
+    import { bot, colors, type DcMsg } from '$lib/discord/types';
     import { rarityColor } from '$lib/mc/item';
     import McButton from '$lib/mc/McButton.svelte';
     import McChat from '$lib/mc/McChat.svelte';
@@ -33,9 +34,36 @@
         return [...shown, ...Array(rows * cols - shown.length).fill(null)];
     });
 
+    // Messages with pages (/userinfo, /serverinfo): the buttons switch the page and admin buttons answer privately.
+    let page = $state(0);
+    let followUp = $state<{ command: string; response: string } | null>(null);
+    const paged = $derived.by<DcMsg | null>(() => {
+        const p = selected.preview.paged;
+        if(!p) return null;
+        const current = p.pages[page];
+        return {
+            id: 1, author: p.author, interaction: p.interaction, embeds: current.embeds,
+            buttons: p.pages.map((pg, i) => ({
+                label: pg.label,
+                style: i === page ? 'primary' : (pg.style ?? 'secondary'),
+                onclick: () => { page = i; followUp = null; },
+            })),
+            buttonRows: current.actions && [current.actions.map(a => ({ label: a.label, style: a.style, onclick: () => { followUp = a.followUp ?? null; } }))],
+        };
+    });
+    const followUpMsg = $derived<DcMsg | null>(followUp && {
+        id: 2, author: bot, ephemeral: true,
+        embeds: [{ color: colors.blue, title: 'Command Executed', description: `Command: \`${followUp.command}\`\n${followUp.response}` }],
+    });
+    const hasDiscord = $derived(!!(selected.preview.dc || selected.preview.paged || selected.preview.images));
+    // The world a feature starts in comes first.
+    const worlds = $derived((selected.from === 'discord' ? ['discord', 'minecraft'] : ['minecraft', 'discord']) as ('discord' | 'minecraft')[]);
+
     let preview = $state<HTMLElement>();
     function pick(item: Feature) {
         selected = item;
+        page = 0;
+        followUp = null;
         // On phones the preview is below the inventory: bring it into view.
         if(narrow.current) setTimeout(() => preview?.scrollIntoView({ block: 'nearest', behavior: scrollBehavior() }), 60);
     }
@@ -44,8 +72,8 @@
 <section id="features" class="features" aria-labelledby="features-title">
     <header class="section-head">
         <p class="kicker mojang">Features</p>
-        <h2 id="features-title" class="mc-text">Everything in the inventory</h2>
-        <p>Every feature is an item. Pick one to see what it does in Minecraft and in Discord.</p>
+        <h2 id="features-title" class="mc-text">Everything MC Linker can do</h2>
+        <p>Pick an item to see how it looks in Minecraft and in Discord.</p>
     </header>
 
     <div class="layout">
@@ -95,17 +123,37 @@
                 {#if selected.commands.length}
                     <ul class="cmds">{#each selected.commands as c (c)}<li>{c}</li>{/each}</ul>
                 {/if}
-                <div class="worlds">
-                    {#if selected.preview.mc}
-                        <div class="world">
-                            <span class="label mojang">In Minecraft</span>
-                            <div class="mc-box"><McChat lines={selected.preview.mc.map((text, id) => ({ id, text: text.replace(/^> /, '&f') }))} /></div>
-                        </div>
-                    {/if}
-                    <div class="world">
-                        <span class="label dc-label">In Discord</span>
-                        <discord-messages no-background class="dc-box"><DcMessage msg={{ ...selected.preview.dc, id: 1 }} /></discord-messages>
+                {#if selected.preview.options}
+                    <div class="options">
+                        {#each selected.preview.options as group (group.title)}
+                            <p class="label mojang">{group.title}</p>
+                            <ul>{#each group.choices as c (c.name)}<li><span class="choice">{c.name}</span> – {c.text}</li>{/each}</ul>
+                        {/each}
                     </div>
+                {/if}
+                <div class="worlds">
+                    {#each worlds as world (world)}
+                        {#if world === 'minecraft' && selected.preview.mc}
+                            <div class="world">
+                                <span class="label mojang">In Minecraft</span>
+                                <div class="mc-box"><McChat lines={selected.preview.mc.map((text, id) => ({ id, text: text.replace(/^> /, '&f') }))} /></div>
+                            </div>
+                        {:else if world === 'discord' && hasDiscord}
+                            <div class="world">
+                                <span class="label dc-label">In Discord</span>
+                                {#if selected.preview.dc || paged}
+                                    <discord-messages no-background class="dc-box">
+                                        {#each selected.preview.dc ?? [] as msg, i (i)}<DcMessage msg={{ ...msg, id: i }} />{/each}
+                                        {#if paged}<DcMessage msg={paged} />{/if}
+                                        {#if followUpMsg}<DcMessage msg={followUpMsg} />{/if}
+                                    </discord-messages>
+                                {/if}
+                                {#each selected.preview.images ?? [] as img (img.src)}
+                                    <img class="shot" src={img.src} alt={img.alt} />
+                                {/each}
+                            </div>
+                        {/if}
+                    {/each}
                 </div>
                 <McButton href={selected.guide}>Read the guide</McButton>
             </article>
@@ -134,8 +182,9 @@
     .tab[aria-selected='true'] { z-index: 2; height: 3rem; background: var(--color-mc-ui); box-shadow: inset 3px 3px 0 #fff; }
     .tab:hover { filter: brightness(1.08); }
     .panel { width: max-content; max-width: 100%; }
-    .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-    .search { width: 9rem; padding: 0.2rem 0.4rem; border: 2px solid #000; background: #000; color: #fff; font-size: 1rem; text-shadow: none; }
+    .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.5rem; }
+    .panel-head .mc-panel-title { margin: 0; }
+    .search { box-sizing: border-box; width: 9rem; min-width: 0; margin: 0; padding: 0.2rem 0.4rem; border: 2px solid #000; background: #000; color: #fff; font-size: 1rem; text-shadow: none; }
     .grid { display: grid; grid-template-columns: repeat(var(--cols), var(--slot)); gap: 2px; }
     .none { margin: 0.5rem 0 0; font-size: 0.85rem; color: #3f3f3f; }
     .tip { margin: 0.75rem 0 0; text-align: center; font-size: 0.85rem; color: #aaa; }
@@ -148,6 +197,11 @@
     .worlds { display: flex; flex-direction: column; gap: 0.9rem; margin: 1rem 0 1.1rem; text-shadow: none; }
     .label { display: block; margin-bottom: 0.35rem; font-size: 0.8rem; color: #bbb; }
     .dc-label { font-family: var(--font-sans); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .options { margin: 0.9rem 0 0; text-shadow: none; }
+    .options ul { margin: 0 0 0.6rem; padding: 0; list-style: none; color: #ddd; font-size: 0.95rem; }
+    .options li { margin: 0.2rem 0; }
+    .options .choice { color: var(--color-mc-yellow); }
+    .shot { display: block; max-width: 100%; height: auto; margin-top: 0.5rem; border-radius: 8px; image-rendering: auto; }
     .mc-box { padding: 0.75rem; background: linear-gradient(#78a6f7, #b4d3ff); border: 3px solid #000; font-size: 0.9rem; text-shadow: initial; }
     .dc-box { display: block; padding: 0.5rem 1rem; background: var(--color-dc); border-radius: 8px; line-height: 1.375; text-shadow: none; }
 

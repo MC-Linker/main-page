@@ -21,6 +21,8 @@ export type Embed = {
     description?: string;
     fields?: EmbedField[];
     image?: string;
+    /** The small picture in the embed's top right corner. */
+    thumbnail?: string;
     footer?: string;
 };
 
@@ -34,13 +36,22 @@ export type DcButtonData = {
     onclick?: () => void;
 };
 
+/** The quoted message above a reply. */
+export type Reply = { author: string; avatar: Avatar; content: string; bot?: boolean };
+
+export type Reaction = { name: string; emoji: string; count: number };
+
 export type DcMsg = {
     id: number;
     author: Author;
     content?: string;
     embeds?: Embed[];
     interaction?: Interaction;
+    reply?: Reply;
+    reactions?: Reaction[];
     buttons?: DcButtonData[];
+    /** More rows of buttons under `buttons`, like the admin actions under the page buttons. */
+    buttonRows?: DcButtonData[][];
     /** "Only you can see this" messages. */
     ephemeral?: boolean;
 };

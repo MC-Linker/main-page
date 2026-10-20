@@ -27,7 +27,12 @@ export type Embed = {
 /** The "you used /command" line above a bot's reply. */
 export type Interaction = { user: string; avatar: Avatar; command: string };
 
-export type DcButtonData = { label: string; style?: 'primary' | 'secondary' | 'danger' | 'success' | 'link' };
+export type DcButtonData = {
+    label: string;
+    style?: 'primary' | 'secondary' | 'danger' | 'success' | 'link';
+    disabled?: boolean;
+    onclick?: () => void;
+};
 
 export type DcMsg = {
     id: number;
@@ -55,6 +60,7 @@ export const colors = {
     pink: '#e91e63',
     darkPurple: '#71368a',
     darkGold: '#c27c0e',
+    red: '#ed4245',
     brand: '#729e34',
 } as const;
 

@@ -51,9 +51,14 @@
 </div>
 
 <style>
-    .channel { position: relative; }
+    /* Fills whatever height the hero gives it; the message list takes the rest. */
+    .channel { position: relative; flex: 1; min-height: 0; display: flex; }
+    .channel :global(.window) { flex: 1; }
+    .channel :global(.content) { display: flex; flex-direction: column; }
     .dc-list {
-        height: clamp(8.5rem, calc(100svh - 39rem), 22rem);
+        flex: 1;
+        min-height: 10rem;
+        height: 0;
         overflow-y: auto;
         overscroll-behavior: contain;
         scrollbar-width: thin;
@@ -80,8 +85,11 @@
     }
     .dm-icon { font-size: 1.25rem; }
 
-    /* Phones: the chats are stacked, so the channel can be taller. */
+    /* Tablets and phones: the page scrolls, so the list gets a fixed height. */
+    @media (max-width: 1023px) {
+        .dc-list { flex: none; height: clamp(12rem, calc(50svh - 8rem), 22rem); min-height: 0; }
+    }
     @media (max-width: 860px) {
-        .dc-list { height: 15rem; }
+        .dc-list { height: 20rem; }
     }
 </style>

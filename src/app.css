@@ -147,6 +147,9 @@ discord-messages { display: block; }
    avatar, so the curved connector lines up like in Discord. */
 discord-command, discord-reply { margin: 0 0 4px 56px; padding-top: 2px; }
 discord-command[compact-mode], discord-reply[compact-mode] { margin: 0 0 0 62px; }
+/* The same reset removes the gap between messages; put back Discord's spacing. */
+discord-message { padding-top: 0.125rem; padding-bottom: 0.125rem; }
+discord-messages > * + * { margin-top: 1.0625rem; }
 
 /* On phones: the sun sits above the page titles, out of their way. */
 @media (max-width: 760px) {

@@ -35,22 +35,22 @@
 {/if}
 
 <style>
+    /* Minecraft's own button textures (from the game's client.jar, gui/sprites/widget),
+       drawn as a 9-slice with a 3-pixel edge, the way the game scales them. */
     .mc-btn {
-        --tint: #6f6f6f;
-        --face: var(--tint);
-        --face-hover: color-mix(in srgb, var(--tint) 78%, white);
+        /* Size of one texture pixel. */
+        --px: 2px;
+        --texture: url('/mc/gui/button.png');
         position: relative;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 0.5rem;
-        min-height: 2.5rem;
+        min-height: calc(20 * var(--px));
         padding: 0 1.25rem;
-        border: 2px solid #000;
-        background:
-            linear-gradient(#ffffff40, #ffffff40) top / 100% 2px no-repeat,
-            linear-gradient(#00000055, #00000055) bottom / 100% 3px no-repeat,
-            var(--face);
+        border: calc(3 * var(--px)) solid transparent;
+        border-image: var(--texture) 3 fill / calc(3 * var(--px)) repeat;
+        background: none;
         color: #fff;
         font-size: 1.05rem;
         text-decoration: none;
@@ -58,25 +58,22 @@
         user-select: none;
         image-rendering: pixelated;
     }
-    .mc-btn.default:not([style*='--tint']) { --face-hover: #7d84a8; }
-    .mc-btn.discord { --tint: var(--color-dc-blurple); }
-    .mc-btn.lg { min-height: 3rem; padding: 0 1.75rem; font-size: 1.2rem; }
+    .mc-btn.lg { --px: 3px; padding: 0 1.75rem; font-size: 1.2rem; }
     .mc-btn:hover:not(:disabled), .mc-btn:focus-visible, .mc-btn[aria-pressed='true'] {
-        outline: 2px solid #fff;
-        outline-offset: -4px;
-        --face: var(--face-hover);
+        --texture: url('/mc/gui/button_highlighted.png');
+        outline: none;
     }
-    .mc-btn[aria-pressed='true'] { --face: #5c8a2a; }
+    .mc-btn[aria-pressed='true'] { --tint: #5c8a2a; }
     .mc-btn:active:not(:disabled) { transform: translateY(1px); }
-    .mc-btn:disabled { color: #a0a0a0; --face: #2c2c2c; cursor: default; }
-    .mc-btn > span { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap; }
-    /* The button texture: a faint stone grain over the face colour, like the game's buttons. */
+    .mc-btn:disabled { --texture: url('/mc/gui/button_disabled.png'); color: #a0a0a0; cursor: default; }
+    .mc-btn.discord { --tint: var(--color-dc-blurple); }
+    /* Coloured buttons: the same texture, recoloured but keeping its shading and grain. */
     .mc-btn::before {
-        content: ''; position: absolute; inset: 2px 0 3px; pointer-events: none;
-        background: var(--tex-stone) 0 0 / 32px 32px; opacity: 0.22; mix-blend-mode: luminosity;
-        image-rendering: pixelated;
+        content: ''; position: absolute; inset: calc(-3 * var(--px)); pointer-events: none;
+        background: var(--tint, transparent); mix-blend-mode: color;
     }
     .mc-btn:disabled::before { display: none; }
+    .mc-btn > span { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap; }
     .mc-btn :global(svg) { flex: none; }
     .badge {
         position: absolute; z-index: 2; top: -0.7rem; right: 0.5rem; padding: 0.05rem 0.35rem;

@@ -8,7 +8,6 @@
     import DcBackdrop from '$lib/discord/DcBackdrop.svelte';
     import McButton from '$lib/mc/McButton.svelte';
     import McChat from '$lib/mc/McChat.svelte';
-    import McLogo from '$lib/mc/McLogo.svelte';
     import McWorld from '$lib/mc/McWorld.svelte';
     import { Bridge, type Direction } from './hero/bridge.svelte';
     import DemoChannel from './hero/DemoChannel.svelte';
@@ -101,7 +100,7 @@
 
     <h1 id="hero-title" class="title">
         <span class="word mc">
-            <McLogo text="Minecraft" />
+            <img class="wordmark" src="/brands/minecraft-logo.svg" alt="Minecraft" width="1639" height="281" />
             <span class="splash on-mc mc-text" aria-hidden="true">{splash}</span>
         </span>
         <span class="link-logo" class:pulsing bind:this={logo}>
@@ -109,7 +108,7 @@
             <span class="sr-only">linked with</span>
         </span>
         <span class="word dc">
-            Discord
+            <img class="wordmark" src="/brands/discord-logo.svg" alt="Discord" width="635" height="96" />
             <span class="splash on-dc mc-text" aria-hidden="true">{splash}</span>
         </span>
     </h1>
@@ -131,7 +130,7 @@
     <div class="mc-side">
         <p class="hint mc-text">{#if keyboard.current}<kbd>T</kbd> to chat · {/if}try <code>/time set night</code></p>
         <div class="mc-chat" bind:this={mcEnd}>
-            <McChat bind:this={mcChat} lines={bridge.mc} max={18} onsubmit={fromMinecraft} label="Minecraft chat (demo)" placeholder={keyboard.current ? 'Press T to chat' : 'Tap to chat'} />
+            <McChat bind:this={mcChat} lines={bridge.mc} max={40} onsubmit={fromMinecraft} label="Minecraft chat (demo)" placeholder={keyboard.current ? 'Press T to chat' : 'Tap to chat'} />
         </div>
     </div>
 
@@ -149,15 +148,17 @@
 <style>
     .hero {
         --logo: clamp(5rem, 7.5vw, 9rem);
-        --gutter: clamp(1.25rem, 3.5vw, 4.5rem);
+        /* Space between a chat and the menu, and between a chat and the screen edge. */
+        --gutter: clamp(1rem, 2.5vw, 3rem);
+        --edge: clamp(1rem, 2vw, 2.5rem);
         position: relative;
         display: grid;
         /* Two equal middle columns put the seam (and the logo) at exactly 50%. */
         grid-template-columns: 1fr minmax(9.5rem, 13.5rem) minmax(9.5rem, 13.5rem) 1fr;
-        grid-template-rows: auto auto auto auto;
-        align-content: center;
+        /* The last row takes all the height that's left, so the chats can fill it. */
+        grid-template-rows: auto auto auto 1fr;
         min-height: max(100svh, 46rem);
-        padding: 1.5rem 0 var(--hud-space);
+        padding: clamp(1.5rem, 4svh, 3rem) 0 var(--hud-space);
         isolation: isolate;
         overflow: hidden;
     }
@@ -188,18 +189,13 @@
         font-weight: 400;
         line-height: 1;
     }
-    .word { position: relative; color: #fff; }
-    .word.mc { justify-self: end; padding-right: 1.25rem; font-size: clamp(2.4rem, 5.5vw, 6.4rem); }
-    .word.dc {
-        justify-self: start;
-        padding-left: 1.25rem;
-        font-family: var(--font-sans);
-        font-size: clamp(2.5rem, 5.8vw, 6.6rem);
-        font-weight: 800;
-        letter-spacing: -0.03em;
-        /* A blurple 3D edge, to match the stone logo on the other side. */
-        text-shadow: 0 0.035em 0 #4752c4, 0 0.07em 0 #3b43a8, 0 0.105em 0 #2f368a, 0 0.17em 0.12em rgb(0 0 0 / 0.45);
-    }
+    /* font-size only scales the splash text; the logos are sized by width. */
+    .word { position: relative; display: block; color: #fff; font-size: clamp(2.5rem, 5.8vw, 6.6rem); }
+    .word.mc { justify-self: end; padding-right: 1.25rem; }
+    .word.dc { justify-self: start; padding-left: 1.5rem; }
+    .wordmark { display: block; height: auto; filter: drop-shadow(0 6px 0 rgb(0 0 0 / 0.3)); }
+    .word.mc .wordmark { width: clamp(15rem, 30vw, 40rem); }
+    .word.dc .wordmark { width: clamp(12rem, 25vw, 34rem); }
     /* The yellow splash text, at the end of the logo like in the game. */
     .splash {
         position: absolute;
@@ -214,7 +210,7 @@
         animation: splash 0.55s ease-in-out infinite alternate;
         pointer-events: none;
     }
-    .splash.on-dc { left: calc(100% - 0.35em); bottom: 0.2em; transform-origin: left center; }
+    .splash.on-dc { left: calc(100% - 0.15em); bottom: 0.25em; transform-origin: left center; }
     .splash.on-mc { display: none; right: -0.4rem; bottom: -0.15em; }
     @keyframes splash { to { transform: rotate(-20deg) scale(1.1); } }
     .link-logo {
@@ -247,7 +243,7 @@
     }
     .edition .brand { color: var(--color-grass-light); }
     .motd {
-        grid-column: 1 / -1;
+        grid-column: 2 / 4;
         grid-row: 3;
         justify-self: center;
         max-width: 36rem;
@@ -281,20 +277,27 @@
     @media (max-width: 1399px) { .corner { display: none; } }
 
     /* ── The two chats ─────────────────────────────────────────────────── */
+    /* Each chat fills its half, from under the subtitle down to the hotbar. */
     .mc-side, .dc-side {
-        grid-row: 4;
-        align-self: end;
+        grid-row: 3 / 5;
+        align-self: stretch;
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
-        width: min(100%, 36rem);
+        width: min(100%, 60rem);
         min-width: 0;
-        margin-top: clamp(1.5rem, 5vh, 3.5rem);
+        /* Size to the space the grid gives, never grow it as messages arrive. */
+        contain: size;
+        min-height: 20rem;
+        margin-top: clamp(1rem, 3vh, 2rem);
     }
-    .mc-side { grid-column: 1; justify-self: end; padding: 0 var(--gutter) 0 1rem; }
-    .dc-side { grid-column: 4; justify-self: start; padding: 0 1rem 0 var(--gutter); position: relative; }
+    .mc-side { grid-column: 1; justify-self: end; justify-content: flex-end; padding: 0 var(--gutter) 0 var(--edge); }
+    .dc-side { grid-column: 4; justify-self: start; padding: 0 var(--edge) 0 var(--gutter); position: relative; }
     /* New lines push older ones up; the oldest drop off the top. */
-    .mc-chat { display: flex; flex-direction: column; justify-content: flex-end; max-height: clamp(12rem, calc(100svh - 36rem), 28rem); overflow: hidden; }
+    .mc-chat { flex: 0 1 auto; min-height: 0; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; }
+    .mc-chat :global(.chat) { flex: 1; min-height: 0; }
+    .mc-chat :global(.lines) { flex: 1; min-height: 0; overflow: hidden; }
+    .dc-end { flex: 1; min-height: 0; display: flex; flex-direction: column; }
     .hint { margin: 0; font-size: 0.85rem; color: #e9ecef; text-shadow: 0 1px 2px rgb(0 0 0 / 0.6); }
     .mc-side .hint { color: #fff; }
     .hint kbd {
@@ -325,8 +328,10 @@
     /* Tablets: the menu under the title, the chats side by side below it. */
     @media (max-width: 1023px) {
         .hero { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto auto auto; align-content: start; padding-top: 2rem; }
+        .motd { grid-column: 1 / -1; }
         .menu { grid-column: 1 / -1; grid-row: 4; justify-self: center; width: min(25rem, calc(100% - 2rem)); }
-        .mc-side, .dc-side { grid-row: 5; align-self: start; width: min(100%, 32rem); }
+        .mc-side, .dc-side { grid-row: 5; align-self: start; width: 100%; contain: none; min-height: 0; }
+        .mc-chat { flex: none; max-height: clamp(16rem, 50svh, 28rem); }
         .mc-side { grid-column: 1; }
         .dc-side { grid-column: 2; }
     }
@@ -344,6 +349,8 @@
         .title { display: contents; }
         .title > * { grid-column: 1; }
         .word.mc { grid-row: 1; justify-self: center; padding: 3.5rem 0 0; font-size: clamp(2.6rem, 13vw, 4rem); }
+        .word.mc .wordmark { width: min(82vw, 24rem); }
+        .word.dc .wordmark { width: min(58vw, 17rem); }
         .splash.on-mc { display: block; right: -0.6rem; bottom: auto; top: 2.4rem; transform-origin: center; }
         .splash.on-dc { display: none; }
         .edition { grid-row: 2; font-size: 0.9rem; letter-spacing: 0.14em; }
@@ -351,7 +358,7 @@
         .menu { grid-column: 1; grid-row: 4; justify-self: center; width: min(24rem, calc(100% - 2rem)); margin-top: 1.75rem; }
         .fine { display: block; }
         .mc-side { grid-column: 1; grid-row: 5; justify-self: stretch; width: auto; margin: 2rem 0 0; padding: 0 1rem calc(var(--logo) / 2 + 1.5rem); }
-        .mc-chat { max-height: 13rem; }
+        .mc-chat { max-height: 16rem; }
         .link-logo { grid-row: 6; justify-self: center; align-self: start; margin-top: calc(var(--logo) / -2); z-index: 2; }
         .word.dc { grid-row: 6; justify-self: center; padding: calc(var(--logo) / 2 + 0.75rem) 0 0; }
         .dc-side { grid-column: 1; grid-row: 7; justify-self: stretch; width: auto; margin: 1.25rem 0 0; padding: 0 1rem 1rem; }

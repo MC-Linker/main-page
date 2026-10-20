@@ -1,6 +1,7 @@
 <script lang="ts">
     import type { Snippet } from 'svelte';
 
+    /** Minecraft's stone button. A link with `href`, otherwise a button. */
     type Props = {
         href?: string;
         onclick?: () => void;
@@ -72,7 +73,7 @@
     /* The button texture: a faint stone grain over the face colour, like the game's buttons. */
     .mc-btn::before {
         content: ''; position: absolute; inset: 2px 0 3px; pointer-events: none;
-        background: var(--stone-tile) 0 0 / 32px 32px; opacity: 0.22; mix-blend-mode: luminosity;
+        background: var(--tex-stone) 0 0 / 32px 32px; opacity: 0.22; mix-blend-mode: luminosity;
         image-rendering: pixelated;
     }
     .mc-btn:disabled::before { display: none; }

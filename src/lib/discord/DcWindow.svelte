@@ -1,6 +1,7 @@
 <script lang="ts">
     import type { Snippet } from 'svelte';
 
+    /** A Discord channel: header with name and topic, the messages, and a footer for the message box. */
     type Props = {
         channel: string;
         topic?: string;

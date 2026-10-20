@@ -1,10 +1,11 @@
 <script lang="ts">
+    import GrassBlock from '$lib/pixel/GrassBlock.svelte';
     import PixelArt from '$lib/pixel/PixelArt.svelte';
     import PixelHead from '$lib/pixel/PixelHead.svelte';
-    import GrassBlock from '$lib/pixel/GrassBlock.svelte';
-    import { spriteUri } from '$lib/pixel/uri';
-    import type { ItemIcon } from '$lib/data/items';
+    import { spriteUri } from '$lib/pixel/render';
+    import type { ItemIcon } from './item';
 
+    /** An item's picture, as in a slot: with the enchantment glint and a stack count if given. */
     type Props = { icon: ItemIcon; size?: string; glint?: boolean; count?: number };
     let { icon, size = '2rem', glint = false, count }: Props = $props();
 

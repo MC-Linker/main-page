@@ -1,4 +1,4 @@
-import type { Item } from './data/items';
+import type { Item } from './mc/item';
 
 /** One shared tooltip, like Minecraft's: follows the pointer, or sits next to a focused slot. */
 class TooltipState {
@@ -37,7 +37,52 @@ class TooltipState {
         }
     }
 
-    hide() { this.item = null; }
+    hide() {
+        this.item = null;
+    }
 }
 
 export const tooltip = new TooltipState();
+
+type TooltipOptions = {
+    /** More lines under the item's own, with formatting codes. */
+    extra?: string[];
+    /** Centre the tooltip above the element, instead of following the pointer. */
+    above?: boolean;
+    /** Also show it when the element gets keyboard focus. */
+    focus?: boolean;
+    /** Hide it when the element is clicked. */
+    hideOnClick?: boolean;
+};
+
+/**
+ * Event handlers that show `item`'s tooltip for a mouse pointer or keyboard focus.
+ * Spread them onto the element. Touch never shows tooltips: a tap would leave them stuck.
+ */
+export function tooltipHandlers(item: Item, { extra = [], above = false, focus = true, hideOnClick = false }: TooltipOptions = {}) {
+    const show = (e: PointerEvent | FocusEvent) => {
+        if(above) tooltip.showAbove(item, e.currentTarget as HTMLElement, extra);
+        else tooltip.show(item, e, extra);
+    };
+    const hide = () => tooltip.hide();
+    return {
+        onpointerenter: (e: PointerEvent) => {
+            if(e.pointerType === 'mouse') show(e);
+        },
+        onpointerleave: hide,
+        ...(above ? {} : {
+            onpointermove: (e: PointerEvent) => {
+                if(e.pointerType !== 'mouse') return;
+                if(tooltip.item === item) tooltip.move(e);
+                else show(e);
+            },
+        }),
+        ...(focus ? {
+            onfocus: (e: FocusEvent) => {
+                if((e.currentTarget as HTMLElement).matches(':focus-visible')) show(e);
+            },
+            onblur: hide,
+        } : {}),
+        ...(hideOnClick ? { onclick: hide } : {}),
+    };
+}

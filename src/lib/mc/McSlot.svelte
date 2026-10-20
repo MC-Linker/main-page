@@ -1,8 +1,8 @@
 <script lang="ts">
     import type { Snippet } from 'svelte';
-    import type { Item } from '$lib/data/items';
-    import { tooltip } from '$lib/ui.svelte';
-    import ItemIcon from './ItemIcon.svelte';
+    import { tooltip, tooltipHandlers } from '$lib/ui.svelte';
+    import type { Item } from './item';
+    import McItemIcon from './McItemIcon.svelte';
 
     /** An inventory slot. Shows the item's tooltip on hover and focus. */
     type Props = {
@@ -17,6 +17,17 @@
         class?: string;
     };
     let { item, count, size = '2.75rem', selected = false, label, extra = [], onclick, children, class: className = '' }: Props = $props();
+
+    // An empty slot only clears a tooltip that is still showing.
+    const hide = () => tooltip.hide();
+    const empty = {
+        onpointermove: (e: PointerEvent) => {
+            if(e.pointerType === 'mouse') hide();
+        },
+        onpointerleave: hide,
+        onblur: hide,
+    };
+    const tip = $derived(item ? tooltipHandlers(item, { extra }) : empty);
 </script>
 
 <button
@@ -27,13 +38,9 @@
     aria-label={label ?? item?.name ?? 'Empty slot'}
     aria-pressed={selected || undefined}
     {onclick}
-    onpointerenter={e => item && e.pointerType === 'mouse' && tooltip.show(item, e, extra)}
-    onpointermove={e => { if(e.pointerType !== 'mouse') return; if(!item) tooltip.hide(); else if(tooltip.item !== item) tooltip.show(item, e, extra); else tooltip.move(e); }}
-    onpointerleave={() => tooltip.hide()}
-    onfocus={e => item && e.currentTarget.matches(':focus-visible') && tooltip.show(item, e, extra)}
-    onblur={() => tooltip.hide()}
+    {...tip}
 >
-    {#if item}<ItemIcon icon={item.icon} glint={item.glint} {count} size="calc(var(--slot) * 0.72)" />{/if}
+    {#if item}<McItemIcon icon={item.icon} glint={item.glint} {count} size="calc(var(--slot) * 0.72)" />{/if}
     {@render children?.()}
 </button>
 

@@ -1,4 +1,5 @@
-import { commandBlock, diamond, grassSide, type Sprite } from './sprites';
+/* Item sprites: the icons for inventory slots, the hotbar and the server list. */
+import type { Sprite } from './sprites';
 
 /** Swaps palette colours of a sprite, for colour variants of the same shape. */
 const recolor = (s: Sprite, palette: Record<string, string>): Sprite => ({ rows: s.rows, palette: { ...s.palette, ...palette } });
@@ -57,6 +58,11 @@ export const door: Sprite = {
     palette: { o: '#2a2a2a', g: '#cfcfcf', k: '#8a8a8a', Y: '#5a5a5a' },
 };
 
+export const diamond: Sprite = {
+    rows: ['..oooooo..', '.ollmmmmo.', 'olllmmmmdo', 'oommmmmddo', '.ommmmddo.', '..ommmdo..', '...omdo...', '....oo....'],
+    palette: { o: '#0f4c46', l: '#e3fffa', m: '#4aedd9', d: '#1a9e93' },
+};
+
 export const emerald = recolor(diamond, { o: '#0b3d1b', l: '#d3ffd9', m: '#41d36b', d: '#1a8f3e' });
 
 export const letter: Sprite = {
@@ -69,15 +75,14 @@ export const painting: Sprite = {
     palette: { o: '#2b1a0b', F: '#8a5a2b', b: '#7fb3ff', Y: '#ffe066', g: '#5d8a24' },
 };
 
+export const commandBlock: Sprite = {
+    rows: ['oooooooo', 'obbbbbbo', 'obkkkkbo', 'obkgkkbo', 'obkkgkbo', 'obkgkkbo', 'obbbbbbo', 'oooooooo'],
+    palette: { o: '#7a4a2a', b: '#c98b5b', k: '#1d1d1d', g: '#e8e8e8' },
+};
+
 export const repeatingCommandBlock = recolor(commandBlock, { o: '#3d2a6b', b: '#8a6ad1' });
-export const chainCommandBlock = recolor(commandBlock, { o: '#2a5a3a', b: '#6fb889' });
 
 export const craftingTable: Sprite = {
     rows: ['oooooooooo', 'otTttTttTo', 'oTTTTTTTTo', 'otTttTttTo', 'oTTTTTTTTo', 'osSssssSso', 'osSssssSso', 'osSsWWsSso', 'osSssssSso', 'oooooooooo'],
     palette: { o: '#3b2611', t: '#c49a62', T: '#8a6a3d', s: '#9c6f3e', S: '#6e4b28', W: '#cfcfcf' },
 };
-
-export const grassBlockFlat: Sprite = grassSide;
-
-/** Every item sprite, for a quick shape check. */
-export const allItems = { chest, book, enchantedBook, map, discordBlock, sign, sword, clock, nameTag, chain, door, emerald, letter, painting, repeatingCommandBlock, chainCommandBlock, craftingTable };

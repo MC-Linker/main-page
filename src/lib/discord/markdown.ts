@@ -1,5 +1,5 @@
-import { head, looks } from '$lib/pixel/sprites';
-import { spriteDataUri } from '$lib/pixel/uri';
+import { headOf } from '$lib/pixel/heads';
+import { spriteDataUri } from '$lib/pixel/render';
 import type { Avatar } from './types';
 
 const escape = (s: string) =>
@@ -19,7 +19,7 @@ export function discordMarkdown(text: string, inEmbed = false): string {
     const blocks: string[] = [];
     let out = escape(text).replace(/```(?:\w+\n)?([\s\S]*?)```/g, (_, code: string) => {
         blocks.push(`<discord-code multiline${embed}>${code.replace(/^\n|\n$/g, '')}</discord-code>`);
-        return `\u0000${blocks.length - 1}\u0000`;
+        return `\uE000${blocks.length - 1}\uE000`;
     });
     out = out
         .replace(/`([^`]+)`/g, `<discord-code${embed}>$1</discord-code>`)
@@ -33,13 +33,13 @@ export function discordMarkdown(text: string, inEmbed = false): string {
         .replace(/(^|\s)#([\w-]+)/g, '$1<discord-mention type="channel">$2</discord-mention>')
         .replace(botEmoji, `<discord-custom-emoji name="$1" url="/emoji/$1.png"${inEmbed ? ' embed-emoji' : ''}></discord-custom-emoji>`)
         .replace(/\n/g, '<br>');
-    return out.replace(/\u0000(\d+)\u0000/g, (_, i) => blocks[+i]);
+    return out.replace(/\uE000(\d+)\uE000/g, (_, i) => blocks[+i] ?? '');
 }
 
 /** discord-components wants an image URL; pixel heads and letters become small SVGs. */
 export function avatarUrl(avatar: Avatar): string {
     if('image' in avatar) return avatar.image;
-    if('head' in avatar) return spriteDataUri(head(typeof avatar.head === 'string' ? looks[avatar.head] : avatar.head));
+    if('head' in avatar) return spriteDataUri(headOf(avatar.head));
     const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='${avatar.color}'/><text x='20' y='27' text-anchor='middle' font-family='sans-serif' font-weight='700' font-size='18' fill='white'>${escape(avatar.letter)}</text></svg>`;
     return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }

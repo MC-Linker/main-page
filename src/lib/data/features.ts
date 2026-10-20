@@ -1,122 +1,171 @@
+import type { DcMsg } from '$lib/discord/types';
+import { bot, chatWebhook, colors, embedStyle, success } from '$lib/discord/types';
+import type { Item, ItemIcon } from '$lib/mc/item';
+import * as I from '$lib/pixel/items';
 import { guide } from './links';
 
-export type Feature = {
-    id: string;
-    title: string;
-    /** One short line, used on cards. */
-    tagline: string;
-    /** One or two sentences, used where there's room. */
-    description: string;
-    /** Commands involved, shown as chips. */
+/** Every feature, as an item in the creative inventory (Features section). */
+export type Feature = Item & {
+    tab: 'chat' | 'players' | 'moderation' | 'server' | 'accounts';
     commands: string[];
     guide: string;
+    /** What it looks like in Discord, and optionally the matching Minecraft chat. */
+    preview: { dc: Omit<DcMsg, 'id'>; mc?: string[] };
 };
+
+// Who runs the commands in the previews.
+const you = { user: 'Lianecx', avatar: { head: 'lianecx' as const } };
+const cubey = { head: 'cubey' as const };
 
 export const features: Feature[] = [
     {
         id: 'chat-bridge',
-        title: 'Chat bridge',
-        tagline: 'Minecraft chat in Discord. Discord chat in Minecraft.',
-        description: 'Messages flow both ways, with player skins as avatars. Joins, quits, deaths, advancements, commands and server starts can come along too.',
+        name: 'Chat bridge',
+        lore: ['Minecraft chat in Discord,', 'Discord chat in Minecraft'],
         commands: ['/chatchannel'],
         guide: guide('features/chat-bridge'),
+        tab: 'chat', icon: { sprite: I.sign }, rarity: 'rare',
+        preview: {
+            dc: { author: { name: 'Cubey', avatar: cubey, tag: 'APP' }, content: 'anyone up for the nether?' },
+            mc: ['<Cubey> anyone up for the nether?', '&l&9Discord &8| &l&7TheAnnoying &8>>&r omw!'],
+        },
     },
     {
         id: 'console',
-        title: 'Console channel',
-        tagline: 'Your server console, in a private channel.',
-        description: 'Stream the console output into any channel so your staff can keep an eye on things from their phone.',
+        name: 'Console channel',
+        lore: ['Your server console, in a private channel.'],
         commands: ['/chatchannel'],
         guide: guide('features/console-channel'),
-    },
-    {
-        id: 'command',
-        title: 'Run any command',
-        tagline: 'Every Minecraft command, from Discord.',
-        description: '/command runs anything on your server, with tab-completion that comes live from the server itself.',
-        commands: ['/command'],
-        guide: guide('commands/command'),
-    },
-    {
-        id: 'player-info',
-        title: 'Inventories & stats',
-        tagline: 'See what anyone is carrying.',
-        description: 'Inventories, statistics and advancements are rendered as images, straight from your server, including shulker boxes and enchantments.',
-        commands: ['/inventory', '/stats', '/advancements'],
-        guide: guide('commands/inventory'),
-    },
-    {
-        id: 'info',
-        title: 'Player & server info',
-        tagline: 'Health, XP, play time, MOTD, gamerules.',
-        description: '/userinfo shows a player\'s status, health, XP and play time. /serverinfo shows the MOTD, players, world settings and plugins.',
-        commands: ['/userinfo', '/serverinfo'],
-        guide: guide('commands/userinfo'),
-    },
-    {
-        id: 'moderation',
-        title: 'Moderation',
-        tagline: 'Ban, kick, op and more without the console.',
-        description: 'Moderate from anywhere. Discord\'s own permissions decide who may ban, kick, op or change gamemodes.',
-        commands: ['/ban', '/unban', '/kick', '/op', '/deop', '/gamemode'],
-        guide: guide('commands/ban-unban'),
-    },
-    {
-        id: 'stat-channels',
-        title: 'Stat channels',
-        tagline: 'Live player count in your channel list.',
-        description: 'Channel names or topics that show who\'s online, your IP, version or the time, with separate templates for online and offline.',
-        commands: ['/statchannel'],
-        guide: guide('features/stat-channels'),
-    },
-    {
-        id: 'role-sync',
-        title: 'Role sync',
-        tagline: 'Discord roles ⇄ Minecraft groups.',
-        description: 'Keep Discord roles in sync with Minecraft teams, LuckPerms or Vault groups. You pick the direction.',
-        commands: ['/rolesync'],
-        guide: guide('features/role-sync'),
-    },
-    {
-        id: 'accounts',
-        title: 'Account linking',
-        tagline: 'One command to link Discord and Minecraft.',
-        description: 'Players link with /account connect and /verify. Premium, cracked and Bedrock (Floodgate) accounts all work.',
-        commands: ['/account connect', '/verify'],
-        guide: guide('features/account-linking'),
-    },
-    {
-        id: 'join-requirements',
-        title: 'Join requirements',
-        tagline: 'Your Discord is the whitelist.',
-        description: 'Only let players join who linked their account, or who have the right Discord roles.',
-        commands: ['/connect'],
-        guide: guide('features/join-requirements'),
-    },
-    {
-        id: 'linked-roles',
-        title: 'Linked Roles',
-        tagline: 'A Minecraft badge on Discord profiles.',
-        description: 'Use Discord\'s Linked Roles to give verified players a role and show their connection on their profile.',
-        commands: [],
-        guide: guide('features/linked-roles'),
+        tab: 'chat', icon: { sprite: I.repeatingCommandBlock },
+        preview: { dc: { author: chatWebhook, content: '```[18:02:11 INFO]: Cubey joined the game\n[18:02:15 INFO]: Cubey issued server command: /home base```' } },
     },
     {
         id: 'dms',
-        title: 'Direct messages',
-        tagline: 'DM Discord members from in-game.',
-        description: 'Players send DMs with /dm and get replies right in their chat. /message whispers to players from Discord.',
+        name: 'Direct messages',
+        lore: ['DM Discord members from in-game.'],
         commands: ['/dm', '/message'],
         guide: guide('features/direct-messages'),
+        tab: 'chat', icon: { sprite: I.letter },
+        preview: {
+            dc: { author: bot, content: '**📬 New DM from Cubey**\nmeet me at spawn?' },
+            mc: ['&aDM sent to TheAnnoying: meet me at spawn?'],
+        },
+    },
+    {
+        id: 'player-info',
+        name: 'Inventories & stats',
+        lore: ['See what anyone is carrying.'],
+        commands: ['/inventory', '/stats', '/advancements'],
+        guide: guide('commands/inventory'),
+        tab: 'players', icon: { sprite: I.chest }, rarity: 'rare',
+        preview: { dc: { author: bot, interaction: { ...you, command: '/inventory' }, embeds: [success('Player Inventory', 'Here\'s the inventory of **TheAnnoying**:', { image: '/hero/inventory.png' })] } },
+    },
+    {
+        id: 'info',
+        name: 'Player & server info',
+        lore: ['Health, XP, play time, MOTD, gamerules.'],
+        commands: ['/userinfo', '/serverinfo'],
+        guide: guide('commands/userinfo'),
+        tab: 'players', icon: { sprite: I.map },
+        preview: {
+            dc: { author: bot, interaction: { ...you, command: '/userinfo' }, embeds: [{ ...embedStyle.success, title: 'User Information', author: { name: 'Lianecx', avatar: { head: 'lianecx' } }, fields: [{ name: 'Health', value: '10.0 ❤️', inline: true }, { name: 'XP', value: '2248 ✨ (Level: 36)', inline: true }, { name: 'Play Time', value: '50h 29m 51s', inline: true }] }] },
+        },
+    },
+    {
+        id: 'moderation',
+        name: 'Moderation',
+        lore: ['Ban, kick, op and more without the console.'],
+        commands: ['/ban', '/unban', '/kick', '/op', '/deop', '/gamemode'],
+        guide: guide('commands/ban-unban'),
+        tab: 'moderation', icon: { sprite: I.sword },
+        preview: {
+            dc: { author: bot, interaction: { ...you, command: '/ban' }, embeds: [{ ...embedStyle.success, color: colors.orange, title: 'Ban Player', description: 'Successfully banned player **Griefer**: `Too much TNT`' }] },
+            mc: ['&eGriefer left the game', '&7&o[Server: Banned Griefer: Too much TNT]'],
+        },
+    },
+    {
+        id: 'command',
+        name: 'Run any command',
+        lore: ['Every Minecraft command, from Discord.'],
+        commands: ['/command'],
+        guide: guide('commands/command'),
+        tab: 'moderation', icon: { sprite: I.commandBlock }, rarity: 'epic',
+        preview: {
+            dc: { author: bot, interaction: { ...you, command: '/command' }, embeds: [{ ...embedStyle.success, color: colors.blue, title: 'Command Executed', description: '```Gave 64 [Diamond] to Cubey```' }] },
+            mc: ['&7&o[Server: Gave 64 [Diamond] to Cubey]'],
+        },
+    },
+    {
+        id: 'stat-channels',
+        name: 'Stat channels',
+        lore: ['Live player count in your channel list.'],
+        commands: ['/statchannel'],
+        guide: guide('features/stat-channels'),
+        tab: 'server', icon: { sprite: I.clock },
+        preview: { dc: { author: bot, interaction: { ...you, command: '/statchannel add' }, embeds: [success('Added Stat Channel', 'Successfully added the stat channel.')], content: '🔊 **🟢 7 players online**' } },
     },
     {
         id: 'customize',
-        title: 'Make it yours',
-        tagline: 'Your name, avatar and banner.',
-        description: 'Change the bot\'s nickname, avatar, banner and bio in your server for free, or run your own branded bot with premium.',
+        name: 'Make it yours',
+        lore: ['Your name, avatar and banner.'],
         commands: ['/customize'],
         guide: guide('features/customization'),
+        tab: 'server', icon: { sprite: I.painting },
+        preview: { dc: { author: bot, interaction: { ...you, command: '/customize' }, embeds: [success('Customized Server Appearance', 'Successfully customized MC Linker\'s appearance in this server!')] } },
+    },
+    {
+        id: 'role-sync',
+        name: 'Role sync',
+        lore: ['Discord roles ⇄ Minecraft groups.'],
+        commands: ['/rolesync'],
+        guide: guide('features/role-sync'),
+        tab: 'accounts', icon: { sprite: I.nameTag }, rarity: 'rare',
+        preview: {
+            dc: { author: bot, interaction: { ...you, command: '/rolesync add' }, embeds: [success('Added Synced Role', 'Successfully added the synced role.')] },
+            mc: ['&b[LP] &fcubey &anow inherits permissions from &fvip&a in context global.'],
+        },
+    },
+    {
+        id: 'accounts',
+        name: 'Account linking',
+        lore: ['One command to link Discord and Minecraft.'],
+        commands: ['/account connect', '/verify'],
+        guide: guide('features/account-linking'),
+        tab: 'accounts', icon: { sprite: I.chain },
+        preview: {
+            dc: { author: bot, interaction: { user: 'Cubey', avatar: cubey, command: '/account connect' }, embeds: [success('Account Verified', 'Successfully verified your account.')] },
+            mc: ['> /verify a8f3c', '&aYou have been verified successfully.'],
+        },
+    },
+    {
+        id: 'join-requirements',
+        name: 'Join requirements',
+        lore: ['Your Discord is the whitelist.'],
+        commands: ['/connect'],
+        guide: guide('features/join-requirements'),
+        tab: 'accounts', icon: { sprite: I.door },
+        preview: {
+            dc: { author: { name: 'Newbie', avatar: { head: 'newbie' } }, content: '4821' },
+            mc: ['&eYou have not connected your Minecraft account to Discord.', '&ePlease DM &b@MC Linker&e with the code &b4821&e and rejoin.'],
+        },
+    },
+    {
+        id: 'linked-roles',
+        name: 'Linked Roles',
+        lore: ['A Minecraft badge on Discord profiles.'],
+        commands: [],
+        guide: guide('features/linked-roles'),
+        tab: 'accounts', icon: { sprite: I.emerald },
+        preview: { dc: { author: bot, content: '✅ **Verified Player** · Has Minecraft Account' } },
     },
 ];
 
-export const featureById = (id: string) => features.find(f => f.id === id)!;
+/** The creative inventory's tabs. "all" shows everything and has the search field. */
+export const featureTabs = [
+    { id: 'all', name: 'Search Items', icon: { sprite: I.book } },
+    { id: 'chat', name: 'Chat & Logs', icon: { sprite: I.sign } },
+    { id: 'players', name: 'Players', icon: { sprite: I.chest } },
+    { id: 'moderation', name: 'Moderation', icon: { sprite: I.sword } },
+    { id: 'server', name: 'Server', icon: { sprite: I.clock } },
+    { id: 'accounts', name: 'Accounts & Roles', icon: { sprite: I.chain } },
+] as const satisfies { id: string; name: string; icon: ItemIcon }[];

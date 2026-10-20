@@ -2,34 +2,19 @@
     import { onMount, tick } from 'svelte';
     import { goto } from '$app/navigation';
     import { page } from '$app/state';
-    import { links } from '$lib/data/links';
-    import { tooltip } from '$lib/ui.svelte';
-    import type { Item, ItemIcon as Icon } from '$lib/data/items';
-    import type { Sprite } from '$lib/pixel/sprites';
-    import { book, chest, craftingTable, discordBlock, letter, map } from '$lib/pixel/items';
+    import { isTextField } from '$lib/browser';
+    import { type HomeSection, homeSections, siteLinks } from '$lib/data';
+    import type { Item, ItemIcon } from '$lib/mc/item';
+    import McItemIcon from '$lib/mc/McItemIcon.svelte';
     import PixelArt from '$lib/pixel/PixelArt.svelte';
-    import ItemIcon from '../inventory/ItemIcon.svelte';
+    import type { Sprite } from '$lib/pixel/sprites';
+    import { tooltipHandlers } from '$lib/ui.svelte';
 
     /**
      * The site's navigation, as Minecraft's hotbar. Two clearly separate parts:
      * "This page" jumps to sections of the home page (keys 1 to 4) and follows
      * your scroll position; "Links" leaves the page.
      */
-    type Section = { id: string; name: string; title: string; icon: Icon };
-    const sections: Section[] = [
-        { id: 'top', name: 'Home', title: 'Minecraft, linked with Discord', icon: { block: 'grass' } },
-        { id: 'setup', name: 'Setup', title: 'Linked in three steps', icon: { sprite: craftingTable } },
-        { id: 'features', name: 'Features', title: 'Everything in the inventory', icon: { sprite: chest } },
-        { id: 'faq', name: 'FAQ', title: 'Questions? Read the book.', icon: { sprite: book } },
-    ];
-
-    type Link = { name: string; title: string; hint: string; href: string; icon: Icon; newTab?: boolean; cta?: boolean };
-    const pages: Link[] = [
-        { name: 'Add bot', title: 'Add MC Linker to Discord', hint: 'Opens Discord in a new tab', href: links.invite, icon: { sprite: discordBlock }, newTab: true, cta: true },
-        { name: 'Guide', title: 'The MC Linker guide', hint: 'Opens guide.mclinker.com', href: links.guide, icon: { sprite: map } },
-        { name: 'Support', title: 'Support server', hint: 'Opens Discord in a new tab', href: links.support, icon: { sprite: letter }, newTab: true },
-        { name: 'Team', title: 'Meet the team', hint: 'Opens the team page', href: links.pages.team, icon: { head: 'lianecx' } },
-    ];
 
     // A small "leaves this page" arrow for the link slots.
     const out: Sprite = {
@@ -38,21 +23,21 @@
     };
 
     const onHome = $derived(page.url.pathname === '/');
-    const onLinkPage = $derived(pages.some(p => p.href === page.url.pathname));
+    const onLinkPage = $derived(siteLinks.some(l => l.href === page.url.pathname));
     let current = $state(0);
     let progress = $state(0);
+    /** Phones: whether the folded "Links" list is open. */
     let open = $state(false);
-    let nav: HTMLElement;
-    // Phones: get out of the way while the keyboard is open.
+    /** Phones: get out of the way while the keyboard is open. */
     let typing = $state(false);
-    const isField = (t: EventTarget | null) => t instanceof HTMLElement && !!t.closest('input, textarea, [contenteditable]');
+    let nav: HTMLElement;
 
     /** The section whose top has passed 40% of the screen is the current one. */
     function track() {
         if(page.url.pathname !== '/') return;
         const line = window.innerHeight * 0.4;
         let i = 0;
-        sections.forEach((s, n) => {
+        homeSections.forEach((s, n) => {
             const el = document.getElementById(s.id);
             if(el && el.getBoundingClientRect().top <= line) i = n;
         });
@@ -62,7 +47,10 @@
     }
 
     let frame = 0;
-    const schedule = () => { cancelAnimationFrame(frame); frame = requestAnimationFrame(track); };
+    const schedule = () => {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(track);
+    };
 
     onMount(() => {
         window.addEventListener('scroll', schedule, { passive: true });
@@ -75,21 +63,23 @@
 
     // Re-check after every navigation (coming back to the home page, following a #link).
     $effect(() => {
-        page.url.href;
+        void page.url.href;
         open = false;
         tick().then(track);
     });
 
-    const href = (s: Section) => (onHome ? `#${s.id}` : `/#${s.id}`);
+    const href = (s: HomeSection) => (onHome ? `#${s.id}` : `/#${s.id}`);
 
     function keys(e: KeyboardEvent) {
-        if(e.key === 'Escape') { open = false; return; }
-        const t = e.target as HTMLElement;
-        if(e.ctrlKey || e.metaKey || e.altKey || t.closest('input, textarea, select, [contenteditable]')) return;
+        if(e.key === 'Escape') {
+            open = false;
+            return;
+        }
+        if(e.ctrlKey || e.metaKey || e.altKey || isTextField(e.target)) return;
         const n = Number(e.key);
-        if(!Number.isInteger(n) || n < 1 || n > sections.length) return;
+        if(!Number.isInteger(n) || n < 1 || n > homeSections.length) return;
         e.preventDefault();
-        const s = sections[n - 1];
+        const s = homeSections[n - 1];
         if(onHome) document.getElementById(s.id)?.scrollIntoView();
         else void goto(`/#${s.id}`);
     }
@@ -98,16 +88,14 @@
         if(open && !nav.contains(e.target as Node)) open = false;
     }
 
-    const asItem = (name: string, icon: Icon): Item => ({ id: name, name, lore: [], icon });
     // Tooltips sit above the hotbar, so they never cover the other slots.
-    const tip = (item: Item, extra: string[]) => ({
-        onpointerenter: (e: PointerEvent) => { if(e.pointerType === 'mouse') tooltip.showAbove(item, e.currentTarget as HTMLElement, extra); },
-        onpointerleave: () => tooltip.hide(),
-        onclick: () => tooltip.hide(),
-    });
+    const tip = (name: string, icon: ItemIcon, extra: string[]) => {
+        const item: Item = { id: name, name, lore: [], icon };
+        return tooltipHandlers(item, { extra, above: true, focus: false, hideOnClick: true });
+    };
 </script>
 
-<svelte:window onkeydown={keys} onpointerdown={outside} onfocusin={e => (typing = isField(e.target))} onfocusout={() => (typing = false)} />
+<svelte:window onkeydown={keys} onpointerdown={outside} onfocusin={e => (typing = isTextField(e.target))} onfocusout={() => (typing = false)} />
 
 <nav class="hud" class:open class:typing bind:this={nav} aria-label="Site">
     <div class="group sections">
@@ -117,20 +105,22 @@
         </div>
         <div class="xp" aria-hidden="true"><span style:width="{(onHome ? progress : 0) * 100}%"></span></div>
         <ul class="bar">
-            {#each sections as s, i (s.id)}
+            {#each homeSections as s, i (s.id)}
                 {@const selected = onHome && i === current}
                 <li>
-                    <a class="slot" class:selected href={href(s)} aria-current={selected ? 'location' : undefined}
-                       {...tip(asItem(s.title, s.icon), [onHome ? '&7Jumps to this section' : '&7On the home page', `&8Key ${i + 1}`])}>
+                    <a
+                        class="slot" class:selected href={href(s)} aria-current={selected ? 'location' : undefined}
+                        {...tip(s.title, s.icon, [onHome ? '&7Jumps to this section' : '&7On the home page', `&8Key ${i + 1}`])}
+                    >
                         <span class="key" aria-hidden="true">{i + 1}</span>
-                        <ItemIcon icon={s.icon} size="var(--icon)" />
+                        <McItemIcon icon={s.icon} size="var(--icon)" />
                         <span class="name mc-text">{s.name}</span>
                     </a>
                 </li>
             {/each}
             <li class="more-li">
                 <button type="button" class="slot more" class:selected={onLinkPage} aria-expanded={open} aria-controls="hud-links" onclick={() => (open = !open)}>
-                    <ItemIcon icon={{ image: '/logo.svg' }} size="var(--icon)" />
+                    <McItemIcon icon={{ image: '/logo.svg' }} size="var(--icon)" />
                     <span class="name mc-text">Links</span>
                 </button>
             </li>
@@ -140,14 +130,16 @@
     <div class="group pages" id="hud-links">
         <div class="top"><span class="cap">Links</span></div>
         <ul class="bar">
-            {#each pages as p (p.name)}
+            {#each siteLinks as p (p.name)}
                 {@const selected = page.url.pathname === p.href}
                 <li>
-                    <a class="slot" class:selected class:cta={p.cta} href={p.href}
-                       target={p.newTab ? '_blank' : undefined} rel={p.newTab ? 'noopener' : undefined}
-                       aria-current={selected ? 'page' : undefined}
-                       {...tip(asItem(p.title, p.icon), [`&7${p.hint}`])}>
-                        <ItemIcon icon={p.icon} glint={p.cta} size="var(--icon)" />
+                    <a
+                        class="slot" class:selected class:cta={p.cta} href={p.href}
+                        target={p.newTab ? '_blank' : undefined} rel={p.newTab ? 'noopener' : undefined}
+                        aria-current={selected ? 'page' : undefined}
+                        {...tip(p.title, p.icon, [`&7${p.hint}`])}
+                    >
+                        <McItemIcon icon={p.icon} glint={p.cta} size="var(--icon)" />
                         <span class="name mc-text">{p.name}</span>
                         {#if !selected}<span class="out" aria-hidden="true"><PixelArt sprite={out} width="100%" /></span>{/if}
                         {#if p.newTab}<span class="sr-only">(opens in a new tab)</span>{/if}

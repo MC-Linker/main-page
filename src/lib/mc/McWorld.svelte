@@ -1,8 +1,7 @@
 <script lang="ts">
     import type { Snippet } from 'svelte';
     import PixelArt from '$lib/pixel/PixelArt.svelte';
-    import { dirt, grassSide, stone, type Sprite } from '$lib/pixel/sprites';
-    import { spriteUri } from '$lib/pixel/uri';
+    import type { Sprite } from '$lib/pixel/sprites';
 
     type Props = {
         night?: boolean;
@@ -23,10 +22,6 @@
         children?: Snippet;
     };
     let { night = false, rain = false, tile = 32, ground = 2, clouds = true, hills = false, blur = 0, class: className = '', children }: Props = $props();
-
-    const grass = spriteUri(grassSide);
-    const soil = spriteUri(dirt);
-    const rock = spriteUri(stone);
 
     // A stepped skyline like the edge of the logo: mostly flat, with a hill on each side.
     const bumps = [2, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 3, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2];
@@ -76,7 +71,7 @@
         </div>
     {/if}
     {#if hills}
-        <div class="terrain" aria-hidden="true" style:--grass={grass} style:--dirt={soil} style:--stone={rock}>
+        <div class="terrain" aria-hidden="true">
             <div class="strip">
                 {#each [0, 1] as copy (copy)}
                     <div class="land">
@@ -90,7 +85,7 @@
             </div>
         </div>
     {:else}
-        <div class="terrain" aria-hidden="true" style:--grass={grass} style:--dirt={soil}>
+        <div class="terrain" aria-hidden="true">
             {#each bumps as b, i (i)}<span class="flat" style:height="calc(var(--ground) + {b} * var(--tile))"></span>{/each}
         </div>
     {/if}
@@ -158,7 +153,7 @@
     .flat {
         flex: none;
         width: var(--tile);
-        background: var(--grass) top / var(--tile) var(--tile) no-repeat, var(--dirt) 0 var(--tile) / var(--tile) var(--tile) repeat;
+        background: var(--tex-grass-side) top / var(--tile) var(--tile) no-repeat, var(--tex-dirt) 0 var(--tile) / var(--tile) var(--tile) repeat;
         image-rendering: pixelated;
     }
 
@@ -169,7 +164,7 @@
         position: relative;
         flex: none;
         width: var(--tile);
-        background-image: var(--grass), var(--dirt), var(--dirt), var(--stone);
+        background-image: var(--tex-grass-side), var(--tex-dirt), var(--tex-dirt), var(--tex-stone);
         background-size: var(--tile) var(--tile);
         background-repeat: no-repeat, no-repeat, no-repeat, repeat;
         background-position: 0 0, 0 var(--tile), 0 calc(var(--tile) * 2), 0 calc(var(--tile) * 3);

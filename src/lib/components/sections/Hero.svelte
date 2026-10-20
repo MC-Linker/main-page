@@ -1,22 +1,24 @@
 <script lang="ts">
-    import { onMount, tick } from 'svelte';
-    import { fly, fade } from 'svelte/transition';
+    import { onMount } from 'svelte';
     import { MediaQuery } from 'svelte/reactivity';
-    import { Bridge, demoCommands } from '$lib/bridge.svelte';
-    import { links } from '$lib/data/links';
-    import { reducedMotion } from '$lib/motion';
-    import McWorld from '$lib/mc/McWorld.svelte';
-    import McChat from '$lib/mc/McChat.svelte';
-    import McButton from '$lib/mc/McButton.svelte';
-    import McLogo from '$lib/mc/McLogo.svelte';
+    import { fly } from 'svelte/transition';
+    import { isTextField, reducedMotion, scrollBehavior } from '$lib/browser';
+    import BrandIcon from '$lib/components/BrandIcon.svelte';
+    import { links } from '$lib/data';
     import DcBackdrop from '$lib/discord/DcBackdrop.svelte';
-    import DcWindow from '$lib/discord/DcWindow.svelte';
-    import DcMessage from '$lib/discord/DcMessage.svelte';
-    import DcComposer from '$lib/discord/DcComposer.svelte';
-    import BrandIcon from '../BrandIcon.svelte';
+    import McButton from '$lib/mc/McButton.svelte';
+    import McChat from '$lib/mc/McChat.svelte';
+    import McLogo from '$lib/mc/McLogo.svelte';
+    import McWorld from '$lib/mc/McWorld.svelte';
+    import { Bridge, type Direction } from './hero/bridge.svelte';
+    import DemoChannel from './hero/DemoChannel.svelte';
+    import { flyPacket } from './hero/packet';
 
+    // The pretend server and channel behind both chats. The first messages are
+    // there right away (and in the prerendered page); the rest plays on load.
     const bridge = new Bridge();
     bridge.seed();
+
     const keyboard = new MediaQuery('(hover: hover) and (pointer: fine)', true);
     /** Phones: the two chats are stacked, so the other one is usually off-screen. */
     const stacked = new MediaQuery('(max-width: 860px)', false);
@@ -33,49 +35,20 @@
     let logo: HTMLElement;
     let mcEnd: HTMLElement;
     let dcEnd: HTMLElement;
-    let dcList: HTMLElement;
     let mcChat: McChat;
-    let composer: DcComposer;
+    let channel: DemoChannel;
     let pulsing = $state(false);
 
-    /** Sends a little pixel from one chat, through the logo, to the other. */
-    async function transfer(dir: 'toDiscord' | 'toMinecraft') {
+    /** Shows a message travelling from one chat, through the logo, to the other. */
+    async function transfer(dir: Direction) {
         if(reducedMotion.current || !stage) return;
-        const box = stage.getBoundingClientRect();
-        const point = (el: HTMLElement, side?: 'left' | 'right' | 'top') => {
-            const r = el.getBoundingClientRect();
-            const x = side === 'left' ? r.left + 12 : side === 'right' ? r.right - 12 : r.left + r.width / 2;
-            const y = side === 'top' ? r.top + 12 : r.top + r.height / 2;
-            return [x - box.left, y - box.top];
-        };
-        // Side by side the chats face each other; stacked (phones) they sit above and below the logo.
-        const stacked = mcEnd.getBoundingClientRect().bottom <= dcEnd.getBoundingClientRect().top;
-        const [mx, my] = point(mcEnd, stacked ? undefined : 'right');
-        const [dx, dy] = point(dcEnd, stacked ? 'top' : 'left');
-        const [lx, ly] = point(logo);
-        const [x0, y0, x1, y1] = dir === 'toDiscord' ? [mx, my, dx, dy] : [dx, dy, mx, my];
-
-        const packet = document.createElement('span');
-        packet.className = `packet ${dir}`;
-        stage.appendChild(packet);
-        const anim = packet.animate([
-            { transform: `translate(${x0}px, ${y0}px) scale(0.6)`, opacity: 0 },
-            { transform: `translate(${x0}px, ${y0}px) scale(1)`, opacity: 1, offset: 0.08 },
-            { transform: `translate(${lx}px, ${ly}px) scale(1.6)`, opacity: 1, offset: 0.5 },
-            { transform: `translate(${x1}px, ${y1}px) scale(1)`, opacity: 1, offset: 0.92 },
-            { transform: `translate(${x1}px, ${y1}px) scale(0.6)`, opacity: 0 },
-        ], { duration: 800, easing: 'cubic-bezier(.45,0,.55,1)' });
-        setTimeout(() => { pulsing = true; setTimeout(() => (pulsing = false), 240); }, 360);
-        await anim.finished.catch(() => {});
-        packet.remove();
+        // The logo pulses as the message passes through it.
+        setTimeout(() => {
+            pulsing = true;
+            setTimeout(() => (pulsing = false), 240);
+        }, 360);
+        await flyPacket(stage, { mc: mcEnd, dc: dcEnd, logo }, dir);
     }
-
-    // Keep the newest Discord message in view.
-    $effect(() => {
-        bridge.dc.length;
-        bridge.typing;
-        tick().then(() => dcList?.scrollTo({ top: dcList.scrollHeight, behavior: reducedMotion.current ? 'auto' : 'smooth' }));
-    });
 
     /**
      * On phones, after sending: close the keyboard and, if the message went to the
@@ -84,7 +57,7 @@
     function reveal(target?: HTMLElement) {
         if(!stacked.current) return;
         (document.activeElement as HTMLElement | null)?.blur();
-        if(target) setTimeout(() => target.scrollIntoView({ block: 'center', behavior: reducedMotion.current ? 'auto' : 'smooth' }), 250);
+        if(target) setTimeout(() => target.scrollIntoView({ block: 'center', behavior: scrollBehavior() }), 250);
     }
 
     function fromMinecraft(text: string) {
@@ -99,11 +72,17 @@
         void bridge.runDiscord(text);
     }
 
+    // T opens the Minecraft chat and / the Discord command list, like in the games.
     function shortcuts(e: KeyboardEvent) {
-        const t = e.target as HTMLElement;
-        if(e.ctrlKey || e.metaKey || e.altKey || t.closest('input, textarea, [contenteditable]')) return;
-        if(e.key === 't' || e.key === 'T') { e.preventDefault(); mcChat.start(); }
-        else if(e.key === '/') { e.preventDefault(); composer.start('/'); }
+        if(e.ctrlKey || e.metaKey || e.altKey || isTextField(e.target)) return;
+        if(e.key === 't' || e.key === 'T') {
+            e.preventDefault();
+            mcChat.start();
+        }
+        else if(e.key === '/') {
+            e.preventDefault();
+            channel.start('/');
+        }
     }
 
     onMount(() => {
@@ -159,27 +138,7 @@
     <div class="dc-side">
         <p class="hint">{#if keyboard.current}<kbd>/</kbd> for commands · {/if}try <code>/command weather rain</code></p>
         <div class="dc-end" bind:this={dcEnd}>
-            <DcWindow channel="minecraft-chat" topic="Linked with play.example.net · {bridge.online.length} online" class="dc-window">
-                <div class="dc-list" bind:this={dcList} aria-live="polite" aria-label="Discord channel (demo)">
-                    <discord-messages no-background>
-                        {#each bridge.dc as msg (msg.id)}
-                            <div in:fly={{ y: 10, duration: 220 }}><DcMessage {msg} /></div>
-                        {/each}
-                    </discord-messages>
-                </div>
-                {#snippet footer()}
-                    <DcComposer bind:this={composer} placeholder="Message #minecraft-chat" commands={demoCommands} onsubmit={fromDiscord} label="Discord message (demo)" hint="Try a slash command!" />
-                    <div class="typing" aria-live="polite">
-                        {#if bridge.typing}<span transition:fade={{ duration: 150 }}><i></i><i></i><i></i> <b>{bridge.typing}</b> is typing…</span>{/if}
-                    </div>
-                {/snippet}
-            </DcWindow>
-            {#if bridge.dmToast}
-                <div class="dm-toast" role="status" transition:fly={{ y: -12, duration: 250 }}>
-                    <span class="dm-icon" aria-hidden="true">📬</span>
-                    <span><b>New DM from You</b><br />{bridge.dmToast}</span>
-                </div>
-            {/if}
+            <DemoChannel bind:this={channel} {bridge} onsubmit={fromDiscord} />
         </div>
     </div>
 
@@ -206,14 +165,11 @@
         position: absolute;
         inset: 0 50% 0 0;
         z-index: -1;
-        /* Pixel-stepped edge along the seam, like the grass edge in the logo. */
-        mask:
-            linear-gradient(#000 0 0) left / calc(100% - 12px) 100% no-repeat,
-            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3 8' width='12' height='32'%3E%3Cpath d='M0 0h3v2H2v2h1v1H1v3H0z'/%3E%3C/svg%3E") right top / 12px 32px repeat-y;
+        mask: var(--seam-mask);
     }
     .dc-bg {
         position: absolute;
-        inset: 0 0 0 calc(50% - 12px);
+        inset: 0 0 0 calc(50% - var(--seam-width));
         z-index: -2;
         overflow: hidden;
         background: #313338;
@@ -349,35 +305,7 @@
     .hint code { font-family: var(--font-pixel); color: var(--color-mc-yellow); }
     .dc-side .hint code { font-family: var(--font-sans); color: #c9cdfb; }
 
-    .dc-end { position: relative; }
-    .dc-list {
-        height: clamp(8.5rem, calc(100svh - 39rem), 22rem);
-        overflow-y: auto;
-        overscroll-behavior: contain;
-        scrollbar-width: thin;
-        scrollbar-color: #1a1b1e transparent;
-        display: flex;
-        flex-direction: column;
-    }
-    .dc-list > :first-child { margin-top: auto; }
-    .typing { height: 1.25rem; padding-top: 0.25rem; font-size: 0.75rem; color: var(--color-dc-text); }
-    .typing b { font-weight: 700; }
-    .typing i {
-        display: inline-block; width: 5px; height: 5px; margin-right: 2px; border-radius: 50%;
-        background: var(--color-dc-text); animation: blink 1s infinite;
-    }
-    .typing i:nth-child(2) { animation-delay: 0.15s; }
-    .typing i:nth-child(3) { animation-delay: 0.3s; }
-    @keyframes blink { 50% { opacity: 0.3; } }
-
-    .dm-toast {
-        position: absolute; top: 3.5rem; right: 0.75rem; z-index: 3;
-        display: flex; gap: 0.6rem; align-items: flex-start; max-width: 16rem; padding: 0.6rem 0.8rem;
-        border-radius: 8px; background: #111214; box-shadow: 0 8px 24px rgb(0 0 0 / 0.5);
-        font-size: 0.85rem; line-height: 1.35;
-    }
-    .dm-icon { font-size: 1.25rem; }
-
+    /* The message in flight between the chats (see hero/packet.ts). */
     .hero :global(.packet) {
         position: absolute; left: -6px; top: -6px; z-index: 10;
         width: 12px; height: 12px; pointer-events: none;
@@ -427,6 +355,5 @@
         .link-logo { grid-row: 6; justify-self: center; align-self: start; margin-top: calc(var(--logo) / -2); z-index: 2; }
         .word.dc { grid-row: 6; justify-self: center; padding: calc(var(--logo) / 2 + 0.75rem) 0 0; }
         .dc-side { grid-column: 1; grid-row: 7; justify-self: stretch; width: auto; margin: 1.25rem 0 0; padding: 0 1rem 1rem; }
-        .dc-list { height: 15rem; }
     }
 </style>

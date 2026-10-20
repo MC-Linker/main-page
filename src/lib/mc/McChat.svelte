@@ -1,8 +1,9 @@
 <script lang="ts">
     import { fly } from 'svelte/transition';
     import McText from './McText.svelte';
-    import type { McLine } from './types';
+    import type { McLine } from './text';
 
+    /** Minecraft's chat: the latest lines over the world, and the chat bar when `onsubmit` is set. */
     type Props = {
         lines: McLine[];
         onsubmit?: (text: string) => void;

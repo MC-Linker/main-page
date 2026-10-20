@@ -1,39 +1,44 @@
 <script lang="ts">
-    import { fade } from 'svelte/transition';
     import { MediaQuery } from 'svelte/reactivity';
-    import { reducedMotion } from '$lib/motion';
-    import { featureItems, rarityColor, tabs, type FeatureItem } from '$lib/data/items';
-    import { tooltip } from '$lib/ui.svelte';
+    import { fade } from 'svelte/transition';
+    import { scrollBehavior } from '$lib/browser';
+    import { type Feature, features, featureTabs } from '$lib/data';
+    import DcMessage from '$lib/discord/DcMessage.svelte';
+    import { rarityColor } from '$lib/mc/item';
     import McButton from '$lib/mc/McButton.svelte';
     import McChat from '$lib/mc/McChat.svelte';
-    import DcMessage from '$lib/discord/DcMessage.svelte';
-    import ItemIcon from '../inventory/ItemIcon.svelte';
-    import Slot from '../inventory/Slot.svelte';
+    import McItemIcon from '$lib/mc/McItemIcon.svelte';
+    import McSlot from '$lib/mc/McSlot.svelte';
+    import { tooltipHandlers } from '$lib/ui.svelte';
 
-    type TabId = (typeof tabs)[number]['id'];
+    type TabId = (typeof featureTabs)[number]['id'];
     let tab = $state<TabId>('all');
     let query = $state('');
-    let selected = $state<FeatureItem>(featureItems[0]);
+    let selected = $state<Feature>(features[0]);
 
-    const shown = $derived(featureItems.filter(f => {
+    const tabName = $derived(featureTabs.find(t => t.id === tab)!.name);
+    const shown = $derived(features.filter(f => {
         if(tab !== 'all') return f.tab === tab;
         const q = query.trim().toLowerCase();
         if(!q) return true;
         return [f.name, ...f.lore, ...f.commands].join(' ').toLowerCase().includes(q);
     }));
+
     // Phones get six bigger slots per row instead of nine, so they're easy to tap.
     const narrow = new MediaQuery('(max-width: 560px)', false);
     const cols = $derived(narrow.current ? 6 : 9);
     // Always fill whole rows (at least two), like a real inventory.
-    const slots = $derived<(FeatureItem | null)[]>([...shown, ...Array(Math.max(0, Math.ceil(Math.max(shown.length, cols * 2) / cols) * cols - shown.length)).fill(null)]);
+    const slots = $derived.by<(Feature | null)[]>(() => {
+        const rows = Math.max(2, Math.ceil(shown.length / cols));
+        return [...shown, ...Array(rows * cols - shown.length).fill(null)];
+    });
 
     let preview = $state<HTMLElement>();
-    function pick(item: FeatureItem) {
+    function pick(item: Feature) {
         selected = item;
         // On phones the preview is below the inventory: bring it into view.
-        if(narrow.current) setTimeout(() => preview?.scrollIntoView({ block: 'nearest', behavior: reducedMotion.current ? 'auto' : 'smooth' }), 60);
+        if(narrow.current) setTimeout(() => preview?.scrollIntoView({ block: 'nearest', behavior: scrollBehavior() }), 60);
     }
-    const tabName = $derived(tabs.find(t => t.id === tab)!.name);
 </script>
 
 <section id="features" class="features" aria-labelledby="features-title">
@@ -46,15 +51,12 @@
     <div class="layout">
         <div class="inv">
             <div class="tabs" role="tablist" aria-label="Feature categories">
-                {#each tabs as t (t.id)}
+                {#each featureTabs as t (t.id)}
                     <!-- Like the game's creative tabs: the name shows in a tooltip above the tab. -->
                     <button role="tab" type="button" class="tab" aria-selected={tab === t.id} aria-label={t.name}
                         onclick={() => (tab = t.id)}
-                        onpointerenter={e => e.pointerType === 'mouse' && tooltip.showAbove({ id: t.id, name: t.name, lore: [], icon: t.icon }, e.currentTarget)}
-                        onpointerleave={() => tooltip.hide()}
-                        onfocus={e => e.currentTarget.matches(':focus-visible') && tooltip.showAbove({ id: t.id, name: t.name, lore: [], icon: t.icon }, e.currentTarget)}
-                        onblur={() => tooltip.hide()}>
-                        <ItemIcon icon={t.icon} size="1.5rem" />
+                        {...tooltipHandlers({ id: t.id, name: t.name, lore: [], icon: t.icon }, { above: true })}>
+                        <McItemIcon icon={t.icon} size="1.5rem" />
                     </button>
                 {/each}
             </div>
@@ -67,7 +69,7 @@
                 </div>
                 <div class="grid">
                     {#each slots as item, i (item?.id ?? `empty-${i}`)}
-                        <Slot
+                        <McSlot
                             {item}
                             selected={item?.id === selected.id}
                             extra={item ? [...item.commands.map(c => `&e${c}`), '&8Click to preview'] : []}
@@ -77,14 +79,14 @@
                 </div>
                 {#if shown.length === 0}<p class="none">Nothing found. Try "chat", "roles" or "/ban".</p>{/if}
             </div>
-            <p class="tip mc-text">{tabs.length - 1} tabs · {featureItems.length} items · all free</p>
+            <p class="tip mc-text">{featureTabs.length - 1} tabs · {features.length} items · all free</p>
         </div>
 
         <!-- The selected item, shown like a big item tooltip. -->
         {#key selected.id}
             <article class="mc-tooltip preview" bind:this={preview} in:fade={{ duration: 180 }} aria-live="polite">
                 <header class="p-head">
-                    <ItemIcon icon={selected.icon} glint={selected.glint} size="2.75rem" />
+                    <McItemIcon icon={selected.icon} glint={selected.glint} size="2.75rem" />
                     <div>
                         <h3 style:color={rarityColor[selected.rarity ?? 'common']}>{selected.name}</h3>
                         <p class="lore">{selected.lore.join(' ')}</p>
@@ -115,7 +117,7 @@
     .features {
         padding: clamp(4rem, 9vw, 7rem) 1rem clamp(4rem, 9vw, 6rem);
         /* The options-screen background: dark dirt. */
-        background: linear-gradient(rgb(0 0 0 / 0.7), rgb(0 0 0 / 0.7)), var(--dirt) 0 0 / 64px 64px;
+        background: linear-gradient(rgb(0 0 0 / 0.7), rgb(0 0 0 / 0.7)), var(--tex-dirt) 0 0 / 64px 64px;
         image-rendering: pixelated;
     }
     .features :global(img), .features :global(svg) { image-rendering: auto; }

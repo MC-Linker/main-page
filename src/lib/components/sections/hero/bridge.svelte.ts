@@ -1,10 +1,10 @@
-import { bot, chatWebhook, colors, embedStyle, msgId, success, type Author, type DcMsg, type Embed, type SlashCommand } from '$lib/discord/types';
-import type { McLine } from '$lib/mc/types';
-import type { LookName } from '$lib/pixel/sprites';
-import { links } from '$lib/data/links';
-import { sleep } from '$lib/motion';
+import { sleep } from '$lib/browser';
+import { links } from '$lib/data';
+import { type Author, bot, chatWebhook, colors, type DcMsg, type Embed, embedStyle, type SlashCommand, success, visitor } from '$lib/discord/types';
+import type { McLine } from '$lib/mc/text';
+import type { LookName } from '$lib/pixel/heads';
 
-/**
+/*
  * The hero's pretend Minecraft server and Discord channel. Messages and
  * command replies mirror the real bot and plugin (formats taken from the
  * plugin config and the bot's language file).
@@ -21,10 +21,11 @@ const players: Record<string, Player> = {
 const members = {
     theannoying: { name: 'TheAnnoying', avatar: { head: 'theannoying' }, color: '#f47b67' } satisfies Author,
     bnux: { name: 'Bnux', avatar: { head: 'bnux' }, color: '#3ba55d' } satisfies Author,
-    you: { name: 'you', avatar: { letter: 'Y', color: '#5865f2' } } satisfies Author,
+    you: visitor,
 };
 
-const you = { user: 'you', avatar: members.you.avatar };
+/** The visitor, as the user of a slash command. */
+const you = { user: visitor.name, avatar: visitor.avatar };
 
 export const demoCommands: SlashCommand[] = [
     {
@@ -38,6 +39,9 @@ export const demoCommands: SlashCommand[] = [
     { name: 'ban', description: 'Ban a player from the Minecraft server.', suggestions: ['Griefer too much TNT'] },
     { name: 'help', description: 'Detailed description of every command.' },
 ];
+
+/** What the game says to commands it doesn't know. */
+const UNKNOWN_COMMAND = 'Unknown or incomplete command, see below for error';
 
 // The plugin's default config.yml formats.
 const discordToMc = (name: string, text: string) => `&l&9Discord &8| &l&7${name} &8>>&r ${text}`;
@@ -58,7 +62,8 @@ const eventEmbed = (p: Player, description: string, color: string): Embed => ({
     description,
 });
 
-type Direction = 'toDiscord' | 'toMinecraft';
+/** Which way a message travels through the link. */
+export type Direction = 'toDiscord' | 'toMinecraft';
 
 export class Bridge {
     mc = $state<McLine[]>([]);
@@ -73,6 +78,7 @@ export class Bridge {
     transfer: (dir: Direction) => Promise<void> = async () => {};
 
     private lineId = 1;
+    private messageId = 1;
     private scriptRunning = false;
 
     mcLine(text: string) {
@@ -81,7 +87,7 @@ export class Bridge {
     }
 
     dcPost(msg: Omit<DcMsg, 'id'>) {
-        this.dc.push({ ...msg, id: msgId() });
+        this.dc.push({ ...msg, id: this.messageId++ });
         if(this.dc.length > 30) this.dc.shift();
     }
 
@@ -155,7 +161,7 @@ export class Bridge {
         if(v === 'time' && a[0] === 'set') {
             const ticks: Record<string, number> = { day: 1000, noon: 6000, night: 13000, midnight: 18000 };
             const t = ticks[a[1]] ?? Number(a[1]);
-            if(Number.isNaN(t) || a[1] === undefined) return 'Unknown or incomplete command, see below for error';
+            if(Number.isNaN(t) || a[1] === undefined) return UNKNOWN_COMMAND;
             this.night = (t % 24000) >= 12500 && (t % 24000) < 23500;
             return `Set the time to ${t}`;
         }
@@ -177,7 +183,7 @@ export class Bridge {
             const item = a[1].replace('minecraft:', '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
             return `Gave ${a[2] ?? 1} [${item}] to ${a[0]}`;
         }
-        return 'Unknown or incomplete command, see below for error';
+        return UNKNOWN_COMMAND;
     }
 
     private async remoteCommand(command: string) {
@@ -213,7 +219,6 @@ export class Bridge {
         if(!user || user.toLowerCase() === 'theannoying') {
             this.botReply('/inventory', [success('Player Inventory', 'Here\'s the inventory of **TheAnnoying**:', {
                 image: '/hero/inventory.png',
-                imageAlt: 'A rendered Minecraft inventory with TNT and dirt blocks',
             })]);
             return;
         }
@@ -290,7 +295,7 @@ export class Bridge {
         }
 
         const output = this.execute(text);
-        if(output === 'Unknown or incomplete command, see below for error') {
+        if(output === UNKNOWN_COMMAND) {
             this.mcLine(`&c${output}`);
             return;
         }

@@ -36,3 +36,14 @@ export const team: { core: Member[]; specialThanks: Member[] } = {
         { username: 'fALECX', github: 'falecx', roles: ['Supporter'], color: '#3b8ea5' },
     ],
 };
+
+/** Role colours, like rank tags on a Minecraft server. */
+export const roleColors: Record<string, string> = {
+    'Team Lead': '#ffaa00',
+    Developer: '#55ff55',
+    Marketing: '#ff55ff',
+    Designer: '#55ffff',
+    DevOps: '#5555ff',
+    Donator: '#ffff55',
+    Supporter: '#aaaaaa',
+};

@@ -1,14 +1,12 @@
 <script lang="ts">
     import { links } from '$lib/data';
-    import { spriteUri } from '$lib/pixel/uri';
-    import { bedrock } from '$lib/pixel/sprites';
     import BrandIcon from './BrandIcon.svelte';
 
-    const tile = spriteUri(bedrock);
+    // Split like the rest of the site: Minecraft links on bedrock, Discord and the rest on dark gray.
     const year = new Date().getFullYear();
 </script>
 
-<footer style:--bedrock={tile}>
+<footer>
     <div class="side mc">
         <a class="brand" href="/"><img src="/banner.png" alt="MC Linker" width="168" height="42" /></a>
         <p class="mc-text tagline">Link your Minecraft server with Discord.</p>
@@ -50,7 +48,7 @@
     .side { display: flex; gap: 2.5rem; padding: 3rem clamp(1rem, 4vw, 3.5rem) 2.5rem; }
     .side.mc {
         flex-direction: column; gap: 1rem; align-items: flex-end; text-align: right;
-        background: linear-gradient(rgb(0 0 0 / 0.45), rgb(0 0 0 / 0.45)), var(--bedrock) 0 0 / 64px 64px;
+        background: linear-gradient(rgb(0 0 0 / 0.45), rgb(0 0 0 / 0.45)), var(--tex-bedrock) 0 0 / 64px 64px;
         image-rendering: pixelated;
     }
     .side.dc { flex-wrap: wrap; }

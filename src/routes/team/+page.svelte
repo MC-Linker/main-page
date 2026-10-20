@@ -1,31 +1,18 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { team, type Member } from '$lib/data';
-    import { dirt, stone } from '$lib/pixel/sprites';
-    import { spriteUri } from '$lib/pixel/uri';
-    import McWorld from '$lib/mc/McWorld.svelte';
-    import McLogo from '$lib/mc/McLogo.svelte';
     import BrandIcon from '$lib/components/BrandIcon.svelte';
     import LinkPreview from '$lib/components/LinkPreview.svelte';
+    import { type Member, roleColors, team } from '$lib/data';
     import { teamEmbed } from '$lib/linkPreview';
+    import McLogo from '$lib/mc/McLogo.svelte';
+    import McWorld from '$lib/mc/McWorld.svelte';
 
-    // Role colours, like rank tags on a Minecraft server.
-    const rankColor: Record<string, string> = {
-        'Team Lead': '#ffaa00',
-        Developer: '#55ff55',
-        Marketing: '#ff55ff',
-        Designer: '#55ffff',
-        DevOps: '#5555ff',
-        Donator: '#ffff55',
-        Supporter: '#aaaaaa',
-    };
-
+    // A random yellow splash text next to the title, like the game's.
     const splashes = ['Made with love!', 'Hi there!', 'Also try Discord!', 'Creeper-proof!', 'Linked!'];
     let splash = $state(splashes[0]);
-    onMount(() => { splash = splashes[Math.floor(Math.random() * splashes.length)]; });
-
-    const texture = spriteUri(dirt);
-    const grain = spriteUri(stone);
+    onMount(() => {
+        splash = splashes[Math.floor(Math.random() * splashes.length)];
+    });
 </script>
 
 <svelte:head>
@@ -56,14 +43,14 @@
                 {/if}
                 <h3>Roles</h3>
                 <ul class="roles">
-                    {#each m.roles as r (r)}<li><i style:background={rankColor[r] ?? m.color}></i>{r}</li>{/each}
+                    {#each m.roles as r (r)}<li><i style:background={roleColors[r] ?? m.color}></i>{r}</li>{/each}
                 </ul>
             </div>
         </div>
     </article>
 {/snippet}
 
-<section class="team" style:--texture={texture} style:--grain={grain} aria-labelledby="team-title">
+<section class="team" aria-labelledby="team-title">
     <!-- Like the game's title screen: the logo over an out-of-focus world. -->
     <header class="head">
         <McWorld class="world" tile={30} hills blur={3} />
@@ -88,7 +75,7 @@
 </section>
 
 <style>
-    .team { background: linear-gradient(rgb(0 0 0 / 0.62), rgb(0 0 0 / 0.62)), var(--texture) 0 0 / 64px 64px; image-rendering: pixelated; }
+    .team { background: linear-gradient(rgb(0 0 0 / 0.62), rgb(0 0 0 / 0.62)), var(--tex-dirt) 0 0 / 64px 64px; image-rendering: pixelated; }
     .team :global(img) { image-rendering: auto; }
 
     /* ── Header ─────────────────────────────────────────────────────────── */
@@ -132,7 +119,7 @@
     .banner {
         position: relative; height: 6rem;
         /* Stone grain blended into the colour, so it keeps its hue. */
-        background: var(--grain) 0 0 / 32px 32px, var(--accent);
+        background: var(--tex-stone) 0 0 / 32px 32px, var(--accent);
         background-blend-mode: soft-light;
     }
     .nametag {

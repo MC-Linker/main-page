@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { embedScript, site, type ComponentEmbed } from '$lib/linkPreview';
+    import { site } from '$lib/data';
+    import { absolute, type ComponentEmbed, embedScript } from '$lib/linkPreview';
 
     /**
      * Link preview tags for one page: Open Graph for every site that unfurls links,
@@ -10,12 +11,12 @@
 </script>
 
 <svelte:head>
-    <meta property="og:site_name" content="MC Linker" />
+    <meta property="og:site_name" content={site.name} />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={site + image} />
-    <meta property="og:url" content={site + path} />
+    <meta property="og:image" content={absolute(image)} />
+    <meta property="og:url" content={absolute(path)} />
     <meta name="twitter:card" content="summary" />
     {#if embed}{@html embedScript(embed)}{/if}
 </svelte:head>

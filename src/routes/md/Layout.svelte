@@ -3,6 +3,7 @@
     import LinkPreview from '$lib/components/LinkPreview.svelte';
     import { legalEmbed } from '$lib/linkPreview';
 
+    // The layout for the markdown pages (terms, privacy). `title` and `description` come from their front matter.
     let { children, title, description } = $props();
     const path = page.url.pathname.replace(/\/$/, '');
 </script>

@@ -8,7 +8,6 @@ export const links = {
     appDirectory: 'https://discord.com/application-directory/712759741528408064',
     support: 'https://discord.gg/rX36kZUGNK',
     guide: guideBase,
-    quickStart: guide('getting-started/quick-start'),
     plugin: {
         modrinth: 'https://modrinth.com/plugin/discord-linker',
         curseforge: 'https://www.curseforge.com/minecraft/mc-mods/discord-linker',

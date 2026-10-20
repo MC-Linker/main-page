@@ -3,19 +3,19 @@
 
 /* Minecraft fonts from the MC-Linker bot repo (resources/fonts), subset to woff2. */
 @font-face {
-	font-family: "Minecraft Seven";
-	src: url("/fonts/minecraft-seven.woff2") format("woff2");
-	font-display: swap;
+    font-family: "Minecraft Seven";
+    src: url("/fonts/minecraft-seven.woff2") format("woff2");
+    font-display: swap;
 }
 @font-face {
-	font-family: "Minecrafter";
-	src: url("/fonts/minecrafter.woff2") format("woff2");
-	font-display: swap;
+    font-family: "Minecrafter";
+    src: url("/fonts/minecrafter.woff2") format("woff2");
+    font-display: swap;
 }
 @font-face {
-	font-family: "Mojang Studios";
-	src: url("/fonts/mojang-studios.woff2") format("woff2");
-	font-display: swap;
+    font-family: "Mojang Studios";
+    src: url("/fonts/mojang-studios.woff2") format("woff2");
+    font-display: swap;
 }
 
 /* Discord's font, as in the guide (served by the discord-components project). */
@@ -25,123 +25,117 @@
 @font-face { font-family: "Whitney"; src: url("https://cdn.skyra.pw/whitney-font/v2/Bold.woff") format("woff"); font-weight: 700; font-display: swap; }
 
 @theme {
-	/* In-game text. Pixelify only fills in glyphs Minecraft Seven doesn't have (like arrows). */
-	--font-pixel: "Minecraft Seven", "Pixelify Sans Variable", ui-monospace, monospace;
-	/* The blocky logo font. Letters and digits only, so keep it to short words. */
-	--font-logo: "Minecrafter", "Minecraft Seven", ui-monospace, monospace;
-	/* The Mojang Studios logo font, for small uppercase labels. */
-	--font-mojang: "Mojang Studios", "Minecraft Seven", ui-monospace, monospace;
-	--font-sans: "DM Sans Variable", "DM Sans", ui-sans-serif, system-ui, sans-serif;
-	/* The same stack discord-components uses for messages. */
-	--font-discord: "gg sans", "Noto Sans", Whitney, "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+    /* In-game text. Pixelify only fills in glyphs Minecraft Seven doesn't have (like arrows). */
+    --font-pixel: "Minecraft Seven", "Pixelify Sans Variable", ui-monospace, monospace;
+    /* The blocky logo font. Letters and digits only, so keep it to short words. */
+    --font-logo: "Minecrafter", "Minecraft Seven", ui-monospace, monospace;
+    /* The Mojang Studios logo font, for small uppercase labels. */
+    --font-mojang: "Mojang Studios", "Minecraft Seven", ui-monospace, monospace;
+    --font-sans: "DM Sans Variable", "DM Sans", ui-sans-serif, system-ui, sans-serif;
+    /* The same stack discord-components uses for messages. */
+    --font-discord: "gg sans", "Noto Sans", Whitney, "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
 
-	/* Minecraft side */
-	--color-grass: #6f9e2d;
-	--color-grass-dark: #5d8a24;
-	--color-grass-light: #8cbf3f;
-	--color-dirt: #915d2a;
-	--color-dirt-dark: #79491f;
-	--color-sky: #78a6f7;
-	--color-mc-ui: #c6c6c6;
-	--color-mc-ui-dark: #8b8b8b;
-	--color-mc-ink: #3f3f3f;
-	--color-mc-gold: #ffaa00;
-	--color-mc-yellow: #ffff55;
-	--color-mc-aqua: #55ffff;
-	--color-mc-green: #55ff55;
-	--color-mc-gray: #aaaaaa;
-	--color-mc-dark-gray: #555555;
-	--color-mc-blue: #5555ff;
-	--color-mc-red: #ff5555;
-	--color-mc-purple: #ff55ff;
+    /* Minecraft side */
+    --color-grass: #6f9e2d;
+    --color-grass-light: #8cbf3f;
+    --color-mc-ui: #c6c6c6;
+    --color-mc-ui-dark: #8b8b8b;
+    --color-mc-ink: #3f3f3f;
+    --color-mc-yellow: #ffff55;
 
-	/* Discord side */
-	--color-dc: #313338;
-	--color-dc-2: #2b2d31;
-	--color-dc-3: #1e1f22;
-	--color-dc-hover: #2e3035;
-	--color-dc-input: #383a40;
-	--color-dc-text: #dbdee1;
-	--color-dc-header: #f2f3f5;
-	--color-dc-muted: #949ba4;
-	--color-dc-blurple: #5865f2;
-	--color-dc-blurple-dark: #4752c4;
-	--color-dc-link: #00a8fc;
-	--color-dc-green: #23a55a;
-	--color-dc-red: #da373c;
+    /* Discord side */
+    --color-dc: #313338;
+    --color-dc-2: #2b2d31;
+    --color-dc-3: #1e1f22;
+    --color-dc-hover: #2e3035;
+    --color-dc-input: #383a40;
+    --color-dc-text: #dbdee1;
+    --color-dc-header: #f2f3f5;
+    --color-dc-muted: #949ba4;
+    --color-dc-blurple: #5865f2;
+    --color-dc-blurple-dark: #4752c4;
 
-	/* Page */
-	--color-ink: #0d1014;
+    /* Page */
+    --color-ink: #0d1014;
 }
 
 :root {
-	color-scheme: dark;
-	--mc-shadow: 0.125em;
-	/* Room the hotbar takes at the bottom of the screen. Sections keep their content above it. */
-	--hud-space: 8rem;
+    color-scheme: dark;
+    --mc-shadow: 0.125em;
+    /* Room the hotbar takes at the bottom of the screen. Sections keep their content above it. */
+    --hud-space: 8rem;
+    /*
+     * Where a Minecraft half meets a Discord half: a pixel-stepped edge, like the grass
+     * edge in the logo. Use `mask: var(--seam-mask)` on the Minecraft half and let the
+     * Discord half reach --seam-width under it.
+     */
+    --seam-width: 12px;
+    --seam-mask:
+        linear-gradient(#000 0 0) left / calc(100% - var(--seam-width)) 100% no-repeat,
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3 8' width='12' height='32'%3E%3Cpath d='M0 0h3v2H2v2h1v1H1v3H0z'/%3E%3C/svg%3E") right top / var(--seam-width) calc(var(--seam-width) * 8 / 3) repeat-y;
 }
 @media (max-width: 720px) {
-	:root { --hud-space: 6.25rem; }
+    :root { --hud-space: 6.25rem; }
 }
 @media (max-height: 520px) and (min-width: 721px) {
-	:root { --hud-space: 4.25rem; }
+    :root { --hud-space: 4.25rem; }
 }
 
 html {
-	/* The Minecraft fonts have one weight; never smear them into fake bold. */
-	font-synthesis-weight: none;
-	scroll-behavior: smooth;
-	-webkit-text-size-adjust: 100%;
+    /* The Minecraft fonts have one weight; never smear them into fake bold. */
+    font-synthesis-weight: none;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
 }
 
 @media (prefers-reduced-motion: reduce) {
-	html { scroll-behavior: auto; }
-	*, *::before, *::after {
-		animation-duration: 0.001ms !important;
-		animation-iteration-count: 1 !important;
-		transition-duration: 0.001ms !important;
-	}
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
 }
 
 body {
-	margin: 0;
-	background: var(--color-ink);
-	color: var(--color-dc-text);
-	font-family: var(--font-sans);
-	overflow-x: clip;
-	-webkit-font-smoothing: antialiased;
+    margin: 0;
+    background: var(--color-ink);
+    color: var(--color-dc-text);
+    font-family: var(--font-sans);
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-	background: var(--color-grass);
-	color: white;
+    background: var(--color-grass);
+    color: white;
 }
 
 :focus-visible {
-	outline: 3px solid var(--color-mc-yellow);
-	outline-offset: 2px;
+    outline: 3px solid var(--color-mc-yellow);
+    outline-offset: 2px;
 }
 
 /* Minecraft-style text: the game's font with its hard drop shadow. */
 .mc-text {
-	font-family: var(--font-pixel);
-	font-weight: 400;
-	text-shadow: var(--mc-shadow) var(--mc-shadow) 0 rgb(0 0 0 / 0.55);
+    font-family: var(--font-pixel);
+    font-weight: 400;
+    text-shadow: var(--mc-shadow) var(--mc-shadow) 0 rgb(0 0 0 / 0.55);
 }
 
 /* Short logo words in the Minecraft logo font. */
 .mc-logo {
-	font-family: var(--font-logo);
-	font-weight: 400;
-	text-shadow: var(--mc-shadow) var(--mc-shadow) 0 rgb(0 0 0 / 0.55);
+    font-family: var(--font-logo);
+    font-weight: 400;
+    text-shadow: var(--mc-shadow) var(--mc-shadow) 0 rgb(0 0 0 / 0.55);
 }
 
 /* Small labels in the Mojang Studios font. It only has capitals (see scripts/mojang-capitals.py). */
 .mojang {
-	font-family: var(--font-mojang);
-	font-weight: 400;
-	text-transform: uppercase;
-	letter-spacing: 0.06em;
+    font-family: var(--font-mojang);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
 }
 
 /* Discord messages come from @skyra/discord-components-core. Hide them until the
@@ -156,7 +150,7 @@ discord-command[compact-mode], discord-reply[compact-mode] { margin: 0 0 0 62px;
 
 /* On phones: the sun sits above the page titles, out of their way. */
 @media (max-width: 760px) {
-	:root { --orb-left: 5%; --orb-top: 0.6rem; }
+    :root { --orb-left: 5%; --orb-top: 0.6rem; }
 }
 
 /* Jumping to a section (hotbar, #links) skips some of its top padding. */
@@ -170,54 +164,54 @@ main > section[id]:not(#top) { scroll-margin-top: -2rem; }
 
 /* A Minecraft GUI panel: light gray with a bevelled border. */
 .mc-panel {
-	position: relative;
-	padding: 0.9rem;
-	background: var(--color-mc-ui);
-	color: var(--color-mc-ink);
-	border: 3px solid #000;
-	border-radius: 6px;
-	box-shadow: inset 3px 3px 0 #fff, inset -3px -3px 0 #555;
+    position: relative;
+    padding: 0.9rem;
+    background: var(--color-mc-ui);
+    color: var(--color-mc-ink);
+    border: 3px solid #000;
+    border-radius: 6px;
+    box-shadow: inset 3px 3px 0 #fff, inset -3px -3px 0 #555;
 }
 .mc-panel-title { margin: 0 0 0.5rem; font-family: var(--font-pixel); font-size: 1.05rem; color: var(--color-mc-ink); }
 
 /* An inventory slot. */
 .mc-slot {
-	position: relative;
-	display: grid;
-	place-items: center;
-	width: var(--slot, 2.75rem);
-	height: var(--slot, 2.75rem);
-	background: var(--color-mc-ui-dark);
-	box-shadow: inset 2px 2px 0 #373737, inset -2px -2px 0 #fff;
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: var(--slot, 2.75rem);
+    height: var(--slot, 2.75rem);
+    background: var(--color-mc-ui-dark);
+    box-shadow: inset 2px 2px 0 #373737, inset -2px -2px 0 #fff;
 }
 
 /* The purple tooltip Minecraft shows over items. */
 .mc-tooltip {
-	padding: 0.4rem 0.55rem;
-	background: rgb(16 0 16 / 0.94);
-	border: 2px solid;
-	border-image: linear-gradient(#5000ff 0%, #28007f 100%) 1;
-	box-shadow: 0 0 0 2px rgb(16 0 16 / 0.94);
-	font-family: var(--font-pixel);
-	font-size: 0.95rem;
-	line-height: 1.35;
-	color: #fff;
-	text-shadow: 0.12em 0.12em 0 #3f3f3f;
+    padding: 0.4rem 0.55rem;
+    background: rgb(16 0 16 / 0.94);
+    border: 2px solid;
+    border-image: linear-gradient(#5000ff 0%, #28007f 100%) 1;
+    box-shadow: 0 0 0 2px rgb(16 0 16 / 0.94);
+    font-family: var(--font-pixel);
+    font-size: 0.95rem;
+    line-height: 1.35;
+    color: #fff;
+    text-shadow: 0.12em 0.12em 0 #3f3f3f;
 }
 
 .skip-link {
-	position: absolute;
-	left: 1rem;
-	top: -4rem;
-	z-index: 100;
-	padding: 0.5rem 1rem;
-	background: var(--color-mc-yellow);
-	color: black;
-	font-weight: 700;
+    position: absolute;
+    left: 1rem;
+    top: -4rem;
+    z-index: 100;
+    padding: 0.5rem 1rem;
+    background: var(--color-mc-yellow);
+    color: black;
+    font-weight: 700;
 }
 .skip-link:focus { top: 1rem; }
 
 #nprogress .bar {
-	background: var(--color-grass) !important;
-	height: 3px !important;
+    background: var(--color-grass) !important;
+    height: 3px !important;
 }

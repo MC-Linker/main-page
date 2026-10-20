@@ -3,6 +3,7 @@
     import McButton from '$lib/mc/McButton.svelte';
     import { links } from '$lib/data';
 
+    // Every error is Minecraft's death screen. Respawn goes home.
     const notFound = $derived(page.status === 404);
 </script>
 

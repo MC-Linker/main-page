@@ -1,5 +1,4 @@
-import { links } from './data/links';
-import { team } from './data/team';
+import { links, site, team } from './data';
 
 /**
  * Discord "component embeds": a custom link preview made of message components
@@ -14,11 +13,11 @@ import { team } from './data/team';
  * The Open Graph tags stay as the fallback for older clients and other sites.
  */
 
-export const site = 'https://mclinker.com';
-const abs = (path: string) => (path.startsWith('http') ? path : site + path);
+/** Absolute URL for a path on the site. */
+export const absolute = (path: string) => (path.startsWith('http') ? path : site.url + path);
 
-/** The grass green used for the theme colour, as the integer Discord expects. */
-const green = 0x6f9e2d;
+/** The site's theme colour, as the integer Discord expects. */
+const accent = parseInt(site.themeColor.slice(1), 16);
 
 type Button = { type: 2; style: 5; label: string; url: string };
 type Text = { type: 10; content: string };
@@ -31,11 +30,12 @@ type Child = Text | Section | Gallery | Separator | Row;
 export type ComponentEmbed = { component: { type: 17; accent_color: number; components: Child[] } };
 
 const text = (content: string): Text => ({ type: 10, content });
-const button = (label: string, url: string): Button => ({ type: 2, style: 5, label, url: abs(url) });
+const button = (label: string, url: string): Button => ({ type: 2, style: 5, label, url: absolute(url) });
 const row = (...buttons: Button[]): Row => ({ type: 1, components: buttons });
 const section = (content: string, accessory: Thumbnail | Button): Section => ({ type: 9, components: [text(content)], accessory });
-const thumbnail = (url: string): Thumbnail => ({ type: 11, media: { url: abs(url) } });
-const container = (...components: Child[]): ComponentEmbed => ({ component: { type: 17, accent_color: green, components } });
+const thumbnail = (url: string): Thumbnail => ({ type: 11, media: { url: absolute(url) } });
+const galleryItem = (url: string, description: string) => ({ media: { url: absolute(url) }, description });
+const container = (...components: Child[]): ComponentEmbed => ({ component: { type: 17, accent_color: accent, components } });
 
 export function homeEmbed(): ComponentEmbed {
     return container(
@@ -48,10 +48,10 @@ export function homeEmbed(): ComponentEmbed {
         {
             type: 12,
             items: [
-                { media: { url: abs('/hero/inventory.png') }, description: 'A player inventory, rendered in Discord' },
-                { media: { url: abs('/showcase/userinfo.png') }, description: 'Player stats with /userinfo' },
-                { media: { url: abs('/showcase/serverinfo.png') }, description: 'Server info with /serverinfo' },
-                { media: { url: abs('/showcase/statchannel.png') }, description: 'Stat channels with the server status' },
+                galleryItem('/hero/inventory.png', 'A player inventory, rendered in Discord'),
+                galleryItem('/showcase/userinfo.png', 'Player stats with /userinfo'),
+                galleryItem('/showcase/serverinfo.png', 'Server info with /serverinfo'),
+                galleryItem('/showcase/statchannel.png', 'Stat channels with the server status'),
             ],
         },
         text('**Set up in three steps:** add the bot, install the plugin, run `/connect`.'),

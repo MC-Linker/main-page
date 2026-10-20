@@ -1,16 +1,12 @@
 <script lang="ts">
-    import { stone } from '$lib/pixel/sprites';
-    import { spriteUri } from '$lib/pixel/uri';
-
     /**
      * Words in the style of the Minecraft logo: the blocky logo font, a stone
      * face, a stepped 3D edge and a dark outline. Size it with font-size.
      */
     let { text, class: className = '' }: { text: string; class?: string } = $props();
-    const tile = spriteUri(stone);
 </script>
 
-<span class="logo-text {className}" style:--stone={tile}>{text}</span>
+<span class="logo-text {className}">{text}</span>
 
 <style>
     .logo-text {
@@ -21,7 +17,7 @@
         white-space: nowrap;
         color: transparent;
         /* Light stone face. */
-        background: linear-gradient(rgb(255 255 255 / 0.32), rgb(255 255 255 / 0.32)), var(--stone) 0 0 / 0.5em 0.5em;
+        background: linear-gradient(rgb(255 255 255 / 0.32), rgb(255 255 255 / 0.32)), var(--tex-stone) 0 0 / 0.5em 0.5em;
         -webkit-background-clip: text;
         background-clip: text;
         image-rendering: pixelated;

@@ -1,5 +1,6 @@
-import type { Look, LookName } from '$lib/pixel/sprites';
+import type { Look, LookName } from '$lib/pixel/heads';
 
+/** A picture URL, a pixel-art player head, or a coloured circle with a letter. */
 export type Avatar = { image: string } | { head: LookName | Look } | { letter: string; color: string };
 
 export type Author = {
@@ -20,10 +21,10 @@ export type Embed = {
     description?: string;
     fields?: EmbedField[];
     image?: string;
-    imageAlt?: string;
     footer?: string;
 };
 
+/** The "you used /command" line above a bot's reply. */
 export type Interaction = { user: string; avatar: Avatar; command: string };
 
 export type DcButtonData = { label: string; style?: 'primary' | 'secondary' | 'danger' | 'success' | 'link' };
@@ -54,27 +55,23 @@ export const colors = {
     pink: '#e91e63',
     darkPurple: '#71368a',
     darkGold: '#c27c0e',
-    green: '#57f287',
-    red: '#ed4245',
-    blurple: '#5865f2',
     brand: '#729e34',
 } as const;
-
-export const bot: Author = { name: 'MC Linker', avatar: { image: '/logo.png' }, tag: 'APP', verified: true };
 
 /** Embed colours and authors used by the bot (see the bot's language file). */
 export const embedStyle = {
     success: { color: '#43611a', author: { name: 'Success', icon: '/emoji/success.png' } },
     warning: { color: '#f1c40f', author: { name: 'Warning', icon: '/emoji/warning.png' } },
-    error: { color: '#9e3436', author: { name: 'Error', icon: '/emoji/error.png' } },
     step: { color: '#f88239' },
 } as const;
 
 export const success = (title: string, description?: string, extra: Partial<Embed> = {}): Embed =>
     ({ ...embedStyle.success, title, description, ...extra });
 
+export const bot: Author = { name: 'MC Linker', avatar: { image: '/logo.png' }, tag: 'APP', verified: true };
+
 /** The webhook identity the bot uses for system messages in chat channels. */
 export const chatWebhook: Author = { name: 'MC Linker Chat', avatar: { image: '/logo.png' }, tag: 'APP' };
 
-let nextId = 1;
-export const msgId = () => nextId++;
+/** The visitor, when they type in a demo. */
+export const visitor: Author = { name: 'you', avatar: { letter: 'Y', color: '#5865f2' } };

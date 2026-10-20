@@ -1,12 +1,16 @@
-import { links } from './links';
+import { craftingTable, enchantedBook, letter, painting } from '$lib/pixel/items';
+import type { Sprite } from '$lib/pixel/sprites';
 import type { Brand } from './brands';
+import { links } from './links';
 
 /** `color` is the site's brand colour, used for its download button. */
 export type Download = { name: string; href: string; brand?: Brand; color: string; recommended?: boolean };
 
+/** Server software, as listed in setup step 2 (styled like the game's server list). */
 export type Platform = {
     id: string;
     name: string;
+    icon: Sprite;
     /** Other server software that uses the same build. */
     alsoWorksOn?: string;
     versions: string;
@@ -23,6 +27,7 @@ export const platforms: Platform[] = [
     {
         id: 'paper',
         name: 'Paper & Spigot',
+        icon: letter,
         alsoWorksOn: 'Purpur and other Bukkit-based servers',
         versions: '1.8 – latest',
         folder: 'plugins',
@@ -31,6 +36,7 @@ export const platforms: Platform[] = [
     {
         id: 'fabric',
         name: 'Fabric',
+        icon: painting,
         versions: '1.16.5 – 26.2',
         folder: 'mods',
         downloads: [modrinth, curseforge],
@@ -38,6 +44,7 @@ export const platforms: Platform[] = [
     {
         id: 'neoforge',
         name: 'NeoForge',
+        icon: enchantedBook,
         versions: '1.21.1 – 26.2',
         folder: 'mods',
         downloads: [modrinth, curseforge],
@@ -45,6 +52,7 @@ export const platforms: Platform[] = [
     {
         id: 'forge',
         name: 'Forge',
+        icon: craftingTable,
         versions: '1.16.5 – 1.20.x',
         folder: 'mods',
         downloads: [modrinth, curseforge],

@@ -11,13 +11,17 @@
         hint?: string;
     };
     let { placeholder, commands = [], onsubmit, input = $bindable(), label = placeholder, hint }: Props = $props();
-    let hinted = $state(false);
-    $effect(() => { if(value.startsWith('/')) hinted = true; });
 
     let value = $state('');
     let active = $state(0);
     let focused = $state(false);
+    /** The hint goes away for good once a command has been started. */
+    let hinted = $state(false);
     const listId = `dc-suggest-${Math.random().toString(36).slice(2, 8)}`;
+
+    $effect(() => {
+        if(value.startsWith('/')) hinted = true;
+    });
 
     type Suggestion = { label: string; description: string; fill: string };
     const suggestions = $derived.by<Suggestion[]>(() => {
@@ -37,7 +41,11 @@
     });
     const open = $derived(focused && suggestions.length > 0);
 
-    $effect(() => { suggestions; active = 0; });
+    // A new list starts at its first entry.
+    $effect(() => {
+        void suggestions;
+        active = 0;
+    });
 
     function pick(s: Suggestion) {
         value = s.fill;
@@ -113,6 +121,7 @@
 <style>
     .composer { position: relative; }
     .field {
+        position: relative;
         display: flex; align-items: center; gap: 0.75rem;
         padding: 0 0.75rem 0 1rem; height: 2.75rem; border-radius: 8px;
         background: var(--color-dc-input);
@@ -127,7 +136,6 @@
     }
     input::placeholder { color: #6d6f78; }
     .field:has(input:focus-visible) { outline: 2px solid var(--color-dc-blurple); outline-offset: 0; }
-    .field { position: relative; }
     .kbd {
         display: grid; place-items: center; width: 1.75rem; height: 1.75rem; flex: none; padding: 0; cursor: pointer;
         border: 1px solid #4e5058; border-radius: 6px; background: none; font: inherit; font-size: 0.85rem; font-weight: 700; color: var(--color-dc-muted);

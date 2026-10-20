@@ -1,9 +1,8 @@
 <script lang="ts">
-    import { tooltip } from '$lib/ui.svelte';
-    import { rarityColor } from '$lib/data/items';
+    import { rarityColor } from '$lib/mc/item';
     import McText from '$lib/mc/McText.svelte';
+    import { tooltip } from '$lib/ui.svelte';
 
-    let el = $state<HTMLElement>();
     let w = $state(0);
     let h = $state(0);
     let vw = $state(1200);
@@ -22,7 +21,7 @@
 <svelte:window bind:innerWidth={vw} bind:innerHeight={vh} />
 
 {#if tooltip.item}
-    <div class="mc-tooltip tip" role="tooltip" bind:this={el} bind:offsetWidth={w} bind:offsetHeight={h} style:left="{left}px" style:top="{top}px">
+    <div class="mc-tooltip tip" role="tooltip" bind:offsetWidth={w} bind:offsetHeight={h} style:left="{left}px" style:top="{top}px">
         <div style:color={rarityColor[tooltip.item.rarity ?? 'common']}>{tooltip.item.name}</div>
         {#each tooltip.item.lore as line, i (i)}
             <div class="lore">{line || ' '}</div>

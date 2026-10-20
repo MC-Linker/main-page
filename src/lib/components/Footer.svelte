@@ -14,7 +14,7 @@
             <h2 class="mc-text">Plugin</h2>
             <ul>
                 <li><a href={links.plugin.modrinth}><BrandIcon brand="modrinth" size="1em" /> Modrinth</a></li>
-                <li><span class="soon" title="Coming soon"><BrandIcon brand="curseforge" size="1em" /> CurseForge (soon)</span></li>
+                <li><a href={links.plugin.curseforgeMods}><BrandIcon brand="curseforge" size="1em" /> CurseForge</a></li>
                 <li><a href={links.plugin.hangar}>Hangar</a></li>
                 <li><a href={links.plugin.spigot}><BrandIcon brand="spigot" size="1em" /> SpigotMC</a></li>
             </ul>
@@ -58,7 +58,6 @@
     .mc h2 { font-weight: 400; letter-spacing: 0.04em; color: #ced4da; }
     ul { display: flex; flex-direction: column; gap: 0.4rem; margin: 0; padding: 0; list-style: none; }
     .mc ul { flex-direction: row; flex-wrap: wrap; justify-content: flex-end; gap: 0.4rem 1rem; }
-    .soon { display: inline-flex; align-items: center; gap: 0.45rem; color: #868e96; cursor: default; }
     a { display: inline-flex; align-items: center; gap: 0.45rem; color: #ced4da; text-decoration: none; }
     a:hover { color: #fff; text-decoration: underline; }
     .legal { grid-column: 1 / -1; margin: 0; padding: 1.25rem 1rem calc(var(--hud-space) + 0.5rem); border-top: 1px solid rgb(255 255 255 / 0.06); text-align: center; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.02em; color: #6c757d; background: #111214; }

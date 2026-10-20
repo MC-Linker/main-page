@@ -10,7 +10,9 @@ export const links = {
     guide: guideBase,
     plugin: {
         modrinth: 'https://modrinth.com/plugin/discord-linker',
+        /** The Bukkit plugin's page. Not set up yet. */
         curseforge: 'https://www.curseforge.com/minecraft/bukkit-plugins/discord-linker',
+        curseforgeMods: 'https://www.curseforge.com/minecraft/mc-mods/discord-linker',
         hangar: 'https://hangar.papermc.io/Lianecx/Discord-Linker',
         spigot: 'https://www.spigotmc.org/resources/discord-linker.98749/',
         aternos: 'https://aternos.org/addons/a/spigot/98749',

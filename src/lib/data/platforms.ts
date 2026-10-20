@@ -19,7 +19,8 @@ export type Platform = {
 };
 
 const modrinth: Download = { name: 'Modrinth', href: links.plugin.modrinth, brand: 'modrinth', color: '#1bae5a', recommended: true };
-const curseforge: Download = { name: 'CurseForge', href: links.plugin.curseforge, brand: 'curseforge', color: '#e1592c', disabled: true };
+const curseforgePlugin: Download = { name: 'CurseForge', href: links.plugin.curseforge, brand: 'curseforge', color: '#e1592c', disabled: true };
+const curseforgeMods: Download = { name: 'CurseForge', href: links.plugin.curseforgeMods, brand: 'curseforge', color: '#e1592c' };
 const hangar: Download = { name: 'Hangar', href: links.plugin.hangar, color: '#2d6be0' };
 const spigot: Download = { name: 'SpigotMC', href: links.plugin.spigot, brand: 'spigot', color: '#d99a06' };
 
@@ -31,7 +32,7 @@ export const platforms: Platform[] = [
         alsoWorksOn: 'Purpur and other Bukkit-based servers',
         versions: '1.8 – latest',
         folder: 'plugins',
-        downloads: [modrinth, hangar, spigot, curseforge],
+        downloads: [modrinth, hangar, spigot, curseforgePlugin],
     },
     {
         id: 'fabric',
@@ -39,7 +40,7 @@ export const platforms: Platform[] = [
         icon: painting,
         versions: '1.16.5 – 26.2',
         folder: 'mods',
-        downloads: [modrinth, curseforge],
+        downloads: [modrinth, curseforgeMods],
     },
     {
         id: 'neoforge',
@@ -47,7 +48,7 @@ export const platforms: Platform[] = [
         icon: enchantedBook,
         versions: '1.21.1 – 26.2',
         folder: 'mods',
-        downloads: [modrinth, curseforge],
+        downloads: [modrinth, curseforgeMods],
     },
     {
         id: 'forge',
@@ -55,7 +56,7 @@ export const platforms: Platform[] = [
         icon: craftingTable,
         versions: '1.16.5 – 1.20.x',
         folder: 'mods',
-        downloads: [modrinth, curseforge],
+        downloads: [modrinth, curseforgeMods],
     },
 ];
 

@@ -32,7 +32,7 @@ export const team: { core: Member[]; specialThanks: Member[] } = {
         },
     ],
     specialThanks: [
-        { username: 'Hannibal', roles: ['Donator'], color: '#c27c0e' },
+        { username: 'Hannibal', github: 'N1Lowbob', roles: ['Donator'], color: '#c27c0e' },
         { username: 'fALECX', github: 'falecx', roles: ['Supporter'], color: '#3b8ea5' },
     ],
 };

@@ -148,6 +148,11 @@ body {
    components have loaded, so they never flash unstyled. */
 discord-messages:not(:defined) { visibility: hidden; }
 discord-messages { display: block; }
+/* Tailwind's reset (margin: 0; padding: 0 on every element) beats the components' own
+   :host styles. Give the "you used /command" and reply lines back their indent past the
+   avatar, so the curved connector lines up like in Discord. */
+discord-command, discord-reply { margin: 0 0 4px 56px; padding-top: 2px; }
+discord-command[compact-mode], discord-reply[compact-mode] { margin: 0 0 0 62px; }
 
 /* On phones: the sun sits above the page titles, out of their way. */
 @media (max-width: 760px) {

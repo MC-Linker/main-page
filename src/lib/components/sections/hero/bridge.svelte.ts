@@ -243,7 +243,7 @@ export class Bridge {
                 { name: 'Players', value: `${this.online.length}/20`, inline: true },
                 { name: 'Online', value: this.online.length ? this.online.join(', ') : 'Nobody' },
             ],
-            footer: 'Server IP: play.example.net (26.2)',
+            footer: 'Server IP: testing.mclinker.com (26.2)',
         };
     }
 

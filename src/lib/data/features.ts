@@ -60,7 +60,7 @@ const serverInfo = (embed: Omit<Embed, 'color'>): Embed => ({ color: colors.bran
 /** The reply Minecraft shows when a Discord user answers a DM (from the plugin's private chat format). */
 const whisper = (name: string, text: string) => `&9&o&lDiscord &8&o| &7&o${name} whispers to you: ${text}`;
 
-const dmMessage = '### 📬 New DM from Cubey\nmeet me at spawn?\n-# Sent from Minecraft (play.example.com) · Reply to this message to send a reply · `/account dms` to manage DM settings';
+const dmMessage = '### 📬 New DM from Cubey\nmeet me at spawn?\n-# Sent from Minecraft (testing.mclinker.com) · Reply to this message to send a reply · `/account dms` to manage DM settings';
 
 export const features: Feature[] = [
     {
@@ -248,7 +248,7 @@ export const features: Feature[] = [
                     {
                         label: 'General Information',
                         embeds: [serverInfo({
-                            title: 'Server Information', thumbnail: '/logo.png', footer: 'Server IP: play.example.com (1.21.4)',
+                            title: 'Server Information', thumbnail: '/logo.png', footer: 'Server IP: testing.mclinker.com (1.21.4)',
                             fields: [
                                 { name: 'Name', value: 'Example SMP', inline: true },
                                 { name: 'MOTD', value: 'Welcome to the Example SMP!', inline: true },

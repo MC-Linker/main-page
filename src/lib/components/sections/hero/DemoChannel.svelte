@@ -27,7 +27,7 @@
 </script>
 
 <div class="channel">
-    <DcWindow channel="minecraft-chat" topic="Linked with play.example.net · {bridge.online.length} online">
+    <DcWindow channel="minecraft-chat" topic="Linked with testing.mclinker.com · {bridge.online.length} online">
         <div class="dc-list" bind:this={list} aria-live="polite" aria-label="Discord channel (demo)">
             <discord-messages no-background>
                 {#each bridge.dc as msg (msg.id)}

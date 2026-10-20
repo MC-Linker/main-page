@@ -4,7 +4,6 @@
     import LinkPreview from '$lib/components/LinkPreview.svelte';
     import { type Member, roleColors, team } from '$lib/data';
     import { teamEmbed } from '$lib/linkPreview';
-    import McLogo from '$lib/mc/McLogo.svelte';
     import McWorld from '$lib/mc/McWorld.svelte';
 
     // A random yellow splash text next to the title, like the game's.
@@ -55,7 +54,7 @@
     <header class="head">
         <McWorld class="world" tile={30} hills blur={3} />
         <h1 id="team-title" class="title">
-            <McLogo text="The Team" />
+            <img class="logo" src="/the-team.png" alt="The Team" width="1270" height="261" />
             <span class="splash mc-text" aria-hidden="true">{splash}</span>
         </h1>
         <p class="edition mojang">The people behind <span class="brand">MC Linker</span></p>
@@ -91,6 +90,7 @@
         border-bottom: 2px solid #000;
     }
     .head :global(.world) { position: absolute; inset: 0; z-index: -1; }
+    .logo { display: block; width: clamp(16rem, 52vw, 36rem); height: auto; filter: drop-shadow(0 6px 0 rgb(0 0 0 / 0.3)); }
     .title { position: relative; margin: 0; font-size: clamp(2.8rem, 8vw, 6rem); font-weight: 400; line-height: 1; }
     .splash {
         position: absolute; left: calc(100% - 0.6em); bottom: 0.1em;

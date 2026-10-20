@@ -4,7 +4,7 @@ import type { Brand } from './brands';
 import { links } from './links';
 
 /** `color` is the site's brand colour, used for its download button. */
-export type Download = { name: string; href: string; brand?: Brand; color: string; recommended?: boolean };
+export type Download = { name: string; href: string; brand?: Brand; color: string; recommended?: boolean; /** Not published there yet: shown, but not clickable. */ disabled?: boolean };
 
 /** Server software, as listed in setup step 2 (styled like the game's server list). */
 export type Platform = {
@@ -19,7 +19,7 @@ export type Platform = {
 };
 
 const modrinth: Download = { name: 'Modrinth', href: links.plugin.modrinth, brand: 'modrinth', color: '#1bae5a', recommended: true };
-const curseforge: Download = { name: 'CurseForge', href: links.plugin.curseforge, brand: 'curseforge', color: '#e1592c' };
+const curseforge: Download = { name: 'CurseForge', href: links.plugin.curseforge, brand: 'curseforge', color: '#e1592c', disabled: true };
 const hangar: Download = { name: 'Hangar', href: links.plugin.hangar, color: '#2d6be0' };
 const spigot: Download = { name: 'SpigotMC', href: links.plugin.spigot, brand: 'spigot', color: '#d99a06' };
 

@@ -53,9 +53,15 @@
         <p class="get mc-text">Download for {current.name}</p>
         <div class="buttons">
             {#each current.downloads as d (d.name)}
-                <McButton href={d.href} external color={d.color} badge={d.recommended ? 'Recommended' : undefined}>
-                    {#if d.brand}<BrandIcon brand={d.brand} size="1em" />{/if}{d.name}
-                </McButton>
+                {#if d.disabled}
+                    <McButton disabled badge="Coming soon">
+                        {#if d.brand}<BrandIcon brand={d.brand} size="1em" />{/if}{d.name}
+                    </McButton>
+                {:else}
+                    <McButton href={d.href} external color={d.color} badge={d.recommended ? 'Recommended' : undefined}>
+                        {#if d.brand}<BrandIcon brand={d.brand} size="1em" />{/if}{d.name}
+                    </McButton>
+                {/if}
             {/each}
         </div>
         <ul class="notes mc-text">{#each platformNotes as n (n)}<li>{n}</li>{/each}</ul>

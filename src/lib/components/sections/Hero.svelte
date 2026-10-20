@@ -104,12 +104,11 @@
             <span class="splash on-mc mc-text" aria-hidden="true">{splash}</span>
         </span>
         <span class="link-logo" class:pulsing bind:this={logo}>
-            <img src="/logo.svg" alt="" width="160" height="160" />
+            <img src="/logo-horizontal.svg" alt="" width="980" height="472" />
             <span class="sr-only">linked with</span>
         </span>
         <span class="word dc">
             <img class="wordmark" src="/brands/discord-logo.svg" alt="Discord" width="635" height="96" />
-            <span class="splash on-dc mc-text" aria-hidden="true">{splash}</span>
         </span>
     </h1>
     <p class="edition mojang">Linked by <span class="brand">MC Linker</span></p>
@@ -210,20 +209,20 @@
         animation: splash 0.55s ease-in-out infinite alternate;
         pointer-events: none;
     }
-    .splash.on-dc { left: calc(100% - 0.15em); bottom: 0.25em; transform-origin: left center; }
-    .splash.on-mc { display: none; right: -0.4rem; bottom: -0.15em; }
+    .splash.on-mc { right: 0.5rem; bottom: -0.3em; }
     @keyframes splash { to { transform: rotate(-20deg) scale(1.1); } }
     .link-logo {
         position: relative;
         display: grid;
         place-items: center;
-        width: var(--logo);
+        width: calc(var(--logo) * 1.6);
         height: var(--logo);
         animation: bob 4s ease-in-out infinite;
     }
     .link-logo img {
         width: 100%;
         height: 100%;
+        object-fit: contain;
         filter: drop-shadow(0 6px 0 rgb(0 0 0 / 0.35));
         transition: transform 0.25s cubic-bezier(.3, 1.6, .5, 1);
     }
@@ -352,7 +351,6 @@
         .word.mc .wordmark { width: min(82vw, 24rem); }
         .word.dc .wordmark { width: min(58vw, 17rem); }
         .splash.on-mc { display: block; right: -0.6rem; bottom: auto; top: 2.4rem; transform-origin: center; }
-        .splash.on-dc { display: none; }
         .edition { grid-row: 2; font-size: 0.9rem; letter-spacing: 0.14em; }
         .motd { grid-row: 3; font-size: 0.95rem; }
         .menu { grid-column: 1; grid-row: 4; justify-self: center; width: min(24rem, calc(100% - 2rem)); margin-top: 1.75rem; }

@@ -30,13 +30,14 @@ const you = { user: visitor.name, avatar: visitor.avatar };
 export const demoCommands: SlashCommand[] = [
     {
         name: 'command',
-        description: 'Execute any command on the Minecraft server.',
+        description: 'Execute any command on the Minecraft-server.',
+        options: ['command'],
         suggestions: ['time set night', 'time set day', 'weather rain', 'weather thunder', 'weather clear', 'give Cubey diamond 64', 'gamemode creative Cubey', 'list', 'say Hello from Discord!'],
     },
     { name: 'serverinfo', description: 'View information about the connected Minecraft server.' },
-    { name: 'inventory', description: 'Get an image of the current player\'s inventory.', suggestions: ['TheAnnoying'] },
-    { name: 'message', description: 'Send private chat messages to members on the server.', suggestions: ['Cubey psst, behind you', 'Lianecx nice build!'] },
-    { name: 'ban', description: 'Ban a player from the Minecraft server.', suggestions: ['Griefer too much TNT'] },
+    { name: 'inventory', description: 'Get an image of the current player\'s inventory.', options: ['user'], suggestions: ['TheAnnoying'] },
+    { name: 'message', description: 'Send private chat messages to members on the server.', options: ['user', 'message'], suggestions: ['Cubey psst, behind you', 'Lianecx nice build!'] },
+    { name: 'ban', description: 'Ban a player from the Minecraft server.', options: ['user', 'reason'], suggestions: ['Griefer too much TNT'] },
     { name: 'help', description: 'Detailed description of every command.' },
 ];
 

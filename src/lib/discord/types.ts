@@ -59,6 +59,8 @@ export type DcMsg = {
 export type SlashCommand = {
     name: string;
     description: string;
+    /** The names of its options. The first one labels the value that is typed after the command. */
+    options?: string[];
     /** Values offered after the command name, like the bot's tab-completion. */
     suggestions?: string[];
 };

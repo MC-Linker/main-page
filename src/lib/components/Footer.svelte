@@ -61,7 +61,7 @@
     .soon { display: inline-flex; align-items: center; gap: 0.45rem; color: #868e96; cursor: default; }
     a { display: inline-flex; align-items: center; gap: 0.45rem; color: #ced4da; text-decoration: none; }
     a:hover { color: #fff; text-decoration: underline; }
-    .legal { grid-column: 1 / -1; margin: 0; padding: 1.25rem 1rem calc(var(--hud-space) + 0.5rem); border-top: 1px solid rgb(255 255 255 / 0.06); text-align: center; font-size: 0.78rem; color: #6c757d; background: #111214; }
+    .legal { grid-column: 1 / -1; margin: 0; padding: 1.25rem 1rem calc(var(--hud-space) + 0.5rem); border-top: 1px solid rgb(255 255 255 / 0.06); text-align: center; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.02em; color: #6c757d; background: #111214; }
     @media (max-width: 720px) {
         footer { grid-template-columns: 1fr; }
         .side.mc { align-items: flex-start; text-align: left; }

@@ -282,6 +282,7 @@ export class Bridge {
                 { name: 'Weather', value: this.rain ? 'Rain 🌧️' : 'Clear', inline: true },
                 { name: 'Spawn', value: '0, 64, 0', inline: true },
             ],
+            image: '/showcase/serverlist.png',
             footer: 'Try /command time set night, then check again',
         };
     }
@@ -297,6 +298,7 @@ export class Bridge {
                 { name: 'Banned players', value: this.banned.length ? this.banned.join(', ') : 'None', inline: true },
                 { name: 'Plugins', value: 'Discord-Linker, EssentialsX, WorldEdit' },
             ],
+            image: '/showcase/serverlist.png',
             footer: 'Only server admins can see this page',
         };
     }

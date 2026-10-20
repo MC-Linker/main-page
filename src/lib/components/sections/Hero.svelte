@@ -152,7 +152,7 @@
     <div class="mc-side">
         <p class="hint mc-text">{#if keyboard.current}<kbd>T</kbd> to chat · {/if}try <code>/time set night</code></p>
         <div class="mc-chat" bind:this={mcEnd}>
-            <McChat bind:this={mcChat} lines={bridge.mc} max={18} onsubmit={fromMinecraft} label="Minecraft chat (demo)" placeholder={keyboard.current ? 'Press T to chat' : 'Tap to chat'} />
+            <McChat bind:this={mcChat} lines={bridge.mc} max={40} onsubmit={fromMinecraft} label="Minecraft chat (demo)" placeholder={keyboard.current ? 'Press T to chat' : 'Tap to chat'} />
         </div>
     </div>
 
@@ -190,15 +190,17 @@
 <style>
     .hero {
         --logo: clamp(5rem, 7.5vw, 9rem);
-        --gutter: clamp(1.25rem, 3.5vw, 4.5rem);
+        /* Space between a chat and the menu, and between a chat and the screen edge. */
+        --gutter: clamp(1rem, 2.5vw, 3rem);
+        --edge: clamp(1rem, 2vw, 2.5rem);
         position: relative;
         display: grid;
         /* Two equal middle columns put the seam (and the logo) at exactly 50%. */
         grid-template-columns: 1fr minmax(9.5rem, 13.5rem) minmax(9.5rem, 13.5rem) 1fr;
-        grid-template-rows: auto auto auto auto;
-        align-content: center;
+        /* The last row takes all the height that's left, so the chats can fill it. */
+        grid-template-rows: auto auto auto 1fr;
         min-height: max(100svh, 46rem);
-        padding: 1.5rem 0 var(--hud-space);
+        padding: clamp(1.5rem, 4svh, 3rem) 0 var(--hud-space);
         isolation: isolate;
         overflow: hidden;
     }
@@ -291,7 +293,7 @@
     }
     .edition .brand { color: var(--color-grass-light); }
     .motd {
-        grid-column: 1 / -1;
+        grid-column: 2 / 4;
         grid-row: 3;
         justify-self: center;
         max-width: 36rem;
@@ -325,20 +327,26 @@
     @media (max-width: 1399px) { .corner { display: none; } }
 
     /* ── The two chats ─────────────────────────────────────────────────── */
+    /* Each chat fills its half, from under the subtitle down to the hotbar. */
     .mc-side, .dc-side {
-        grid-row: 4;
-        align-self: end;
+        grid-row: 3 / 5;
+        align-self: stretch;
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
-        width: min(100%, 36rem);
+        width: min(100%, 60rem);
         min-width: 0;
-        margin-top: clamp(1.5rem, 5vh, 3.5rem);
+        /* Size to the space the grid gives, never grow it as messages arrive. */
+        contain: size;
+        min-height: 20rem;
+        margin-top: clamp(1rem, 3vh, 2rem);
     }
-    .mc-side { grid-column: 1; justify-self: end; padding: 0 var(--gutter) 0 1rem; }
-    .dc-side { grid-column: 4; justify-self: start; padding: 0 1rem 0 var(--gutter); position: relative; }
+    .mc-side { grid-column: 1; justify-self: end; justify-content: flex-end; padding: 0 var(--gutter) 0 var(--edge); }
+    .dc-side { grid-column: 4; justify-self: start; padding: 0 var(--edge) 0 var(--gutter); position: relative; }
     /* New lines push older ones up; the oldest drop off the top. */
-    .mc-chat { display: flex; flex-direction: column; justify-content: flex-end; max-height: clamp(12rem, calc(100svh - 36rem), 28rem); overflow: hidden; }
+    .mc-chat { flex: 0 1 auto; min-height: 0; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; }
+    .mc-chat :global(.chat) { flex: 1; min-height: 0; }
+    .mc-chat :global(.lines) { flex: 1; min-height: 0; overflow: hidden; }
     .hint { margin: 0; font-size: 0.85rem; color: #e9ecef; text-shadow: 0 1px 2px rgb(0 0 0 / 0.6); }
     .mc-side .hint { color: #fff; }
     .hint kbd {
@@ -349,9 +357,13 @@
     .hint code { font-family: var(--font-pixel); color: var(--color-mc-yellow); }
     .dc-side .hint code { font-family: var(--font-sans); color: #c9cdfb; }
 
-    .dc-end { position: relative; }
+    .dc-end { position: relative; flex: 1; min-height: 0; display: flex; }
+    .dc-end :global(.dc-window) { flex: 1; }
+    .dc-end :global(.content) { display: flex; flex-direction: column; }
     .dc-list {
-        height: clamp(8.5rem, calc(100svh - 39rem), 22rem);
+        flex: 1;
+        min-height: 10rem;
+        height: 0;
         overflow-y: auto;
         overscroll-behavior: contain;
         scrollbar-width: thin;
@@ -397,8 +409,11 @@
     /* Tablets: the menu under the title, the chats side by side below it. */
     @media (max-width: 1023px) {
         .hero { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto auto auto; align-content: start; padding-top: 2rem; }
+        .motd { grid-column: 1 / -1; }
         .menu { grid-column: 1 / -1; grid-row: 4; justify-self: center; width: min(25rem, calc(100% - 2rem)); }
-        .mc-side, .dc-side { grid-row: 5; align-self: start; width: min(100%, 32rem); }
+        .mc-side, .dc-side { grid-row: 5; align-self: start; width: 100%; contain: none; min-height: 0; }
+        .mc-chat { flex: none; max-height: clamp(16rem, 50svh, 28rem); }
+        .dc-list { flex: none; height: clamp(12rem, calc(50svh - 8rem), 22rem); min-height: 0; }
         .mc-side { grid-column: 1; }
         .dc-side { grid-column: 2; }
     }
@@ -423,10 +438,10 @@
         .menu { grid-column: 1; grid-row: 4; justify-self: center; width: min(24rem, calc(100% - 2rem)); margin-top: 1.75rem; }
         .fine { display: block; }
         .mc-side { grid-column: 1; grid-row: 5; justify-self: stretch; width: auto; margin: 2rem 0 0; padding: 0 1rem calc(var(--logo) / 2 + 1.5rem); }
-        .mc-chat { max-height: 13rem; }
+        .mc-chat { max-height: 16rem; }
         .link-logo { grid-row: 6; justify-self: center; align-self: start; margin-top: calc(var(--logo) / -2); z-index: 2; }
         .word.dc { grid-row: 6; justify-self: center; padding: calc(var(--logo) / 2 + 0.75rem) 0 0; }
         .dc-side { grid-column: 1; grid-row: 7; justify-self: stretch; width: auto; margin: 1.25rem 0 0; padding: 0 1rem 1rem; }
-        .dc-list { height: 15rem; }
+        .dc-list { height: 20rem; }
     }
 </style>

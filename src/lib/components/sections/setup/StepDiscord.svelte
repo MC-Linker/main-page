@@ -21,7 +21,7 @@
         grid-template-columns: minmax(0, 32rem);
         justify-content: center;
         padding: clamp(3rem, 6vw, 4.5rem) clamp(1rem, 4vw, 3rem);
-        background: radial-gradient(50rem 24rem at 80% 10%, rgb(88 101 242 / 0.18), transparent 60%), var(--color-dc-3);
+        background: var(--color-ink);
     }
     .copy p { margin: 0 0 1rem; color: #ced4da; line-height: 1.55; }
     .copy em { font-style: normal; color: #fff; font-weight: 600; }

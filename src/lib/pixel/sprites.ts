@@ -29,8 +29,3 @@ export const deepslate: Sprite = {
     rows: ['dddDdddd', 'DDdddlld', 'ddddDddd', 'ldddddDD', 'dDDddddd', 'ddddlldd', 'DdddddDd', 'ddlDdddd'],
     palette: { d: '#4d4d55', D: '#3c3c43', l: '#5f5f69' },
 };
-
-export const bedrock: Sprite = {
-    rows: ['bBbkbBbb', 'kbbBkbbB', 'bBkbbbkb', 'bbbBbkbb', 'Bkbbbbbk', 'bbkBbBbb', 'kbbbkbbB', 'bBbbbkbb'],
-    palette: { b: '#575757', B: '#7a7a7a', k: '#2b2b2b' },
-};

@@ -4,7 +4,7 @@ import type { Sprite } from '$lib/pixel/sprites';
 /** What an item looks like: a sprite, an image, the grass block or a player head. */
 export type ItemIcon = { sprite: Sprite } | { image: string } | { block: 'grass' } | { head: LookName };
 
-/** A Minecraft item, as shown in a slot and its tooltip. */
+/** A Minecraft item: its icon, name, rarity colour and lore. */
 export type Item = {
     id: string;
     name: string;

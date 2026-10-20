@@ -279,7 +279,7 @@
     @media (max-width: 1399px) { .corner { display: none; } }
 
     /* ── The two chats ─────────────────────────────────────────────────── */
-    /* Each chat fills its half, from under the subtitle down to the hotbar. */
+    /* Each chat fills its half, from under the subtitle down to the bottom of the hero. */
     .mc-side, .dc-side {
         grid-row: 3 / 5;
         align-self: stretch;
@@ -296,7 +296,8 @@
     .mc-side { grid-column: 1; justify-self: end; justify-content: flex-end; padding: 0 var(--gutter) 0 var(--edge); }
     .dc-side { grid-column: 4; justify-self: start; padding: 0 var(--edge) 0 var(--gutter); position: relative; }
     /* New lines push older ones up; the oldest drop off the top. */
-    .mc-chat { flex: 0 1 auto; min-height: 0; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; }
+    /* The padding leaves room for the chat bar's focus ring, which overflow would clip. */
+    .mc-chat { flex: 0 1 auto; min-height: 0; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; padding: 0 calc(3 * var(--t)) calc(3 * var(--t)) 0; }
     .mc-chat :global(.chat) { flex: 1; min-height: 0; }
     .mc-chat :global(.lines) { flex: 1; min-height: 0; overflow: hidden; }
     .dc-end { flex: 1; min-height: 0; display: flex; flex-direction: column; }

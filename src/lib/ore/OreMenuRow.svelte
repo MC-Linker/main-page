@@ -15,6 +15,8 @@
         onclick?: (e: MouseEvent) => void;
         /** The current choice in a list that picks something. */
         selected?: boolean;
+        /** What a selected link is to assistive tech: the current page, or a place on this one. */
+        current?: 'page' | 'location';
         /** Show the arrow on the right. Off for rows that pick rather than open. */
         chevron?: boolean;
         /** The thumbnail on the left. */
@@ -25,7 +27,7 @@
         class?: string;
         tabindex?: number;
     };
-    let { title, subtitle, href, external = false, onclick, selected = false, chevron = true, icon, trailing, role, class: className = '', tabindex }: Props = $props();
+    let { title, subtitle, href, external = false, onclick, selected = false, current = 'page', chevron = true, icon, trailing, role, class: className = '', tabindex }: Props = $props();
 </script>
 
 {#snippet inner()}
@@ -39,7 +41,7 @@
 {/snippet}
 
 {#if href}
-    <a class="row {className}" class:selected {href} {onclick} {role} {tabindex} aria-current={selected ? 'page' : undefined} target={external ? '_blank' : undefined} rel={external ? 'noopener' : undefined}>{@render inner()}</a>
+    <a class="row {className}" class:selected {href} {onclick} {role} {tabindex} aria-current={selected ? current : undefined} target={external ? '_blank' : undefined} rel={external ? 'noopener' : undefined}>{@render inner()}</a>
 {:else}
     <button
         type="button" class="row {className}" class:selected {onclick} {role} {tabindex}
@@ -71,7 +73,7 @@
     .thumb { display: grid; place-items: center; flex: none; width: 2.25rem; height: 2.25rem; }
     .text { display: flex; flex-direction: column; gap: 0.2rem; flex: 1; min-width: 0; }
     .title { font-size: 1rem; line-height: 1.2; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .sub { font-size: 0.85rem; line-height: 1.35; color: #c4c5c8; }
+    .sub { font-size: 0.85rem; line-height: 1.35; color: var(--color-ore-white); }
     .trail { display: flex; align-items: center; gap: 0.5rem; flex: none; }
     .chev { flex: none; width: calc(4 * var(--t)); }
 </style>

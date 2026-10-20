@@ -52,8 +52,6 @@
 
     // Phones: the details are under the list, so picking something scrolls to them.
     const narrow = new MediaQuery('(max-width: 900px)', false);
-    // Small screens: icons only on the tabs.
-    const compact = new MediaQuery('(max-width: 1100px)', false);
     let detail = $state<HTMLElement>();
     function pick(item: Feature) {
         selected = item;
@@ -72,8 +70,8 @@
 
     <div class="browser">
         <OreSegments
-            items={featureTabs.map(t => ({ id: t.id, label: t.name }))} selected={tab} onselect={id => (tab = id as TabId)}
-            look="tabs" mode="tabs" label="Feature categories" controls="feature-list" fill iconOnly={compact.current} class="tabs"
+            items={featureTabs.map(t => ({ id: t.id, label: t.name, title: t.name }))} selected={tab} onselect={id => (tab = id as TabId)}
+            look="tabs" mode="tabs" label="Feature categories" controls="feature-list" fill class="tabs"
         >
             {#snippet icon(s)}<McItemIcon icon={featureTabs.find(t => t.id === s.id)!.icon} size="1.5rem" />{/snippet}
         </OreSegments>
@@ -172,11 +170,11 @@
     .tile { display: block; width: 100%; height: 100%; min-height: 6rem; padding: 0.6rem 0.35rem; cursor: pointer; }
     .tile-in { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; height: 100%; }
     .tile-name { font-size: 0.875rem; line-height: 1.2; text-align: center; text-wrap: balance; }
-    .none { margin: 0.75rem 0 0; color: #b1b2b5; }
-    .count { margin: 1rem 0 0; font-size: 0.875rem; color: var(--color-mc-gray); }
+    .none { margin: 0.75rem 0 0; color: var(--color-ore-white); }
+    .count { margin: 1rem 0 0; font-size: 0.875rem; color: var(--color-ore-white); }
 
     /* ── The selected feature ──────────────────────────────────────────── */
-    .detail { padding: 1.25rem 1.25rem calc(1.25rem + 3 * var(--t)); scroll-margin-top: calc(var(--nav-h) + 1rem); }
+    .detail { padding: 1.25rem 1.25rem calc(1.25rem + 3 * var(--t)); scroll-margin-top: 1rem; }
     .d-head { display: flex; align-items: center; gap: 1rem; }
     /* The item in an inventory slot. */
     .slot { display: grid; place-items: center; flex: none; width: 3.5rem; height: 3.5rem; border: var(--t) solid #1e1e1f; background: #8b8b8b; box-shadow: inset var(--t) var(--t) 0 #373737, inset calc(-1 * var(--t)) calc(-1 * var(--t)) 0 #fff; }
@@ -193,6 +191,10 @@
     .shot { display: block; max-width: 100%; height: auto; margin-top: 0.5rem; border-radius: 8px; }
     .detail :global(.guide) { margin-top: 0.25rem; }
 
+    /* Smaller screens: icons only on the tabs (the name stays for screen readers and as a tooltip). */
+    @media (max-width: 1100px) {
+        .browser :global(.tabs .label > span:last-child) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    }
     @media (max-width: 900px) {
         .panel { grid-template-columns: 1fr; padding: 1rem; }
     }
@@ -201,5 +203,9 @@
         .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.4rem; }
         .tile { min-height: 5.5rem; }
         .detail { padding: 1rem 0.9rem calc(1rem + 3 * var(--t)); }
+    }
+    /* The smallest phones: two tiles a row, so names like "Advancements" fit. */
+    @media (max-width: 374px) {
+        .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 </style>

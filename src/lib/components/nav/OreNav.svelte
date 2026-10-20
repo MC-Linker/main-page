@@ -69,6 +69,8 @@
     });
 
     // After every navigation: re-check the section, and watch the title menu if this page has one.
+    // Coming in to a section further down (/#features), the page passes the menu on its way there:
+    // the bar stays until the menu has really gone, so it doesn't slide away and back.
     $effect(() => {
         void page.url.href;
         open = false;
@@ -76,9 +78,14 @@
         tick().then(() => {
             track();
             const menu = document.querySelector('[data-title-menu]');
-            menuInView = !!menu;
+            const toSection = !!page.url.hash && page.url.hash !== '#top';
+            let settled = !toSection;
+            menuInView = !!menu && !toSection;
             if(!menu) return;
-            io = new IntersectionObserver(([e]) => (menuInView = e.isIntersecting));
+            io = new IntersectionObserver(([e]) => {
+                if(!e.isIntersecting) settled = true;
+                if(settled) menuInView = e.isIntersecting;
+            });
             io.observe(menu);
         });
         return () => io?.disconnect();
@@ -124,7 +131,7 @@
             <div class="narrow-only group">
                 <p class="group-title ore-text">This page</p>
                 {#each homeSections as s, i (s.id)}
-                    <OreMenuRow title={s.name} subtitle={s.title} href={sectionHref(s.id)} selected={onHome && i === current} chevron={false}>
+                    <OreMenuRow title={s.name} subtitle={s.title} href={sectionHref(s.id)} selected={onHome && i === current} current="location" chevron={false}>
                         {#snippet icon()}<McItemIcon icon={s.icon} size="1.75rem" />{/snippet}
                     </OreMenuRow>
                 {/each}
@@ -158,8 +165,10 @@
         padding: 0 0.75rem calc(3 * var(--t));
         transition: transform 0.25s ease;
     }
-    /* Out of sight above the screen (only with JavaScript, which brings it back). */
-    :global(.js) .nav.away { transform: translateY(calc(-100% - 4px)); }
+    /* Out of sight above the screen, unless you tab into it. Without JavaScript nothing would
+       bring it back, so on the home page the title menu is the navigation. */
+    :global(.js) .nav.away:not(:focus-within) { transform: translateY(calc(-100% - 4px)); }
+    :global(html:not(.js)) .nav.away { display: none; }
 
     .nav :global(.back) { flex: none; width: 2.5rem; min-height: 2.5rem; padding: 0; }
     .back-arrow { width: calc(4 * var(--t)); }

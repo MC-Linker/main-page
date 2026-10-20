@@ -1,4 +1,4 @@
-/* Item sprites: the icons for inventory slots, the hotbar and the server list. */
+/* Item sprites: the icons for the header's sections and links, and the server software list. */
 import type { Sprite } from './sprites';
 
 /** Swaps palette colours of a sprite, for colour variants of the same shape. */

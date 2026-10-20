@@ -108,6 +108,4 @@
     .fill .seg { flex: 1 1 0; }
     .label { display: inline-flex; align-items: center; gap: 0.5em; min-width: 0; }
     .label :global(svg), .label :global(.icon) { flex: none; }
-    /* Tabs are dark, and a little lighter when pointed at. */
-    .tabs .seg:not(.sunk):hover { --face: #58585a; --hi: #79797b; --shade: #69696b; }
 </style>

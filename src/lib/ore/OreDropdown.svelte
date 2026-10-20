@@ -28,6 +28,13 @@
     function outside(e: PointerEvent) {
         if(open && !root.contains(e.target as Node)) open = false;
     }
+    // Choosing something closes the popup. A link that opens a new tab leaves this page as it was,
+    // so focus goes back to the dropdown instead of getting lost with the removed popup.
+    function picked(e: MouseEvent) {
+        open = false;
+        if((e.target as Element).closest('a[target="_blank"]')) button.focus();
+    }
+
     function keys(e: KeyboardEvent) {
         if(e.key === 'Escape' && open) {
             open = false;
@@ -45,7 +52,7 @@
     </button>
     {#if open}
         <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
-        <div class="popup {align}" {id} onclick={() => (open = false)}>
+        <div class="popup {align}" {id} onclick={picked}>
             {@render popup()}
         </div>
     {/if}
@@ -82,6 +89,10 @@
         min-width: 100%;
         width: max-content;
         max-width: min(20rem, calc(100vw - 1rem));
+        /* It hangs from the fixed header bar: scroll inside it on short screens. */
+        max-height: calc(100dvh - var(--nav-h) - 0.5rem);
+        overflow-y: auto;
+        overscroll-behavior: contain;
         padding: var(--t);
         border: var(--t) solid #1e1e1f;
         background: #8c8d90;

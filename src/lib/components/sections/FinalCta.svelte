@@ -49,7 +49,7 @@
     .body > p:first-child { margin: 0; color: var(--color-ore-white); line-height: 1.8; }
     code { font-size: 0.9rem; color: var(--color-mc-yellow); }
     .buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 1.4rem; }
-    .fine { margin: 1.1rem 0 0; font-size: 0.875rem; color: var(--color-mc-gray); }
+    .fine { margin: 1.1rem 0 0; font-size: 0.875rem; color: var(--color-ore-white); }
     .fine a { color: #fff; }
 
     @media (max-width: 560px) {

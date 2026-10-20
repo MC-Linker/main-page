@@ -52,7 +52,7 @@
         }
     }
 
-    // It only plays while both halves are completely on screen (above the hotbar), and stops once the step is gone.
+    // It only plays while both halves are completely on screen (below the header bar), and stops once the step is gone.
     onMount(() => {
         const ratios = new Map<Element, number>();
         let playing = false;
@@ -69,7 +69,7 @@
                 playing = false;
                 run++;
             }
-        }, { threshold: [0, 0.25, 0.5, 0.75, 0.99, 1], rootMargin: '0px 0px -120px 0px' });
+        }, { threshold: [0, 0.25, 0.5, 0.75, 0.99, 1], rootMargin: `-${document.querySelector<HTMLElement>('nav.nav')?.offsetHeight ?? 56}px 0px 0px 0px` });
         if(dcSide && mcSide) {
             io.observe(dcSide);
             io.observe(mcSide);

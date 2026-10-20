@@ -35,5 +35,7 @@
     .doc :global(h1) { font-size: 1.6rem; margin-top: 2.5rem; }
     .doc :global(> :first-child) { margin-top: 0; }
     .doc :global(a) { color: #a6dd94; }
+    /* Prose's list markers are made for a darker page; lighten them for the panel. */
+    .doc { --tw-prose-invert-counters: var(--color-ore-white); --tw-prose-invert-bullets: var(--color-ore-mid); }
     .doc :global(code::before), .doc :global(code::after) { content: none; }
 </style>

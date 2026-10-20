@@ -11,7 +11,7 @@
 
 <LinkPreview title={site.name} description={site.description} path="/" embed={homeEmbed()} />
 
-<!-- The sections, top to bottom. The hotbar links to them by id (see data/navigation.ts). -->
+<!-- The sections, top to bottom. The header bar links to them by id (see data/navigation.ts). -->
 <Hero />
 <Setup />
 <Features />

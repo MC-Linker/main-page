@@ -32,7 +32,7 @@
 </article>
 
 <style>
-    .step { scroll-margin-top: calc(var(--nav-h) + 1rem); }
+    .step { scroll-margin-top: 1rem; }
     .head { display: flex; align-items: center; gap: 0.85rem; padding: 0.7rem 1rem calc(0.7rem + 3 * var(--t)); }
     /* The number on a green face, like a chosen toggle button. */
     .num {

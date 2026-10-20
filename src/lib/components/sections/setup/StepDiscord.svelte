@@ -22,7 +22,7 @@
     .copy { flex: 1; }
     p { margin: 0; color: var(--color-ore-white); line-height: 1.6; }
     em { font-style: normal; font-weight: 600; color: #fff; }
-    .alt { margin-top: 0.5rem; font-size: 0.875rem; color: #a3a4a6; }
+    .alt { margin-top: 0.5rem; font-size: 0.875rem; color: #c4c5c8; }
     a { color: #c9cdfb; }
     .split :global(.add) { flex: none; min-width: 16rem; }
     @media (max-width: 640px) {

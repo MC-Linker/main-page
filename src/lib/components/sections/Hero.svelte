@@ -164,7 +164,7 @@
         justify-content: center;
         gap: clamp(1rem, 2.5svh, 1.75rem);
         min-height: max(calc(100svh - var(--nav-h)), 40rem);
-        padding: clamp(1.25rem, 3.5svh, 2.5rem) clamp(1rem, 2.5vw, 2.5rem) clamp(2.5rem, 5svh, 3.5rem);
+        padding: clamp(1.25rem, 3.5svh, 2.5rem) 0 clamp(2.5rem, 5svh, 3.5rem);
         isolation: isolate;
         overflow: hidden;
     }
@@ -184,24 +184,25 @@
     /* Darken the blurred app a little so the real window stands out. */
     .dc-bg::after { content: ''; position: absolute; inset: 0; background: radial-gradient(60rem 30rem at 85% 0%, rgb(88 101 242 / 0.2), transparent 60%), rgb(17 18 20 / 0.35); }
 
-    /* Minecraft | the chain | Discord. Both sides are the same width, so the chain sits on the seam. */
+    /* Minecraft | Discord: each half of the screen, its window and logo centred in it.
+       The chain sits on the seam between them, over both rows' middle. */
     .layout {
+        --pw: min(100% - var(--seam), 54rem);
         flex: 1;
         display: grid;
-        grid-template-columns: minmax(0, 1fr) var(--seam) minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
         grid-template-rows: auto minmax(0, 1fr);
-        grid-template-areas: 'mclogo . dclogo' 'mc link dc';
+        grid-template-areas: 'mclogo dclogo' 'mc dc';
         row-gap: clamp(0.9rem, 2.2svh, 1.5rem);
         width: 100%;
         max-height: 54rem;
-        max-width: 112rem;
-        margin: 0 auto;
     }
     .brand.mc { grid-area: mclogo; }
     .brand.dc { grid-area: dclogo; }
     .panel.mc { grid-area: mc; }
     .panel.dc { grid-area: dc; }
-    .link { grid-area: link; }
+    .panel { justify-self: center; width: var(--pw); }
+    .link { grid-row: 2; grid-column: 1 / -1; }
 
     /* ── Each logo over its own side ───────────────────────────────────── */
     /* Above the window under it, so the splash text can hang over its edge. */
@@ -224,16 +225,18 @@
     @keyframes splash { to { transform: rotate(-16deg) scale(1.1); } }
 
     /* ── The chain: hooked into both windows' frames, on the seam ──────── */
-    .link { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.7rem; }
-    /* Phones: a cable from each side into the chain, in that side's colour. */
-    .cable { display: none; }
+    .link { position: relative; z-index: 2; align-self: center; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
+    /* A cable from each window into the chain, in that side's colour. Each runs from the seam to its
+       window's inner edge: half of what the half-screen has left beside its centred window. */
+    .cable { position: absolute; top: 50%; height: calc(3 * var(--t)); margin-top: calc(-1.5 * var(--t)); width: calc((50% - min(50% - var(--seam), 54rem)) / 2 + 0.5rem); }
+    .cable.mc { right: 50%; background: var(--color-ore-green-light); box-shadow: 0 0 0 var(--t) var(--color-ore-green-dark); }
+    .cable.dc { left: 50%; background: #5865f2; box-shadow: 0 0 0 var(--t) #1e2470; }
     .chain {
         position: relative;
         display: grid;
         place-items: center;
-        /* A little wider than the gap, so each end overlaps a window's edge. */
-        width: calc(100% + 1.5rem);
-        margin-top: 2.3rem;
+        /* A little wider than the seam, so where the windows come close each end overlaps a frame. */
+        width: calc(var(--seam) + 1.5rem);
         animation: bob 4s ease-in-out infinite;
     }
     .chain img {
@@ -245,6 +248,7 @@
     .chain.pulsing img { transform: scale(1.14) rotate(-10deg); }
     @keyframes bob { 50% { transform: translateY(-4px); } }
     .link-label {
+        position: absolute; top: calc(50% + 2.4rem);
         margin: 0; padding: 0.35rem 0.5rem; background: rgb(0 0 0 / 0.6);
         font-size: clamp(0.7rem, 0.8vw, 0.85rem); line-height: 1.35; text-align: center; letter-spacing: 0.08em;
         color: #fff; text-shadow: 0.12em 0.12em 0 rgb(0 0 0 / 0.6);
@@ -327,7 +331,9 @@
         .hero { padding-bottom: 1.5rem; }
         .hero :global(.mc-bg) { inset: 0; mask: none; }
         .dc-bg { display: none; }
+        .hero { padding-inline: 1rem; }
         .layout {
+            --pw: 100%;
             grid-template-columns: minmax(0, 1fr);
             grid-template-rows: none;
             grid-template-areas: 'mclogo' 'mc' 'link' 'dclogo' 'dc';
@@ -338,15 +344,15 @@
         .brand { height: 2.6rem; }
         .splash { right: -0.5rem; }
         .p-sub { display: block; }
-        .link { flex-direction: row; gap: 0.9rem; height: 5.5rem; margin-block: -0.9rem; }
-        .cable { display: block; position: absolute; left: 50%; width: calc(3 * var(--t)); margin-left: calc(-1.5 * var(--t)); }
-        .cable.mc { top: 0; bottom: 50%; background: var(--color-ore-green-light); box-shadow: 0 0 0 var(--t) var(--color-ore-green-dark); }
-        .cable.dc { top: 50%; bottom: 0; background: #5865f2; box-shadow: 0 0 0 var(--t) #1e2470; }
+        .link { grid-area: link; align-self: stretch; flex-direction: row; height: 5.5rem; margin-block: -0.9rem; }
+        .cable { left: 50%; right: auto; width: calc(3 * var(--t)); height: auto; margin: 0 0 0 calc(-1.5 * var(--t)); }
+        .cable.mc { top: 0; bottom: 50%; }
+        .cable.dc { top: 50%; bottom: 0; }
         .chain { width: 4rem; margin: 0; }
         .chain img { transform: rotate(90deg); }
         .chain.pulsing img { transform: rotate(90deg) scale(1.14); }
         /* The label beside the chain, not on top of it. */
-        .link-label { position: absolute; left: calc(50% + 2.5rem); text-align: left; font-size: 0.8rem; }
+        .link-label { top: auto; left: calc(50% + 2.5rem); text-align: left; font-size: 0.8rem; }
         .chain { animation: none; }
         .p-body { height: 20rem; }
         .dc-body { height: 24rem; }

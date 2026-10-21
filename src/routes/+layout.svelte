@@ -6,7 +6,7 @@
     import 'nprogress/nprogress.css';
     import nProgress from 'nprogress';
     import { onMount } from 'svelte';
-    import { navigating, page } from '$app/state';
+    import { navigating } from '$app/state';
     import favicon from '$lib/assets/favicon.ico';
     import Footer from '$lib/components/Footer.svelte';
     import OreNav from '$lib/components/nav/OreNav.svelte';
@@ -39,8 +39,8 @@
 
 <a class="skip-link" href="#main">Skip to content</a>
 <OreNav />
-<!-- The home page starts with the title screen, which has no header bar; other pages start under it. -->
-<main id="main" class:under-nav={page.url.pathname !== '/' || page.status >= 400}>
+<!-- Every page starts under the header bar. -->
+<main id="main" class="under-nav">
     {@render children?.()}
 </main>
 <Footer />

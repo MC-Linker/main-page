@@ -17,20 +17,16 @@
      * The site's navigation, as the header bar of an Ore UI screen: a back arrow, the trail
      * of where you are ("MC Linker › Setup"), the home page's sections as toggle buttons
      * (keys 1 to 4) and a "Links" dropdown for everything that leaves the page. Its bottom
-     * edge fills green as you scroll. On the home page it waits until the title screen's
-     * menu has scrolled away: until then, that menu is the navigation.
+     * edge fills green as you scroll.
      */
 
     const onHome = $derived(page.url.pathname === '/');
     let current = $state(0);
     let progress = $state(0);
-    /** Whether the title screen's menu (`[data-title-menu]`) is on screen. */
-    let menuInView = $state(true);
     let open = $state(false);
     /** Phones: get out of the way while the keyboard is open. */
     let typing = $state(false);
 
-    const away = $derived(onHome && menuInView && !open);
     const trail = $derived.by(() => {
         if(page.status >= 400) return ['You died!'];
         if(onHome) return current === 0 ? [] : [homeSections[current].name];
@@ -68,28 +64,11 @@
         };
     });
 
-    // After every navigation: re-check the section, and watch the title menu if this page has one.
-    // Coming in to a section below the menu (/#features), the page passes the menu on its way there:
-    // the bar stays until the menu has really gone, so it doesn't slide away and back.
+    // After every navigation: close the dropdown and re-check the section.
     $effect(() => {
         void page.url.href;
         open = false;
-        let io: IntersectionObserver | undefined;
-        tick().then(() => {
-            track();
-            const menu = document.querySelector('[data-title-menu]');
-            const target = page.url.hash ? document.getElementById(decodeURIComponent(page.url.hash.slice(1))) : null;
-            const toSection = !!menu && !!target && target.getBoundingClientRect().top >= menu.getBoundingClientRect().bottom;
-            let settled = !toSection;
-            menuInView = !!menu && !toSection;
-            if(!menu) return;
-            io = new IntersectionObserver(([e]) => {
-                if(!e.isIntersecting) settled = true;
-                if(settled) menuInView = e.isIntersecting;
-            });
-            io.observe(menu);
-        });
-        return () => io?.disconnect();
+        void tick().then(track);
     });
 
     function keys(e: KeyboardEvent) {
@@ -105,7 +84,7 @@
 
 <svelte:window onkeydown={keys} onfocusin={e => (typing = isTextField(e.target))} onfocusout={() => (typing = false)} />
 
-<nav class="nav ore-header" class:away class:typing aria-label="Site">
+<nav class="nav ore-header" class:typing aria-label="Site">
     <OreButton variant="transparent" href={onHome ? '#top' : '/'} label={onHome ? 'Back to the title screen' : 'Back to the home page'} class="back">
         <span class="back-arrow"><PixelArt sprite={backArrow()} width="100%" /></span>
     </OreButton>
@@ -166,11 +145,6 @@
         padding: 0 0.75rem calc(3 * var(--t));
         transition: transform 0.25s ease;
     }
-    /* Out of sight above the screen, unless you tab into it (keyboard focus only: a click or tap
-       leaves focus behind, which shouldn't keep it over the title). Without JavaScript nothing
-       would bring it back, so on the home page the title menu is the navigation. */
-    :global(.js) .nav.away:not(:has(:focus-visible)) { transform: translateY(calc(-100% - 4px)); }
-    :global(html:not(.js)) .nav.away { display: none; }
 
     .nav :global(.back) { flex: none; width: 2.5rem; min-height: 2.5rem; padding: 0; }
     .back-arrow { width: calc(4 * var(--t)); }

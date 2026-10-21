@@ -1,14 +1,11 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { MediaQuery } from 'svelte/reactivity';
-    import { fly } from 'svelte/transition';
     import { isTextField, reducedMotion, scrollBehavior } from '$lib/browser';
     import BrandIcon from '$lib/components/BrandIcon.svelte';
-    import { links } from '$lib/data';
     import DcBackdrop from '$lib/discord/DcBackdrop.svelte';
     import McChat from '$lib/mc/McChat.svelte';
     import McWorld from '$lib/mc/McWorld.svelte';
-    import OreButton from '$lib/ore/OreButton.svelte';
     import GrassBlock from '$lib/pixel/GrassBlock.svelte';
     import { Bridge, type Direction } from './hero/bridge.svelte';
     import DemoChannel from './hero/DemoChannel.svelte';
@@ -99,39 +96,16 @@
     <McWorld class="mc-bg" night={bridge.night} rain={bridge.rain} tile={34} hills blur={3} />
     <div class="dc-bg" aria-hidden="true"><DcBackdrop /></div>
 
-    <!-- Three clear parts: Minecraft's chat, the title and menu in the middle, Discord's channel. -->
-    <div class="layout">
-        <div class="center">
-            <!-- The title panel: both logos, linked by MC Linker, and what it does. -->
-            <div class="ore-card raised title-card">
-                <h1 id="hero-title" class="title">
-                    <span class="word mc">
-                        <img class="wordmark" src="/brands/minecraft-logo.png" alt="Minecraft" width="1499" height="261" />
-                        <span class="splash mc-text" aria-hidden="true">{splash}</span>
-                    </span>
-                    <span class="link-logo" class:pulsing bind:this={logo}>
-                        <img src="/logo-horizontal.svg" alt="" width="980" height="472" />
-                        <span class="sr-only">linked with</span>
-                    </span>
-                    <span class="word dc">
-                        <img class="wordmark" src="/brands/discord-logo.svg" alt="Discord" width="635" height="96" />
-                    </span>
-                </h1>
-                <hr class="ore-divider" />
-                <p class="edition mojang">Linked by <span class="brand">MC Linker</span></p>
-                <p class="motd">The easiest Minecraft–Discord link. Chat bridges, stats, inventories, commands and more.</p>
-            </div>
+    <h1 id="hero-title" class="sr-only">MC Linker: Minecraft, linked with Discord</h1>
 
-            <!-- The game's title menu. The header bar takes over once it scrolls away. -->
-            <nav class="menu" aria-label="Get started" data-title-menu in:fly={{ y: 16, duration: 500, delay: 150 }}>
-                <OreButton href={links.invite} external variant="discord" hero size="lg"><BrandIcon brand="discord" size="1.15em" /> Add to Discord</OreButton>
-                <OreButton href="#install" hero size="lg">Get the Plugin</OreButton>
-                <div class="row">
-                    <OreButton href={links.guide} variant="secondary" size="lg">Guide</OreButton>
-                    <OreButton href={links.support} external variant="secondary" size="lg">Support</OreButton>
-                </div>
-                <OreButton href="#setup" variant="secondary" size="lg">How does it work?</OreButton>
-            </nav>
+    <!-- Two chats, each under its own logo, with the MC Linker chain joining them across the seam. -->
+    <div class="layout">
+        <div class="brand mc">
+            <img class="wordmark" src="/brands/minecraft-logo.png" alt="Minecraft" width="1499" height="261" />
+            <span class="splash mc-text" aria-hidden="true">{splash}</span>
+        </div>
+        <div class="brand dc">
+            <img class="wordmark" src="/brands/discord-logo.svg" alt="Discord" width="635" height="96" />
         </div>
 
         <!-- Minecraft: the game's chat, in a window over the world. -->
@@ -147,6 +121,16 @@
                 </div>
             </div>
             <p class="hint ore-text">{#if keyboard.current}<kbd>T</kbd> to chat · {/if}try <code>/time set night</code></p>
+        </div>
+
+        <!-- The chain on the seam, hooked into both windows. Messages pass through it. -->
+        <div class="link">
+            <span class="cable mc" aria-hidden="true"></span>
+            <span class="cable dc" aria-hidden="true"></span>
+            <span class="chain" class:pulsing bind:this={logo}>
+                <img src="/logo-horizontal.svg" alt="" width="980" height="472" />
+            </span>
+            <span class="link-label ore-title">Linked by<br /><span class="brand-name">MC Linker</span></span>
         </div>
 
         <!-- Discord: the linked channel. -->
@@ -165,18 +149,22 @@
         </div>
     </div>
 
+    <p class="motd">The easiest Minecraft–Discord link. Chat bridges, stats, inventories, commands and more. <a href="#setup">How does it work?</a></p>
+
     <p class="corner left mc-text">MC Linker · Minecraft 1.8 – 26.2</p>
     <p class="corner right mc-text">Not an official Minecraft product.</p>
 </section>
 
 <style>
     .hero {
+        --seam: clamp(6.5rem, 9vw, 9rem);
         position: relative;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        min-height: max(100svh, 44rem);
-        padding: clamp(1.5rem, 5svh, 3.5rem) clamp(1rem, 2.5vw, 2.5rem) clamp(2.5rem, 6svh, 4rem);
+        gap: clamp(1rem, 2.5svh, 1.75rem);
+        min-height: max(calc(100svh - var(--nav-h)), 40rem);
+        padding: clamp(1.25rem, 3.5svh, 2.5rem) clamp(1rem, 2.5vw, 2.5rem) clamp(2.5rem, 5svh, 3.5rem);
         isolation: isolate;
         overflow: hidden;
     }
@@ -196,46 +184,35 @@
     /* Darken the blurred app a little so the real window stands out. */
     .dc-bg::after { content: ''; position: absolute; inset: 0; background: radial-gradient(60rem 30rem at 85% 0%, rgb(88 101 242 / 0.2), transparent 60%), rgb(17 18 20 / 0.35); }
 
-    /* Minecraft | title and menu | Discord. The side panels are as tall as the middle. */
+    /* Minecraft | the chain | Discord. Both sides are the same width, so the chain sits on the seam. */
     .layout {
+        flex: 1;
         display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(24rem, 31rem) minmax(0, 1fr);
-        grid-template-areas: 'mc center dc';
-        gap: clamp(1rem, 2.2vw, 2.5rem);
-        align-items: stretch;
+        grid-template-columns: minmax(0, 1fr) var(--seam) minmax(0, 1fr);
+        grid-template-rows: auto minmax(0, 1fr);
+        grid-template-areas: 'mclogo . dclogo' 'mc link dc';
+        row-gap: clamp(0.9rem, 2.2svh, 1.5rem);
         width: 100%;
-        max-width: 96rem;
+        max-height: 54rem;
+        max-width: 112rem;
         margin: 0 auto;
     }
-    .center { grid-area: center; display: flex; flex-direction: column; gap: 1.25rem; min-width: 0; }
+    .brand.mc { grid-area: mclogo; }
+    .brand.dc { grid-area: dclogo; }
     .panel.mc { grid-area: mc; }
     .panel.dc { grid-area: dc; }
+    .link { grid-area: link; }
 
-    /* ── The title panel ───────────────────────────────────────────────── */
-    .title-card {
-        --face: rgb(49 50 51 / 0.92);
-        --edge: #242425;
-        padding: 1.4rem 1.25rem calc(1.25rem + 3 * var(--t));
-        text-align: center;
-        backdrop-filter: blur(6px);
-    }
-    .title {
-        display: grid;
-        grid-template-columns: minmax(0, 1.25fr) auto minmax(0, 1fr);
-        align-items: center;
-        gap: 0.6rem;
-        margin: 0 0 1.5rem;
-        font-weight: 400;
-        line-height: 1;
-    }
-    .word { position: relative; display: block; }
-    .wordmark { display: block; width: 100%; height: auto; filter: drop-shadow(0 3px 0 rgb(0 0 0 / 0.35)); }
+    /* ── Each logo over its own side ───────────────────────────────────── */
+    .brand { position: relative; justify-self: center; display: flex; align-items: center; height: clamp(2.6rem, 4.2vw, 4rem); }
+    .wordmark { display: block; width: auto; height: 100%; filter: drop-shadow(0 3px 0 rgb(0 0 0 / 0.4)); }
+    .brand.dc .wordmark { height: 80%; filter: drop-shadow(0 3px 0 rgb(0 0 0 / 0.5)); }
     /* The yellow splash text, on the corner of the Minecraft logo like in the game. */
     .splash {
         position: absolute;
-        right: 0.3rem;
-        bottom: -1.35rem;
-        font-size: 0.85rem;
+        right: -1.5rem;
+        bottom: -0.9rem;
+        font-size: clamp(0.8rem, 1vw, 1rem);
         white-space: nowrap;
         color: #ffff00;
         text-shadow: 0.1em 0.1em 0 #3f3f00;
@@ -244,30 +221,40 @@
         pointer-events: none;
     }
     @keyframes splash { to { transform: rotate(-16deg) scale(1.1); } }
-    .link-logo {
+
+    /* ── The chain: hooked into both windows' frames, on the seam ──────── */
+    .link { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.7rem; }
+    /* Phones: a cable from each side into the chain, in that side's colour. */
+    .cable { display: none; }
+    .chain {
         position: relative;
         display: grid;
         place-items: center;
-        width: clamp(3.5rem, 5vw, 4.5rem);
+        /* A little wider than the gap, so each end overlaps a window's edge. */
+        width: calc(100% + 1.5rem);
+        margin-top: 2.3rem;
         animation: bob 4s ease-in-out infinite;
     }
-    .link-logo img {
+    .chain img {
         width: 100%;
         height: auto;
-        filter: drop-shadow(0 4px 0 rgb(0 0 0 / 0.35));
+        filter: drop-shadow(0 4px 0 rgb(0 0 0 / 0.45));
         transition: transform 0.25s cubic-bezier(.3, 1.6, .5, 1);
     }
-    .link-logo.pulsing img { transform: scale(1.14) rotate(-10deg); }
+    .chain.pulsing img { transform: scale(1.14) rotate(-10deg); }
     @keyframes bob { 50% { transform: translateY(-4px); } }
-    .edition { margin: 1rem 0 0; font-size: 1rem; letter-spacing: 0.24em; color: #fff; }
-    .edition .brand { color: var(--color-mc-green); }
-    .motd { max-width: 26rem; margin: 0.6rem auto 0; font-size: 0.95rem; line-height: 1.55; color: var(--color-ore-white); text-wrap: balance; }
+    .link-label {
+        margin: 0; padding: 0.35rem 0.5rem; background: rgb(0 0 0 / 0.6);
+        font-size: clamp(0.7rem, 0.8vw, 0.85rem); line-height: 1.35; text-align: center; letter-spacing: 0.08em;
+        color: #fff; text-shadow: 0.12em 0.12em 0 rgb(0 0 0 / 0.6);
+    }
+    .brand-name { font-size: 1.2em; color: var(--color-mc-green); }
 
-    /* ── Menu: plain stacked buttons, as on the title screen ───────────── */
-    .menu { display: flex; flex-direction: column; gap: 0.6rem; }
-    .menu :global(.ore-btn) { width: 100%; padding-inline: 0.75rem; }
-    .menu :global(.ore-btn.lg) { min-height: clamp(3rem, 5.4vh, 3.5rem); font-size: clamp(1.05rem, 0.6vw + 0.6rem, 1.2rem); }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+    .motd {
+        max-width: 46rem; margin: 0 auto; padding: 0.45rem 0.9rem;
+        background: rgb(0 0 0 / 0.55); font-size: 0.95rem; line-height: 1.55; text-align: center; color: var(--color-ore-white); text-wrap: balance;
+    }
+    .motd a { color: var(--color-mc-yellow); white-space: nowrap; }
 
     /* The game's version and copyright lines, in the bottom corners. */
     .corner { position: absolute; bottom: 0.6rem; z-index: 3; margin: 0; font-size: 0.85rem; color: #fff; }
@@ -275,7 +262,7 @@
     .corner.right { right: 0.8rem; }
     @media (max-width: 1399px) { .corner { display: none; } }
 
-    /* ── The two side panels: a title bar, the chat, a hint ────────────── */
+    /* ── The two windows: a title bar, the chat, a hint ────────────────── */
     .panel { display: flex; flex-direction: column; min-width: 0; min-height: 0; padding-bottom: calc(3 * var(--t)); }
     /* The Minecraft window is see-through: its chat floats over the world, like in the game. */
     .panel.mc { --face: rgb(30 30 31 / 0.3); }
@@ -283,7 +270,7 @@
     .p-title { font-size: 1.1rem; color: #000; }
     .p-sub { margin-left: auto; overflow: hidden; font-size: 0.85rem; color: #48494a; text-overflow: ellipsis; white-space: nowrap; }
     .dc-icon { display: grid; place-items: center; width: 1.75rem; height: 1.75rem; border-radius: 50%; background: #5865f2; color: #fff; }
-    .p-body { position: relative; flex: 1; display: flex; flex-direction: column; min-height: 22rem; }
+    .p-body { position: relative; flex: 1; display: flex; flex-direction: column; min-height: 24rem; }
     /* The Minecraft chat sits over the world, which shows through the window. */
     .mc-body { justify-content: flex-end; padding: 0.75rem; }
     .dc-body { background: var(--color-dc); }
@@ -326,23 +313,39 @@
         box-shadow: 0 0 0 2px #1e2470, 0 0 18px 4px rgb(88 101 242 / 0.8);
     }
 
-    /* Tablets: the title and menu on top, the two chats side by side under them. */
+    /* Tablets: the same, with a narrower gap. */
     @media (max-width: 1100px) {
-        .hero { justify-content: flex-start; min-height: 0; }
-        .layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: 'center center' 'mc dc'; }
-        .center { justify-self: center; width: min(31rem, 100%); }
-        .p-body { flex: none; min-height: 0; height: clamp(18rem, 45svh, 26rem); }
+        .hero { --seam: 5.5rem; justify-content: flex-start; min-height: 0; }
+        .layout { flex: none; }
+        .p-body { flex: none; min-height: 0; height: clamp(22rem, 55svh, 32rem); }
+        .p-sub { display: none; }
     }
 
-    /* Phones: one column. Title and menu, then Minecraft over its world, then Discord over Discord. */
+    /* Phones: one column. Minecraft over its world, the chain hanging down from it, then Discord. */
     @media (max-width: 760px) {
         .hero { padding-bottom: 1.5rem; }
         .hero :global(.mc-bg) { inset: 0; mask: none; }
         .dc-bg { display: none; }
-        .layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'center' 'mc' 'dc'; gap: 1.25rem; }
-        .title-card { padding-inline: 1rem; }
-        .splash { right: 0; font-size: 0.75rem; }
-        .p-body { height: 18rem; }
-        .dc-body { height: 22rem; }
+        .layout {
+            grid-template-columns: minmax(0, 1fr);
+            grid-template-rows: none;
+            grid-template-areas: 'mclogo' 'mc' 'link' 'dclogo' 'dc';
+            row-gap: 0.9rem;
+        }
+        .brand { height: 2.6rem; }
+        .splash { right: -0.5rem; }
+        .p-sub { display: block; }
+        .link { flex-direction: row; gap: 0.9rem; height: 5.5rem; margin-block: -0.9rem; }
+        .cable { display: block; position: absolute; left: 50%; width: calc(3 * var(--t)); margin-left: calc(-1.5 * var(--t)); }
+        .cable.mc { top: 0; bottom: 50%; background: var(--color-ore-green-light); box-shadow: 0 0 0 var(--t) var(--color-ore-green-dark); }
+        .cable.dc { top: 50%; bottom: 0; background: #5865f2; box-shadow: 0 0 0 var(--t) #1e2470; }
+        .chain { width: 4rem; margin: 0; }
+        .chain img { transform: rotate(90deg); }
+        .chain.pulsing img { transform: rotate(90deg) scale(1.14); }
+        /* The label beside the chain, not on top of it. */
+        .link-label { position: absolute; left: calc(50% + 2.5rem); text-align: left; font-size: 0.8rem; }
+        .chain { animation: none; }
+        .p-body { height: 20rem; }
+        .dc-body { height: 24rem; }
     }
 </style>

@@ -51,7 +51,7 @@
 </div>
 
 <style>
-    /* Fills whatever height the hero gives it; the message list takes the rest. */
+    /* Fills whatever height the hero's panel gives it; the message list takes the rest. */
     .channel { position: relative; flex: 1; min-height: 0; display: flex; }
     .channel :global(.window) { flex: 1; }
     .channel :global(.content) { display: flex; flex-direction: column; }
@@ -85,11 +85,4 @@
     }
     .dm-icon { font-size: 1.25rem; }
 
-    /* Tablets and phones: the page scrolls, so the list gets a fixed height. */
-    @media (max-width: 1023px) {
-        .dc-list { flex: none; height: clamp(12rem, calc(50svh - 8rem), 22rem); min-height: 0; }
-    }
-    @media (max-width: 860px) {
-        .dc-list { height: 20rem; }
-    }
 </style>

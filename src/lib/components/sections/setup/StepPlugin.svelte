@@ -72,8 +72,10 @@
     .label { margin: 0 0 0.6rem; font-size: 0.95rem; color: var(--color-ore-white); }
     .list { display: flex; flex-direction: column; gap: calc(2 * var(--t)); }
     .radio { display: block; width: calc(13 * var(--t)); }
-    .buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr)); gap: 1.1rem 0.6rem; margin-top: 1rem; }
-    .buttons :global(.wide) { grid-column: 1 / -1; }
+    /* The recommended download on its own row; the others share rows, and one left alone fills its row. */
+    .buttons { display: flex; flex-wrap: wrap; gap: 1.1rem 0.6rem; margin-top: 1rem; }
+    .buttons > :global(*) { flex: 1 1 8.5rem; }
+    .buttons > :global(.wide) { flex-basis: 100%; }
     .drop { margin: 1.25rem 0 0; color: var(--color-ore-white); line-height: 1.8; }
     .drop code { font-size: 0.9rem; color: var(--color-mc-yellow); }
     .notes { margin: 0.75rem 0 0; padding-left: 1.1rem; font-size: 0.875rem; line-height: 1.55; color: #c4c5c8; }

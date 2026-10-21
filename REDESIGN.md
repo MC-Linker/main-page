@@ -116,5 +116,6 @@ On phones the link slots fold into one "Links" slot that opens a small list, so 
 4. **Features:** still an inventory: creative-style icon tabs on top of an Ore UI panel whose title bar names the tab and holds the search field, with the game's own item slots inside (Ore UI has no inventory screen yet; bedrock-core's Ore theme draws item slots the same way). The chosen slot gets a white frame, pointing at one shows its name. The details sit in a panel next to it; role sync and join requirements show their choices as Ore UI radio buttons.
 5. **FAQ:** still the written book over the dimmed panorama. Ore UI has no book screen, and the book is an item in the world like the chat, so it keeps its pixel-art look; its page-turn arrows became small Ore UI buttons.
 6. **Last call to action:** an Ore UI dialog ("Link your worlds") over both worlds.
-7. **Other pages:** the team page and the legal pages sit under the header bar, and errors use the death screen with a green "Respawn" button.
+7. **Team page:** the same title panel as the hero over the blurred hills, holding "The Team", "The people behind MC Linker" and a line about the crew. Each member is a raised Ore UI panel: a banner in their colour with a stone grain, a square outlined avatar like a world's thumbnail, their name in the title font, the about text, their roles as Ore UI tags in their rank colour and a light GitHub button. Section titles match the home page's.
+8. **Other pages:** the legal pages sit under the header bar, and errors use the death screen with a green "Respawn" button.
 

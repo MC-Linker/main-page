@@ -27,16 +27,18 @@
         /** Stretch to fill the row, each segment as wide as the others. */
         fill?: boolean;
         size?: 'sm' | 'md';
+        /** For toggles on a dark surface: the unchosen ones are dark grey instead of light. */
+        tone?: 'light' | 'dark';
         /** For tabs: the id of the panel they control. */
         controls?: string;
         class?: string;
     };
-    let { items, selected, onselect, look = 'toggle', mode = 'tabs', label, icon, iconOnly = false, fill = false, size = 'md', controls, class: className = '' }: Props = $props();
+    let { items, selected, onselect, look = 'toggle', mode = 'tabs', label, icon, iconOnly = false, fill = false, size = 'md', tone = 'light', controls, class: className = '' }: Props = $props();
 
     let root: HTMLElement;
 
     // The chosen one sinks in with a white line under its label: green among light toggle buttons, darker among tabs.
-    const faceClass = (on: boolean) => `seg ore-face ${look === 'toggle' && !on ? 'ore-white' : look === 'toggle' ? 'ore-green' : 'ore-dark'}${on ? ' sunk marked' : ''}`;
+    const faceClass = (on: boolean) => `seg ore-face ${look === 'toggle' && !on ? (tone === 'dark' ? 'ore-dark' : 'ore-white') : look === 'toggle' ? 'ore-green' : 'ore-dark'}${on ? ' sunk marked' : ''}`;
 
     // Tabs and radios move with the arrow keys, like the game's controller navigation.
     function keys(e: KeyboardEvent) {

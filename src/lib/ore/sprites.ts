@@ -30,6 +30,9 @@ export const chevronRight = (color = '#ffffff'): Sprite => ({ rows: ['a...', '.a
 /** The header's back arrow. */
 export const backArrow = (color = '#000000'): Sprite => ({ rows: ['...a', '..a.', '.a..', 'a...', '.a..', '..a.', '...a'], palette: { a: color } });
 
+/** The header's "back to the top" arrow, pointing up. */
+export const upArrow = (color = '#ffffff'): Sprite => ({ rows: ['...a...', '..a.a..', '.a...a.', 'a.....a'], palette: { a: color } });
+
 /** A link that leaves the site: a small arrow pointing up and right. */
 export const outArrow = (color = '#ffffff'): Sprite => ({
     rows: ['..aaaa', '....aa', '...a.a', '..a..a', '.a....', 'a.....'],

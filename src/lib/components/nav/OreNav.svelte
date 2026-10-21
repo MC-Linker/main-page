@@ -10,7 +10,7 @@
     import OreDropdown from '$lib/ore/OreDropdown.svelte';
     import OreMenuRow from '$lib/ore/OreMenuRow.svelte';
     import OreSegments from '$lib/ore/OreSegments.svelte';
-    import { backArrow, outArrow } from '$lib/ore/sprites';
+    import { backArrow, outArrow, upArrow } from '$lib/ore/sprites';
     import PixelArt from '$lib/pixel/PixelArt.svelte';
 
     /**
@@ -23,6 +23,8 @@
     const onHome = $derived(page.url.pathname === '/');
     let current = $state(0);
     let progress = $state(0);
+    /** On the home page, scrolled all the way up: the arrow has nowhere to go. */
+    let atTop = $state(true);
     let open = $state(false);
     /** Phones: get out of the way while the keyboard is open. */
     let typing = $state(false);
@@ -37,6 +39,7 @@
 
     /** The section whose top has passed 40% of the screen is the current one. */
     function track() {
+        atTop = window.scrollY < 8;
         if(page.url.pathname !== '/') return;
         const line = window.innerHeight * 0.4;
         let i = 0;
@@ -84,10 +87,18 @@
 
 <svelte:window onkeydown={keys} onfocusin={e => (typing = isTextField(e.target))} onfocusout={() => (typing = false)} />
 
-<nav class="nav ore-header" class:typing aria-label="Site">
-    <OreButton variant="transparent" href={onHome ? '#top' : '/'} label={onHome ? 'Back to the title screen' : 'Back to the home page'} class="back">
-        <span class="back-arrow"><PixelArt sprite={backArrow()} width="100%" /></span>
-    </OreButton>
+<nav class="nav ore-header dark" class:typing aria-label="Site">
+    {#if onHome && atTop}
+        <span class="back idle" aria-hidden="true"><span class="up-arrow"><PixelArt sprite={upArrow()} width="100%" /></span></span>
+    {:else if onHome}
+        <OreButton variant="transparent" href="#top" label="Back to the top" class="back">
+            <span class="up-arrow"><PixelArt sprite={upArrow()} width="100%" /></span>
+        </OreButton>
+    {:else}
+        <OreButton variant="transparent" href="/" label="Back to the home page" class="back">
+            <span class="back-arrow"><PixelArt sprite={backArrow('#ffffff')} width="100%" /></span>
+        </OreButton>
+    {/if}
 
     <p class="trail ore-title">
         <a class="home" href={onHome ? '#top' : '/'}><img src="/logo.svg" alt="" width="20" height="20" />MC Linker</a>
@@ -96,7 +107,7 @@
 
     <OreSegments
         class="sections" items={segments} selected={onHome ? homeSections[current].id : ''}
-        mode="links" label="Home page sections" size="sm"
+        mode="links" label="Home page sections" size="sm" tone="dark"
     >
         {#snippet icon(s)}
             <McItemIcon icon={homeSections.find(h => h.id === s.id)!.icon} size="1.25rem" />
@@ -105,7 +116,7 @@
 
     <OreButton href={links.invite} external variant="discord" size="sm" class="add"><BrandIcon brand="discord" size="1.1em" /> Add to Discord</OreButton>
 
-    <OreDropdown id="nav-links" bind:open align="right" size="sm" class="links">
+    <OreDropdown id="nav-links" bind:open align="right" size="sm" tone="dark" class="links">
         <span class="wide-only">Links</span><span class="narrow-only">Menu</span>
         {#snippet popup()}
             <div class="narrow-only group">
@@ -148,12 +159,15 @@
 
     .nav :global(.back) { flex: none; width: 2.5rem; min-height: 2.5rem; padding: 0; }
     .back-arrow { width: calc(4 * var(--t)); }
+    .up-arrow { width: calc(7 * var(--t)); }
+    /* At the top of the home page: shown greyed out, since it has nowhere to go. */
+    .idle { display: flex; align-items: center; justify-content: center; opacity: 0.3; }
 
-    .trail { display: flex; align-items: center; gap: 0.45rem; flex: 1; min-width: 0; margin: 0; font-size: 1.2rem; line-height: 1; white-space: nowrap; color: #000; }
+    .trail { display: flex; align-items: center; gap: 0.45rem; flex: 1; min-width: 0; margin: 0; font-size: 1.2rem; line-height: 1; white-space: nowrap; color: #fff; }
     .home { display: inline-flex; align-items: center; gap: 0.5rem; flex: none; color: inherit; text-decoration: none; }
     .home:hover { text-decoration: underline; text-underline-offset: 0.2em; }
     .home img { width: 1.5rem; height: 1.5rem; }
-    .sep { color: #555; text-shadow: none; }
+    .sep { color: var(--color-ore-mid); text-shadow: none; }
     .crumb { overflow: hidden; text-overflow: ellipsis; }
     .crumb:not(.last) { flex: none; }
 

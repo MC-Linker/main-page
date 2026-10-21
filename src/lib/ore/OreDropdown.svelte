@@ -17,10 +17,12 @@
         align?: 'left' | 'right';
         open?: boolean;
         size?: 'sm' | 'md';
+        /** `dark` for a dropdown on a dark surface, like the site's header bar. */
+        tone?: 'light' | 'dark';
         id: string;
         class?: string;
     };
-    let { children, popup, label, align = 'left', open = $bindable(false), size = 'md', id, class: className = '' }: Props = $props();
+    let { children, popup, label, align = 'left', open = $bindable(false), size = 'md', tone = 'light', id, class: className = '' }: Props = $props();
 
     let root: HTMLElement;
     let button: HTMLButtonElement;
@@ -46,9 +48,9 @@
 <svelte:window onpointerdown={outside} onkeydown={keys} />
 
 <div class="dropdown {size} {className}" bind:this={root}>
-    <button bind:this={button} type="button" class="face ore-face ore-white ore-text" class:pressed={open} aria-expanded={open} aria-controls={id} aria-label={label} onclick={() => (open = !open)}>
+    <button bind:this={button} type="button" class="face ore-face {tone === 'dark' ? 'ore-dark' : 'ore-white'} ore-text" class:pressed={open} aria-expanded={open} aria-controls={id} aria-label={label} onclick={() => (open = !open)}>
         <span class="value">{@render children()}</span>
-        <span class="arrow" aria-hidden="true"><PixelArt sprite={chevron()} width="100%" /></span>
+        <span class="arrow" aria-hidden="true"><PixelArt sprite={chevron(tone === 'dark' ? '#ffffff' : undefined)} width="100%" /></span>
     </button>
     {#if open}
         <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->

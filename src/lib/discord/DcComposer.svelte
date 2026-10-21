@@ -173,7 +173,7 @@
         border-radius: 50%; background: #b5bac1; color: var(--color-dc-input); font-weight: 700; line-height: 1;
     }
     input {
-        flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: transparent;
+        flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; box-shadow: none; background: transparent;
         color: var(--color-dc-text); font: inherit; font-size: max(0.9375rem, 16px);
     }
     input::placeholder { color: #6d6f78; }

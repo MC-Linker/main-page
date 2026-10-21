@@ -11,14 +11,36 @@
     let { bridge, onsubmit }: { bridge: Bridge; onsubmit: (text: string) => void } = $props();
 
     let list: HTMLElement;
+    let messages: HTMLElement;
     let composer: DcComposer;
+    /** Whether the list is scrolled to the bottom. Scroll up to read, and it stops following. */
+    let following = true;
 
-    // Keep the newest message in view.
+    const toBottom = () => list?.scrollTo({ top: list.scrollHeight, behavior: scrollBehavior() });
+
+    // A new message always comes into view.
     $effect(() => {
         void bridge.dc.length;
         void bridge.typing;
-        tick().then(() => list?.scrollTo({ top: list.scrollHeight, behavior: scrollBehavior() }));
+        following = true;
+        tick().then(toBottom);
     });
+
+    // Messages also grow in place: a command's "is thinking..." turns into its reply, images load.
+    // Keep following them down while the list is at the bottom.
+    $effect(() => {
+        const ro = new ResizeObserver(() => {
+            if(following) list.scrollTo({ top: list.scrollHeight });
+        });
+        ro.observe(messages);
+        return () => ro.disconnect();
+    });
+
+    // Only you scrolling up stops it following (not its own smooth scroll); back at the bottom, it follows again.
+    const stop = () => (following = false);
+    function onscroll() {
+        if(list.scrollHeight - list.scrollTop - list.clientHeight < 48) following = true;
+    }
 
     /** Starts typing in the message box, e.g. "/" to open the command list. */
     export function start(text = '/') {
@@ -28,8 +50,8 @@
 
 <div class="channel">
     <DcWindow channel="minecraft-chat" topic="Linked with testing.mclinker.com · {bridge.online.length} online">
-        <div class="dc-list" bind:this={list} aria-live="polite" aria-label="Discord channel (demo)">
-            <discord-messages no-background>
+        <div class="dc-list" bind:this={list} {onscroll} onwheel={e => e.deltaY < 0 && stop()} ontouchmove={stop} aria-live="polite" aria-label="Discord channel (demo)">
+            <discord-messages no-background bind:this={messages}>
                 {#each bridge.dc as msg (msg.id)}
                     <div in:fly={{ y: 10, duration: 220 }}><DcMessage {msg} /></div>
                 {/each}

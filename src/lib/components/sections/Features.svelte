@@ -61,6 +61,33 @@
         return [...shown, ...Array(rows * cols - shown.length).fill(null)];
     });
     let detail = $state<HTMLElement>();
+    // The item's details next to the pointer, like hover text in the game: its name, what it
+    // does and its commands. Keyboard focus puts it beside the slot. Touch never shows it.
+    let tip = $state<{ item: Feature; x: number; y: number } | null>(null);
+    let tipW = $state(0);
+    let tipH = $state(0);
+    let vw = $state(1200);
+    let vh = $state(800);
+    const tipLeft = $derived(tip ? (tip.x + 16 + tipW > vw - 8 ? Math.max(8, tip.x - 16 - tipW) : tip.x + 16) : 0);
+    const tipTop = $derived(tip ? Math.min(Math.max(8, tip.y - 24), vh - tipH - 8) : 0);
+    function tipHandlers(item: Feature) {
+        const atPointer = (e: PointerEvent) => {
+            if(e.pointerType === 'mouse') tip = { item, x: e.clientX, y: e.clientY };
+        };
+        return {
+            onpointerenter: atPointer,
+            onpointermove: atPointer,
+            onpointerleave: () => (tip = null),
+            onfocus: (e: FocusEvent) => {
+                const el = e.currentTarget as HTMLElement;
+                if(!el.matches(':focus-visible')) return;
+                const r = el.getBoundingClientRect();
+                tip = { item, x: r.right, y: r.top };
+            },
+            onblur: () => (tip = null),
+        };
+    }
+
     function pick(item: Feature) {
         selected = item;
         page = 0;
@@ -68,6 +95,17 @@
         if(narrow.current) setTimeout(() => detail?.scrollIntoView({ block: 'start', behavior: scrollBehavior() }), 60);
     }
 </script>
+
+<svelte:window bind:innerWidth={vw} bind:innerHeight={vh} onscroll={() => (tip = null)} />
+
+{#if tip}
+    <div class="item-tip" role="tooltip" bind:offsetWidth={tipW} bind:offsetHeight={tipH} style:left="{tipLeft}px" style:top="{tipTop}px">
+        <p class="t-name" style:color={rarityColor[tip.item.rarity ?? 'common']}>{tip.item.name}</p>
+        {#each tip.item.lore as line, i (i)}<p class="t-lore">{line}</p>{/each}
+        {#each tip.item.commands as c (c)}<p class="t-cmd">{c}</p>{/each}
+        {#if tip.item.id !== selected.id}<p class="t-hint">Click to preview</p>{/if}
+    </div>
+{/if}
 
 <section id="features" class="features" aria-labelledby="features-title">
     <header class="section-head">
@@ -79,7 +117,7 @@
     <div class="browser">
         <div class="inv-col">
             <OreSegments
-                items={featureTabs.map(t => ({ id: t.id, label: t.name, title: t.name }))} selected={tab} onselect={id => (tab = id as TabId)}
+                items={featureTabs.map(t => ({ id: t.id, label: t.name, title: t.name }))} selected={tab} onselect={id => { tab = id as TabId; tip = null; }}
                 look="tabs" mode="tabs" label="Feature categories" controls="feature-list" fill iconOnly class="tabs"
             >
                 {#snippet icon(s)}<McItemIcon icon={featureTabs.find(t => t.id === s.id)!.icon} size="1.5rem" />{/snippet}
@@ -91,7 +129,7 @@
                     {#if tab === 'all'}
                         <label class="search">
                             <span class="sr-only">Search features</span>
-                            <input class="ore-field" type="search" placeholder="Search..." bind:value={query} />
+                            <input class="ore-field" type="search" placeholder="Search..." bind:value={query} oninput={() => (tip = null)} />
                         </label>
                     {/if}
                 </div>
@@ -100,8 +138,9 @@
                         <li>
                             {#if item}
                                 <button
-                                    type="button" class="slot" class:on={item.id === selected.id} data-name={item.name}
+                                    type="button" class="slot" class:on={item.id === selected.id}
                                     aria-label={item.name} aria-pressed={item.id === selected.id} onclick={() => pick(item)}
+                                    {...tipHandlers(item)}
                                 >
                                     <McItemIcon icon={item.icon} glint={item.glint} size="72%" />
                                 </button>
@@ -176,6 +215,9 @@
     .browser { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 1.5rem; align-items: start; max-width: 72rem; margin: 0 auto; }
     /* Creative-style tabs on top of the inventory: icons, the chosen one's name in the title bar. */
     .inv-col :global(.tabs) { position: relative; z-index: 1; margin-bottom: calc(-1 * var(--t)); }
+    /* Pointing at a tab lights it up and lifts its icon a little. */
+    .inv-col :global(.tabs .seg:not(.sunk):hover) { --face: #6d6d6e; --hi: #8c8d90; --shade: #7a7a7c; }
+    .inv-col :global(.tabs .seg:not(.sunk):hover .label) { transform: translateY(calc(-1 * var(--t))); }
 
     /* ── The inventory ─────────────────────────────────────────────────── */
     .inventory { padding-inline: 0; }
@@ -195,13 +237,17 @@
     /* The chosen one: a white frame, like the selected hotbar slot. */
     .slot.on { z-index: 1; outline: calc(2 * var(--t)) solid #fff; outline-offset: calc(-1 * var(--t)); box-shadow: 0 0 0 calc(3 * var(--t)) #1e1e1f; }
     .slot:focus-visible { z-index: 2; }
-    /* The item's name over the slot when you point at it, like hover text in the game. */
-    .slot[data-name]:hover::after {
-        content: attr(data-name); position: absolute; bottom: calc(100% + 0.4rem); left: 50%; z-index: 3; transform: translateX(-50%);
-        padding: 0.3rem 0.5rem; border: var(--t) solid #1e1e1f; background: #313233; color: #fff;
-        font-family: var(--font-pixel); font-size: 0.875rem; line-height: 1.2; white-space: nowrap; pointer-events: none;
+    /* The item's hover text: the same dark box as the tabs' names, with the item's details. */
+    .item-tip {
+        position: fixed; z-index: 90; max-width: 18rem; padding: 0.45rem 0.6rem; pointer-events: none;
+        border: var(--t) solid #1e1e1f; background: rgb(49 50 51 / 0.97); box-shadow: inset 0 0 0 var(--t) #48494a;
+        font-family: var(--font-pixel); font-size: 0.9rem; line-height: 1.35; color: #fff;
     }
-    @media (hover: none) { .slot[data-name]:hover::after { display: none; } }
+    .item-tip p { margin: 0; }
+    .t-name { margin-bottom: 0.15rem !important; font-size: 1rem; }
+    .t-lore { color: #d0d1d4; }
+    .t-cmd { color: var(--color-mc-yellow); }
+    .t-hint { margin-top: 0.25rem !important; color: #8c8d90; }
     .slot.big { width: 3.5rem; flex: none; cursor: default; border: var(--t) solid #1e1e1f; }
     .none { margin: 0.75rem 0.75rem 0; color: var(--color-ore-white); }
     .count { margin: 0.75rem 0.75rem 0.25rem; font-size: 0.875rem; color: var(--color-ore-white); }

@@ -306,7 +306,7 @@ export class Bridge {
     private inventory(user?: string) {
         if(!user || user.toLowerCase() === 'theannoying') {
             this.botReply('/inventory', [success('Player Inventory', 'Here\'s the inventory of **TheAnnoying**:', {
-                image: '/hero/inventory.png',
+                image: '/features/inventory.png',
             })]);
             return;
         }

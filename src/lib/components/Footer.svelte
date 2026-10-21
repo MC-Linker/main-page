@@ -33,6 +33,7 @@
             <ul>
                 <li><a href={links.support}><BrandIcon brand="discord" size="1em" /> Support server</a></li>
                 <li><a href={links.socials.github}><BrandIcon brand="github" size="1em" /> GitHub</a></li>
+                <li><a href={links.donate}><BrandIcon brand="githubsponsors" size="1em" /> Donate</a></li>
                 <li><a href={links.socials.youtube}><BrandIcon brand="youtube" size="1em" /> YouTube</a></li>
                 <li><a href={links.socials.topgg}><BrandIcon brand="topgg" size="1em" /> Top.gg</a></li>
             </ul>

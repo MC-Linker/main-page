@@ -7,6 +7,7 @@ export const links = {
     invite: 'https://discord.com/api/oauth2/authorize?client_id=712759741528408064',
     appDirectory: 'https://discord.com/application-directory/712759741528408064',
     support: 'https://discord.gg/rX36kZUGNK',
+    donate: 'https://github.com/sponsors/MC-Linker',
     guide: guideBase,
     plugin: {
         modrinth: 'https://modrinth.com/plugin/discord-linker',

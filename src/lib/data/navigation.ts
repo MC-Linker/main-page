@@ -1,5 +1,5 @@
 import type { ItemIcon } from '$lib/mc/item';
-import { book, chest, craftingTable, discordBlock, emerald, letter, map } from '$lib/pixel/items';
+import { book, chest, craftingTable, discordBlock, emerald, heart, letter, map } from '$lib/pixel/items';
 import { links } from './links';
 
 /** The header's section tabs: sections of the home page. Keep in sync with routes/+page.svelte. */
@@ -20,6 +20,7 @@ export const siteLinks: SiteLink[] = [
     { name: 'Plugin', title: 'Get the plugin', hint: 'Opens Modrinth in a new tab', href: links.plugin.modrinth, icon: { sprite: emerald }, newTab: true },
     { name: 'Guide', title: 'Guide', hint: 'Every command and setting', href: links.guide, icon: { sprite: map } },
     { name: 'Support', title: 'Support server', hint: 'Opens Discord in a new tab', href: links.support, icon: { sprite: letter }, newTab: true },
+    { name: 'Donate', title: 'Donate', hint: 'Opens GitHub Sponsors in a new tab', href: links.donate, icon: { sprite: heart }, newTab: true },
     { name: 'Team', title: 'Meet the team', hint: 'The people behind MC Linker', href: links.pages.team, icon: { head: 'lianecx' } },
 ];
 

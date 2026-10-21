@@ -34,6 +34,12 @@ export const diamond: Sprite = {
 
 export const emerald = recolor(diamond, { o: '#0b3d1b', l: '#d3ffd9', m: '#41d36b', d: '#1a8f3e' });
 
+/** A heart from the health bar, for donating. */
+export const heart: Sprite = {
+    rows: ['.ooo.ooo.', 'oRwRoRRRo', 'oRwRRRRRo', 'oRRRRRRdo', '.oRRRRdo.', '..oRRdo..', '...oRo...', '....o....'],
+    palette: { o: '#3b0a0a', R: '#e3262f', w: '#ffd5d5', d: '#a5141b' },
+};
+
 export const letter: Sprite = {
     rows: ['oooooooooo', 'owwwwwwwwo', 'oowwwwwwoo', 'owowwwwowo', 'owwowwowwo', 'owwwoowwwo', 'owwwwwwwwo', 'oooooooooo'],
     palette: { o: '#5c5c5c', w: '#f4f1e8' },

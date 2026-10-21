@@ -47,7 +47,7 @@
 {/snippet}
 
 <section class="team" aria-labelledby="team-title">
-    <!-- Like the home page's title screen: a title panel over the out-of-focus world. -->
+    <!-- Like a title screen: a title panel over the out-of-focus world. -->
     <header class="head">
         <McWorld class="world" tile={30} hills blur={3} />
         <div class="ore-card raised title-card">
@@ -94,7 +94,7 @@
         border-bottom: var(--t) solid var(--color-ore-outline);
     }
     .head :global(.world) { position: absolute; inset: 0; z-index: -1; }
-    /* The same title panel as the home page's hero. */
+    /* A see-through Ore UI panel, so the world shows faintly behind it. */
     .title-card {
         --face: rgb(49 50 51 / 0.92);
         --edge: #242425;

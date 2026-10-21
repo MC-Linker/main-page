@@ -196,6 +196,13 @@
         border: 6px solid transparent; border-top-color: var(--color-dc-blurple);
     }
     @keyframes hint-bob { 50% { transform: translateY(-4px); } }
+    /* Phones: above the box it would cover the newest message, so it sits in the box, pointing at "/". */
+    @media (max-width: 760px) {
+        .hint-bubble { position: relative; right: auto; bottom: auto; order: 1; flex: none; margin-right: 0.2rem; padding: 0.3rem 0.5rem; font-size: 0.75rem; animation-name: hint-nudge; }
+        .hint-bubble::after { right: auto; left: 100%; top: 50%; margin-top: -5px; border-width: 5px; border-top-color: transparent; border-left-color: var(--color-dc-blurple); }
+        .kbd { order: 2; }
+    }
+    @keyframes hint-nudge { 50% { transform: translateX(-3px); } }
     /* The command list sits right on top of the box, like Discord's autocomplete. */
     .suggest {
         position: absolute; left: 0; right: 0; bottom: 100%; z-index: 5;

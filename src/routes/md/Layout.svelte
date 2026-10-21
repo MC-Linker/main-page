@@ -32,7 +32,7 @@
     .kicker { margin: 0 0 0.6rem; color: var(--color-mc-green); }
     h1 { margin: 0; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.15; color: #fff; }
     .doc { max-width: 48rem; margin: 0 auto; padding: clamp(1.25rem, 4vw, 2.5rem) clamp(1rem, 4vw, 2.5rem) calc(clamp(1.25rem, 4vw, 2.5rem) + 3 * var(--t)); }
-    .doc :global(h1) { font-size: 1.6rem; margin-top: 2.5rem; }
+    .doc :global(h2) { font-size: 1.6rem; margin-top: 2.5rem; }
     .doc :global(> :first-child) { margin-top: 0; }
     .doc :global(a) { color: #a6dd94; }
     /* Prose's list markers are made for a darker page; lighten them for the panel. */

@@ -226,11 +226,8 @@
 
     /* ── The chain: hooked into both windows' frames, on the seam ──────── */
     .link { position: relative; z-index: 2; align-self: center; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
-    /* A cable from each window into the chain, in that side's colour. Each runs from the seam to its
-       window's inner edge: half of what the half-screen has left beside its centred window. */
-    .cable { position: absolute; top: 50%; height: calc(3 * var(--t)); margin-top: calc(-1.5 * var(--t)); width: calc((50% - min(50% - var(--seam), 54rem)) / 2 + 0.5rem); }
-    .cable.mc { right: 50%; background: var(--color-ore-green-light); box-shadow: 0 0 0 var(--t) var(--color-ore-green-dark); }
-    .cable.dc { left: 50%; background: #5865f2; box-shadow: 0 0 0 var(--t) #1e2470; }
+    /* Phones: a cable from each side into the chain, in that side's colour. */
+    .cable { display: none; }
     .chain {
         position: relative;
         display: grid;
@@ -345,9 +342,9 @@
         .splash { right: -0.5rem; }
         .p-sub { display: block; }
         .link { grid-area: link; align-self: stretch; flex-direction: row; height: 5.5rem; margin-block: -0.9rem; }
-        .cable { left: 50%; right: auto; width: calc(3 * var(--t)); height: auto; margin: 0 0 0 calc(-1.5 * var(--t)); }
-        .cable.mc { top: 0; bottom: 50%; }
-        .cable.dc { top: 50%; bottom: 0; }
+        .cable { display: block; position: absolute; left: 50%; width: calc(3 * var(--t)); margin-left: calc(-1.5 * var(--t)); }
+        .cable.mc { top: 0; bottom: 50%; background: var(--color-ore-green-light); box-shadow: 0 0 0 var(--t) var(--color-ore-green-dark); }
+        .cable.dc { top: 50%; bottom: 0; background: #5865f2; box-shadow: 0 0 0 var(--t) #1e2470; }
         .chain { width: 4rem; margin: 0; }
         .chain img { transform: rotate(90deg); }
         .chain.pulsing img { transform: rotate(90deg) scale(1.14); }

@@ -27,37 +27,6 @@ export const discordBlock: Sprite = {
     palette: { o: '#232a7a', B: '#5865f2', w: '#ffffff' },
 };
 
-export const sign: Sprite = {
-    rows: ['oooooooooo', 'oSSSSSSSSo', 'oSkkkkkkSo', 'oSSSSSSSSo', 'oSkkkkSSSo', 'oSSSSSSSSo', 'oooooooooo', '....oo....', '....oo....', '....oo....'],
-    palette: { o: '#3b2611', S: '#b8945f', k: '#5a4020' },
-};
-
-export const sword: Sprite = {
-    rows: ['........oo', '.......owo', '......owwo', '.....owwo.', 'o...owwo..', 'oo.owwo...', '.oowwo....', '..obo.....', '.obbo.....', 'obo.......'],
-    palette: { o: '#1f1f1f', w: '#d9d9d9', b: '#7a5230' },
-};
-
-export const clock: Sprite = {
-    rows: ['..oooooo..', '.oYYYYYYo.', 'oYYbbbbYYo', 'oYbbbwbbYo', 'oYbbwbbbYo', 'oYbbbbbbYo', 'oYYbbbbYYo', '.oYYYYYYo.', '..oooooo..'],
-    palette: { o: '#4a3500', Y: '#f2c230', b: '#5a8fe0', w: '#ffffff' },
-};
-
-export const nameTag: Sprite = {
-    rows: ['.....ooooo', '....owwwwo', '...owwwwwo', '..owwwwwwo', '.owwwwwwo.', 'owwwwwwo..', 'owwwwwo...', 'oswwwo....', '.oooo.....'],
-    palette: { o: '#3a3a3a', w: '#e9e2cf', s: '#7a5230' },
-};
-
-/** Like Minecraft's chain: links seen from the front, joined by links seen edge-on. */
-export const chain: Sprite = {
-    rows: ['...oooo...', '..owggwo..', '..og..go..', '..owggwo..', '...oggo...', '....gg....', '....gg....', '...oggo...', '..owggwo..', '..og..go..', '..owggwo..', '...oooo...'],
-    palette: { o: '#1e2228', g: '#7d8794', w: '#b9c2cc' },
-};
-
-export const door: Sprite = {
-    rows: ['.oooooo.', '.oggggo.', '.ogkkgo.', '.oggggo.', '.ogkkgo.', '.oggggo.', '.oggggo.', '.oggYgo.', '.oggggo.', '.oooooo.'],
-    palette: { o: '#2a2a2a', g: '#cfcfcf', k: '#8a8a8a', Y: '#5a5a5a' },
-};
-
 export const diamond: Sprite = {
     rows: ['..oooooo..', '.ollmmmmo.', 'olllmmmmdo', 'oommmmmddo', '.ommmmddo.', '..ommmdo..', '...omdo...', '....oo....'],
     palette: { o: '#0f4c46', l: '#e3fffa', m: '#4aedd9', d: '#1a9e93' },
@@ -74,13 +43,6 @@ export const painting: Sprite = {
     rows: ['oooooooooo', 'oFFFFFFFFo', 'oFbbbbbbFo', 'oFbbYbbbFo', 'oFggbbggFo', 'oFggggggFo', 'oFFFFFFFFo', 'oooooooooo'],
     palette: { o: '#2b1a0b', F: '#8a5a2b', b: '#7fb3ff', Y: '#ffe066', g: '#5d8a24' },
 };
-
-export const commandBlock: Sprite = {
-    rows: ['oooooooo', 'obbbbbbo', 'obkkkkbo', 'obkgkkbo', 'obkkgkbo', 'obkgkkbo', 'obbbbbbo', 'oooooooo'],
-    palette: { o: '#7a4a2a', b: '#c98b5b', k: '#1d1d1d', g: '#e8e8e8' },
-};
-
-export const repeatingCommandBlock = recolor(commandBlock, { o: '#3d2a6b', b: '#8a6ad1' });
 
 export const craftingTable: Sprite = {
     rows: ['oooooooooo', 'otTttTttTo', 'oTTTTTTTTo', 'otTttTttTo', 'oTTTTTTTTo', 'osSssssSso', 'osSssssSso', 'osSsWWsSso', 'osSssssSso', 'oooooooooo'],

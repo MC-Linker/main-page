@@ -204,7 +204,8 @@
     .link { grid-area: link; }
 
     /* ── Each logo over its own side ───────────────────────────────────── */
-    .brand { position: relative; justify-self: center; display: flex; align-items: center; height: clamp(2.6rem, 4.2vw, 4rem); }
+    /* Above the window under it, so the splash text can hang over its edge. */
+    .brand { position: relative; z-index: 1; justify-self: center; display: flex; align-items: center; height: clamp(2.6rem, 4.2vw, 4rem); }
     .wordmark { display: block; width: auto; height: 100%; filter: drop-shadow(0 3px 0 rgb(0 0 0 / 0.4)); }
     .brand.dc .wordmark { height: 80%; filter: drop-shadow(0 3px 0 rgb(0 0 0 / 0.5)); }
     /* The yellow splash text, on the corner of the Minecraft logo like in the game. */
@@ -331,6 +332,8 @@
             grid-template-rows: none;
             grid-template-areas: 'mclogo' 'mc' 'link' 'dclogo' 'dc';
             row-gap: 0.9rem;
+            /* Stacked, the windows are taller than the desktop cap; capping cut off the Discord composer. */
+            max-height: none;
         }
         .brand { height: 2.6rem; }
         .splash { right: -0.5rem; }

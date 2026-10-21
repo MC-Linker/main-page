@@ -52,7 +52,6 @@ src/
     pixel/           Pixel art drawn in code: block textures, player heads, items, and the components that draw them
     linkPreview.ts   Discord link previews (component embeds) for each page
     browser.ts       Reduced motion, smooth scrolling, sleep, text-field check
-    actions/         inview (runs something when an element scrolls into view)
 scripts/
   mojang-capitals.py Rebuilds static/fonts/mojang-studios.woff2 (see Fonts below)
 static/              Fonts, logo, banner, the bot's emoji, team pictures, bot screenshots

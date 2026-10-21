@@ -16,7 +16,7 @@
             <h2 class="ore-text">Plugin</h2>
             <ul>
                 <li><a href={links.plugin.modrinth}><BrandIcon brand="modrinth" size="1em" /> Modrinth</a></li>
-                <li><a href={links.plugin.hangar}>Hangar</a></li>
+                <li><a href={links.plugin.hangar}><BrandIcon brand="hangar" size="1em" /> Hangar</a></li>
                 <li><a href={links.plugin.spigot}><BrandIcon brand="spigot" size="1em" /> SpigotMC</a></li>
                 <li><span class="soon" title="Coming soon"><BrandIcon brand="curseforge" size="1em" /> CurseForge (soon)</span></li>
             </ul>

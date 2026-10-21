@@ -97,7 +97,7 @@ export const features: Feature[] = [
         preview: {
             mc: ['> /dm TheAnnoying meet me at spawn?', '&aDM sent to TheAnnoying: meet me at spawn?', whisper('TheAnnoying', 'omw!')],
             dc: [
-                { author: bot, content: dmMessage },
+                { author: bot, content: dmMessage, container: true },
                 {
                     author: theAnnoying, content: 'omw!',
                     reply: { author: bot.name, avatar: bot.avatar, bot: true, content: '📬 New DM from Cubey' },

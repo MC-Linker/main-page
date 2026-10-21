@@ -47,7 +47,8 @@
         <discord-reply slot="reply" author={msg.reply.author} avatar={avatarUrl(msg.reply.avatar)} bot={msg.reply.bot || undefined}>{msg.reply.content}</discord-reply>
     {/if}
     {#if msg.thinking}<span class="thinking">{msg.author.name} is thinking<i></i><i></i><i></i></span>{/if}
-    {#if msg.content}{@html discordMarkdown(msg.content)}{/if}
+    {#if msg.content && msg.container}<div class="container">{@html discordMarkdown(msg.content)}</div>
+    {:else if msg.content}{@html discordMarkdown(msg.content)}{/if}
     {#each msg.embeds ?? [] as e, i (i)}
         <discord-embed
             slot="embeds"
@@ -88,6 +89,10 @@
 </discord-message>
 
 <style>
+    /* Discord's container: the embed background and a faint outline, but no colour stripe. */
+    .container { max-width: 32rem; margin-top: 0.25rem; padding: 1rem; border: 1px solid #3f4147; border-radius: 0.5rem; background: #2b2d31; }
+    /* The header draws its own top margin inside its shadow DOM; cancel it for the first line. */
+    .container :global(discord-header:first-child) { display: block; margin-top: -1rem; }
     .thinking i { display: inline-block; width: 0.25em; height: 0.25em; margin-left: 0.18em; border-radius: 50%; background: currentColor; vertical-align: 0.1em; animation: dot 1.2s infinite both; }
     .thinking i:nth-of-type(2) { animation-delay: 0.2s; }
     .thinking i:nth-of-type(3) { animation-delay: 0.4s; }

@@ -45,6 +45,8 @@ export type DcMsg = {
     id: number;
     author: Author;
     content?: string;
+    /** Draw the content in a Discord container (Components V2): a plain box with no colour stripe, like the bot's DMs. */
+    container?: boolean;
     embeds?: Embed[];
     interaction?: Interaction;
     reply?: Reply;

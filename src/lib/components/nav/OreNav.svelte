@@ -31,7 +31,8 @@
 
     const trail = $derived.by(() => {
         if(page.status >= 400) return ['You died!'];
-        if(onHome) return current === 0 ? [] : [homeSections[current].name];
+        // On the home page the section buttons already say where you are.
+        if(onHome) return [];
         return pageTrails[page.url.pathname.replace(/\/$/, '')] ?? [];
     });
     const sectionHref = (id: string) => (onHome ? `#${id}` : `/#${id}`);
@@ -100,27 +101,33 @@
         </OreButton>
     {/if}
 
-    <p class="trail ore-title">
-        <a class="home" href={onHome ? '#top' : '/'}><img src="/logo.svg" alt="" width="20" height="20" />MC Linker</a>
-        {#each trail as t, i (i)}<span class="sep" aria-hidden="true">›</span><span class="crumb" class:last={i === trail.length - 1}>{t}</span>{/each}
-    </p>
+    {#if trail.length}
+        <p class="trail ore-title">
+            {#each trail as t, i (i)}{#if i}<span class="sep" aria-hidden="true">›</span>{/if}<span class="crumb" class:last={i === trail.length - 1}>{t}</span>{/each}
+        </p>
+    {/if}
 
-    <OreSegments
+    <!-- The banner, in a tab that hangs down from the middle of the bar. -->
+    <a class="brand" href={onHome ? '#top' : '/'} aria-label={onHome ? 'MC Linker, back to the top' : 'MC Linker home page'}>
+        <img src="/banner.png" alt="" width="1346" height="340" />
+    </a>
+
+    {#if onHome}<OreSegments
         class="sections" items={segments} selected={onHome ? homeSections[current].id : ''}
         mode="links" label="Home page sections" size="sm" tone="dark"
     >
         {#snippet icon(s)}
             <McItemIcon icon={homeSections.find(h => h.id === s.id)!.icon} size="1.25rem" />
         {/snippet}
-    </OreSegments>
+    </OreSegments>{/if}
 
     <OreButton href={links.invite} external variant="discord" size="sm" class="add"><BrandIcon brand="discord" size="1.1em" /> Add to Discord</OreButton>
 
     <OreDropdown id="nav-links" bind:open align="right" size="sm" tone="dark" class="links">
         <span class="wide-only">Links</span><span class="narrow-only">Menu</span>
         {#snippet popup()}
-            <div class="narrow-only group">
-                <p class="group-title ore-text">This page</p>
+            <div class="group" class:narrow-only={onHome}>
+                <p class="group-title ore-text">{onHome ? 'This page' : 'Home page'}</p>
                 {#each homeSections as s, i (s.id)}
                     <OreMenuRow title={s.name} subtitle={s.title} href={sectionHref(s.id)} selected={onHome && i === current} current="location" chevron={false}>
                         {#snippet icon()}<McItemIcon icon={s.icon} size="1.75rem" />{/snippet}
@@ -163,20 +170,56 @@
     /* At the top of the home page: shown greyed out, since it has nowhere to go. */
     .idle { display: flex; align-items: center; justify-content: center; opacity: 0.3; }
 
-    .trail { display: flex; align-items: center; gap: 0.45rem; flex: 1; min-width: 0; margin: 0; font-size: 1.2rem; line-height: 1; white-space: nowrap; color: #fff; }
-    .home { display: inline-flex; align-items: center; gap: 0.5rem; flex: none; color: inherit; text-decoration: none; }
-    .home:hover { text-decoration: underline; text-underline-offset: 0.2em; }
-    .home img { width: 1.5rem; height: 1.5rem; }
+    /* Left of the banner: what fits beside it. */
+    .trail { display: flex; align-items: center; gap: 0.45rem; min-width: 0; max-width: calc(50% - var(--brand-w) / 2 - 4rem); margin: 0; font-size: 1.2rem; line-height: 1; white-space: nowrap; color: #fff; }
+
+    /*
+     * The banner hangs below the bar in a tab of the same surface: the bar's bottom edge
+     * steps down around it, outline and all.
+     */
+    .nav { --drop: 1.6rem; --brand-h: 3.5rem; --brand-w: calc(var(--brand-h) * 1346 / 340 + 2rem); }
+    .brand {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        z-index: 1;
+        isolation: isolate;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: var(--brand-w);
+        height: calc(var(--nav-h) + var(--drop));
+        padding-bottom: calc(3 * var(--t));
+        translate: -50% 0;
+    }
+    .brand::before {
+        content: '';
+        position: absolute;
+        z-index: -1;
+        inset: calc(var(--nav-h) - 3 * var(--t)) 0 0;
+        background: var(--color-ore-deep);
+        box-shadow:
+            inset 0 calc(-2 * var(--t)) 0 #1a1a1b,
+            inset 0 calc(-3 * var(--t)) 0 #3a3b3c,
+            0 var(--t) 0 #121213,
+            var(--t) 0 0 #121213,
+            calc(-1 * var(--t)) 0 0 #121213,
+            0 0.5rem 1rem rgb(0 0 0 / 0.35);
+    }
+    .brand img { display: block; width: auto; height: var(--brand-h); transition: filter 0.15s ease; }
+    .brand:hover img { filter: brightness(1.15); }
+    .brand:focus-visible { outline-offset: calc(-1 * var(--t)); }
     .sep { color: var(--color-ore-mid); text-shadow: none; }
     .crumb { overflow: hidden; text-overflow: ellipsis; }
     .crumb:not(.last) { flex: none; }
 
     .nav :global(.sections) { flex: none; }
-    .nav :global(.add) { flex: none; }
+    .nav :global(.add) { flex: none; margin-left: auto; }
     .nav :global(.links) { flex: none; }
     .narrow-only { display: none; }
 
-    .group { flex-direction: column; gap: var(--t); }
+    .group { display: flex; flex-direction: column; gap: var(--t); }
+    .group.narrow-only { display: none; }
     .group-title { margin: 0; padding: 0.45rem 0.6rem 0.3rem; font-size: 0.8rem; color: #1e1e1f; text-transform: uppercase; letter-spacing: 0.06em; }
     .out { display: block; width: calc(6 * var(--t)); }
 
@@ -196,20 +239,17 @@
         .nav :global(.sections .label > span:last-child) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
         .nav :global(.sections .seg) { padding-inline: 0.65rem; }
     }
-    @media (max-width: 1000px) {
-        .home { font-size: 0; gap: 0; }
-        .home img { width: 1.6rem; height: 1.6rem; }
-    }
 
     /* Phones: sections and links in one "Menu" dropdown. */
     @media (max-width: 760px) {
         .nav { gap: 0.4rem; padding-inline: 0.4rem 0.6rem; }
-        .nav :global(.sections), .nav :global(.add), .wide-only { display: none; }
+        .nav :global(.sections), .nav :global(.add), .trail, .wide-only { display: none; }
+        .nav :global(.links) { margin-left: auto; }
         .narrow-only { display: inline; }
         .group.narrow-only { display: flex; }
-        .trail { font-size: 1.05rem; }
-        .home img { width: 1.5rem; height: 1.5rem; }
+        .nav { --drop: 1.1rem; --brand-h: min(2.5rem, 9.5vw); --brand-w: calc(var(--brand-h) * 1346 / 340 + 1rem); }
+        .brand { align-items: flex-end; padding-bottom: calc(3 * var(--t) + 0.4rem); }
         .nav { transition: transform 0.2s ease; }
-        .nav.typing { transform: translateY(calc(-100% - 4px)); }
+        .nav.typing { transform: translateY(calc(-100% - var(--drop) - 4px)); }
     }
 </style>

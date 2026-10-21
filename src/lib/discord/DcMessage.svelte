@@ -19,6 +19,17 @@
     };
     const rows = $derived([msg.buttons, ...(msg.buttonRows ?? [])].filter(r => r?.length) as NonNullable<DcMsg['buttons']>[]);
     const buttonType = { primary: 'primary', secondary: 'secondary', danger: 'destructive', success: 'success', link: 'secondary' } as const;
+
+    // Like Discord: a clicked button shows pulsing dots in place of its label while the bot
+    // answers, and the message ignores other clicks until the answer arrives.
+    let loading = $state<string | null>(null);
+    async function press(key: string, onclick?: () => void) {
+        if(!onclick || loading) return;
+        loading = key;
+        await new Promise(r => setTimeout(r, 650));
+        loading = null;
+        onclick();
+    }
 </script>
 
 <discord-message
@@ -69,7 +80,7 @@
                 <discord-action-row>
                     <!-- discord-button draws a real <button> inside, so it already works with the keyboard. -->
                     <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
-                    {#each row as b, j (j)}<discord-button type={buttonType[b.style ?? 'secondary']} disabled={b.disabled || undefined} onclick={b.disabled ? undefined : b.onclick}>{b.label}</discord-button>{/each}
+                    {#each row as b, j (j)}<discord-button type={buttonType[b.style ?? 'secondary']} disabled={b.disabled || undefined} aria-busy={loading === `${i}-${j}` || undefined} onclick={b.disabled ? undefined : () => press(`${i}-${j}`, b.onclick)}><span class="label" class:loading={loading === `${i}-${j}`}><span class="text">{b.label}</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></span></discord-button>{/each}
                 </discord-action-row>
             {/each}
         </discord-attachments>
@@ -80,5 +91,15 @@
     .thinking i { display: inline-block; width: 0.25em; height: 0.25em; margin-left: 0.18em; border-radius: 50%; background: currentColor; vertical-align: 0.1em; animation: dot 1.2s infinite both; }
     .thinking i:nth-of-type(2) { animation-delay: 0.2s; }
     .thinking i:nth-of-type(3) { animation-delay: 0.4s; }
+
+    /* Discord's pulsing ellipsis: the label keeps the button's width but is hidden behind three dots. */
+    .label { position: relative; display: inline-block; }
+    .dots { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; gap: 0.2rem; }
+    .label.loading .text { visibility: hidden; }
+    .label.loading .dots { display: flex; }
+    .dots i { width: 0.375rem; height: 0.375rem; border-radius: 50%; background: currentColor; animation: pulse 1.4s ease-in-out infinite; }
+    .dots i:nth-of-type(2) { animation-delay: 0.15s; }
+    .dots i:nth-of-type(3) { animation-delay: 0.3s; }
+    @keyframes pulse { 0%, 60%, 100% { opacity: 1; transform: scale(1); } 30% { opacity: 0.3; transform: scale(0.8); } }
     @keyframes dot { 0%, 80%, 100% { opacity: 0.2; } 40% { opacity: 1; } }
 </style>

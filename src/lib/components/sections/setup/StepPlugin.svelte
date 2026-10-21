@@ -2,12 +2,10 @@
     import BrandIcon from '$lib/components/BrandIcon.svelte';
     import { platformNotes, platforms } from '$lib/data';
     import OreButton from '$lib/ore/OreButton.svelte';
-    import OreMenuRow from '$lib/ore/OreMenuRow.svelte';
-    import { radioOff, radioOn } from '$lib/ore/sprites';
     import PixelArt from '$lib/pixel/PixelArt.svelte';
     import StepCard from './StepCard.svelte';
 
-    // Picking the server software, like a list of choices in an Ore UI screen.
+    // Picking the server software from a server list, like the Servers tab of the game's Play screen.
     let platform = $state(platforms[0].id);
     const current = $derived(platforms.find(p => p.id === platform)!);
     let list: HTMLElement;
@@ -27,19 +25,22 @@
 <StepCard step={2} world="minecraft" id="install">
     {#snippet title()}Install the Discord-Linker plugin{/snippet}
     <div class="split">
-        <div>
-            <p class="label ore-text" id="software-title">Server software</p>
+        <!-- The server list: an Ore UI panel with one entry per server software. -->
+        <div class="ore-card dark servers">
+            <p class="ore-header list-title ore-title" id="software-title">Servers</p>
             <!-- svelte-ignore a11y_interactive_supports_focus -->
             <div class="list" role="radiogroup" aria-labelledby="software-title" bind:this={list} onkeydown={listKeys}>
                 {#each platforms as p (p.id)}
-                    <OreMenuRow
-                        role="radio" tabindex={platform === p.id ? 0 : -1} selected={platform === p.id} chevron={false}
-                        title={p.name} subtitle="Minecraft {p.versions} · goes in {p.folder}/"
-                        onclick={() => (platform = p.id)}
-                    >
-                        {#snippet icon()}<PixelArt sprite={p.icon} width="100%" />{/snippet}
-                        {#snippet trailing()}<span class="radio" aria-hidden="true"><PixelArt sprite={platform === p.id ? radioOn : radioOff} width="100%" /></span>{/snippet}
-                    </OreMenuRow>
+                    {@const on = platform === p.id}
+                    <button type="button" class="server" class:on role="radio" aria-checked={on} tabindex={on ? 0 : -1} onclick={() => (platform = p.id)}>
+                        <span class="icon"><PixelArt sprite={p.icon} width="100%" /></span>
+                        <span class="info">
+                            <span class="name ore-text">{p.name}</span>
+                            <span class="motd ore-text">Minecraft {p.versions}</span>
+                            <span class="motd ore-text">Goes in <span class="folder">{p.folder}/</span></span>
+                        </span>
+                        <span class="ping" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+                    </button>
                 {/each}
             </div>
         </div>
@@ -70,8 +71,33 @@
 <style>
     .split { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 1.5rem 2rem; }
     .label { margin: 0 0 0.6rem; font-size: 0.95rem; color: var(--color-ore-white); }
-    .list { display: flex; flex-direction: column; gap: calc(2 * var(--t)); }
-    .radio { display: block; width: calc(13 * var(--t)); }
+    /* ── The server list ─────────────────────────────────────────────── */
+    .servers { align-self: start; }
+    .list-title { margin: 0; padding: 0.65rem 0.9rem calc(0.65rem + 3 * var(--t)); font-size: 1.1rem; }
+    .list { display: flex; flex-direction: column; gap: calc(2 * var(--t)); padding: 0.6rem; }
+    /* One server: its icon, name and two lines of MOTD, the connection bars on the right. */
+    .server {
+        position: relative; display: flex; align-items: center; gap: 0.8rem; width: 100%; padding: 0.5rem;
+        border: var(--t) solid #1e1e1f; background: #48494a; color: #fff; font: inherit; text-align: left; cursor: pointer;
+        box-shadow: inset 0 calc(-2 * var(--t)) 0 #313233;
+    }
+    .server:hover { background: #58585a; }
+    /* The chosen one: a white frame, as the game marks the selected server. */
+    .server.on { background: #242425; box-shadow: none; outline: calc(2 * var(--t)) solid #fff; outline-offset: calc(-1 * var(--t)); }
+    .server:focus-visible { z-index: 1; }
+    .icon { flex: none; width: 3.5rem; height: 3.5rem; padding: 0.35rem; border: var(--t) solid #1e1e1f; background: #313233; }
+    .info { display: flex; flex-direction: column; gap: 0.2rem; flex: 1; min-width: 0; }
+    .name { font-size: 1rem; line-height: 1.2; }
+    .motd { font-size: 0.875rem; line-height: 1.25; color: var(--color-ore-white); }
+    .folder { color: var(--color-mc-yellow); }
+    /* The connection bars, always full. */
+    .ping { display: inline-flex; align-items: flex-end; gap: var(--t); align-self: flex-start; height: 1rem; margin: 0.15rem 0.2rem 0 0; }
+    .ping i { width: calc(2 * var(--t)); background: #55ff55; box-shadow: var(--t) var(--t) 0 #1d4d13; }
+    .ping i:nth-child(1) { height: 20%; }
+    .ping i:nth-child(2) { height: 40%; }
+    .ping i:nth-child(3) { height: 60%; }
+    .ping i:nth-child(4) { height: 80%; }
+    .ping i:nth-child(5) { height: 100%; }
     /* The recommended download on its own row; the others share rows, and one left alone fills its row. */
     .buttons { display: flex; flex-wrap: wrap; gap: 1.1rem 0.6rem; margin-top: 1rem; }
     .buttons > :global(*) { flex: 1 1 8.5rem; }

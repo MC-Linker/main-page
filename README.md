@@ -2,7 +2,7 @@
 
 > The landing page for [MC Linker](https://mclinker.com): the Discord bot that links your Minecraft server with Discord.
 
-The site looks like both apps at once: Minecraft on one side, Discord on the other, and the MC Linker logo links them. This branch draws the Minecraft side in **Ore UI**, the look of Bedrock Edition's menus: flat grey panels with dark outlines, green and white buttons that stand up on a darker edge and sink when pressed, a light header bar, tabs and toggle buttons. It has a playable chat demo, the setup in three steps, every feature in a browse list and the FAQ as collapsible rows. See [REDESIGN.md](REDESIGN.md) for the design and how it came about.
+The site looks like both apps at once: Minecraft on one side, Discord on the other, and the MC Linker logo links them. This branch draws the Minecraft side in **Ore UI**, the look of Bedrock Edition's menus: flat grey panels with dark outlines, green and white buttons that stand up on a darker edge and sink when pressed, a light header bar, tabs and toggle buttons. It has a playable chat demo, the setup in three steps with a server list, every feature as an item in an inventory, and the FAQ as a written book. See [REDESIGN.md](REDESIGN.md) for the design and how it came about.
 
 ## Development
 
@@ -47,7 +47,7 @@ src/
       Footer, BrandIcon, LinkPreview
     ore/             Ore UI kit: OreButton, OreSegments (tabs, toggle buttons), OreDropdown, OreMenuRow,
                      OreRadioGroup, and sprites.ts (radio diamonds, chevrons, arrows)
-    mc/              What you see in the game world: McChat, McText, McWorld (title-screen panorama), McItemIcon
+    mc/              What you see in the game world: McChat, McText, McWorld (title-screen panorama), McItemIcon, McBook
     discord/         Discord UI kit: DcMessage, DcWindow, DcComposer, DcBackdrop, markdown, types
     pixel/           Pixel art drawn in code: block textures, player heads, items, and the components that draw them
     linkPreview.ts   Discord link previews (component embeds) for each page
@@ -62,7 +62,7 @@ static/              Fonts, logo, banner, the bot's emoji, team pictures, bot sc
 
 **Content is data.** Text, links and lists live in `lib/data` and the components render them. To change a feature, a download link or a FAQ answer, edit the data file, not the component.
 
-**Three UI kits.** `lib/ore` draws menus the way Bedrock's Ore UI does (buttons, tabs, toggle buttons, dropdowns, list rows, radio diamonds). `lib/mc` draws what's in the game world (chat with `&` colour codes, the title-screen panorama, item icons). `lib/discord` does the same for Discord. Messages render through discord-components; `DcMessage` maps our message data (`discord/types.ts`) onto its elements, and `DcWindow` and `DcComposer` (with slash-command suggestions) fill in what the library doesn't have. Components are named after their kit: `Ore…`, `Mc…` and `Dc…`.
+**Three UI kits.** `lib/ore` draws menus the way Bedrock's Ore UI does (buttons, tabs, toggle buttons, dropdowns, list rows, radio diamonds). `lib/mc` draws what's in the game world (chat with `&` colour codes, the title-screen panorama, item icons, the written book). `lib/discord` does the same for Discord. Messages render through discord-components; `DcMessage` maps our message data (`discord/types.ts`) onto its elements, and `DcWindow` and `DcComposer` (with slash-command suggestions) fill in what the library doesn't have. Components are named after their kit: `Ore…`, `Mc…` and `Dc…`.
 
 **Ore UI in CSS.** Every Ore UI control is its texture drawn in CSS, with one texture pixel = `--t` (2px). A button, tab or toggle button is an element with `.ore-face` and a palette class (`.ore-green`, `.ore-white`, `.ore-dark`, `.ore-red`, `.ore-purple`, `.ore-blurple`, `.ore-clear`): a dark outline, a light top-left edge, a shaded bottom-right one, and a darker edge along the bottom that makes it stand up. `.sunk` (or pressing it) pushes the face down into that edge; `.marked` adds the white line a chosen tab has. Panels are `.ore-card` (`.light`, `.dark`, `.raised`), the light title bar is `.ore-header`, text fields `.ore-field`. Small sprites (radio diamonds, chevrons, arrows) are in `ore/sprites.ts`. The colours are sampled from the textures of bedrock-core's [ore-styled theme](https://bedrock-core.drav.dev/docs/ore-styled/theme) (MIT); keep new controls to those colours. Ore UI text is flat: no drop shadow (`.ore-text`). Text in the world (chat, splash texts) keeps the game's shadow (`.mc-text`).
 

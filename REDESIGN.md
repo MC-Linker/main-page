@@ -5,7 +5,7 @@ This file explains the redesign: what we learned about the project, the decision
 | Branch | Concept | One-liner |
 |---|---|---|
 | `claude/mclinker-website-final-jy15ja` | **Final** | Two Worlds' split-screen hero with Crafting Table's title menu between the chats, then setup, the feature inventory, the server list and the FAQ as a written book. Navigation is a labelled hotbar. |
-| `claude/mclinker-website-ore-ui-jy15ja` | **Ore UI** | Final, redrawn in Bedrock Edition's Ore UI: flat panels, green and white buttons that sink when pressed, tabs and toggle buttons. Navigation is an Ore UI header bar. |
+| `claude/mclinker-website-ore-ui-jy15ja` | **Ore UI** | Final, redrawn in Bedrock Edition's Ore UI: flat panels, green and white buttons that sink when pressed, tabs and toggle buttons. The inventory, server list and book stay, in Ore UI panels. Navigation is an Ore UI header bar. |
 | `claude/mclinker-website-guide-redesign-jy15ja` | **Two Worlds** | The screen is split: Minecraft on the left, Discord on the right, the MC Linker logo links them. Every feature is shown happening on both sides at once. |
 | `claude/mclinker-website-crafting-jy15ja` | **Crafting Table** | The site plays like Minecraft's UI. You craft the link in a crafting grid, browse features as items in an inventory, and earn advancements while scrolling. |
 | `claude/mclinker-website-speedrun-jy15ja` | **Speedrun** | A light, bold, type-driven site built around "quick". A speedrun timer runs your setup with splits, and you can actually time your own run. |
@@ -112,9 +112,9 @@ On phones the link slots fold into one "Links" slot that opens a small list, so 
 
 1. **Navigation:** the hotbar became the header bar of an Ore UI screen: a back arrow, the trail ("MC Linker › Features"), the sections as toggle buttons (keys 1 to 4 still work), "Add to Discord" and a "Links" dropdown. Its bottom edge fills green as you scroll. On the home page it waits until the title screen's menu has scrolled away. On phones everything is in one "Menu" dropdown.
 2. **Hero:** the same split title screen, with Ore UI buttons (blurple "Add to Discord" and green "Get the Plugin" as hero buttons) and Bedrock's chat bar with a send button.
-3. **Setup:** each step is an Ore UI panel with a light title bar, its number and where it happens. Step 2 picks the server software from list rows with radio diamonds; Modrinth is the green (recommended) download, the others are light buttons, and CurseForge for plugins is greyed out until it's published.
-4. **Features:** a browse screen instead of the creative inventory: dark tabs for the categories, a search field, a grid of item tiles (the chosen one turns green) and a panel with the details. Role sync and join requirements show their choices as Ore UI radio buttons.
-5. **FAQ:** collapsible rows over the dimmed panorama instead of the written book, with a "More answers" panel next to them.
+3. **Setup:** each step is an Ore UI panel with a light title bar, its number and where it happens. Step 2 keeps the server list, drawn like the Servers tab of the game's Ore UI Play screen: a panel titled "Servers" with an icon, name, two MOTD lines and full connection bars per server software, the chosen one in a white frame. Modrinth is the green (recommended) download, the others are light buttons, and CurseForge for plugins is greyed out until it's published.
+4. **Features:** still an inventory: creative-style icon tabs on top of an Ore UI panel whose title bar names the tab and holds the search field, with the game's own item slots inside (Ore UI has no inventory screen yet; bedrock-core's Ore theme draws item slots the same way). The chosen slot gets a white frame, pointing at one shows its name. The details sit in a panel next to it; role sync and join requirements show their choices as Ore UI radio buttons.
+5. **FAQ:** still the written book over the dimmed panorama. Ore UI has no book screen, and the book is an item in the world like the chat, so it keeps its pixel-art look; its page-turn arrows became small Ore UI buttons.
 6. **Last call to action:** an Ore UI dialog ("Link your worlds") over both worlds.
 7. **Other pages:** the team page and the legal pages sit under the header bar, and errors use the death screen with a green "Respawn" button.
 

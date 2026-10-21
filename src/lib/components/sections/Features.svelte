@@ -50,8 +50,16 @@
     // The world a feature starts in comes first.
     const worlds = $derived((selected.from === 'discord' ? ['discord', 'minecraft'] : ['minecraft', 'discord']) as ('discord' | 'minecraft')[]);
 
-    // Phones: the details are under the list, so picking something scrolls to them.
+    // Phones: the details are under the inventory, so picking something scrolls to them.
     const narrow = new MediaQuery('(max-width: 900px)', false);
+    // Phones get six bigger slots per row instead of nine, so they're easy to tap.
+    const small = new MediaQuery('(max-width: 560px)', false);
+    const cols = $derived(small.current ? 6 : 9);
+    // Always fill whole rows (at least two), like a real inventory.
+    const slots = $derived.by<(Feature | null)[]>(() => {
+        const rows = Math.max(2, Math.ceil(shown.length / cols));
+        return [...shown, ...Array(rows * cols - shown.length).fill(null)];
+    });
     let detail = $state<HTMLElement>();
     function pick(item: Feature) {
         selected = item;
@@ -69,43 +77,50 @@
     </header>
 
     <div class="browser">
-        <OreSegments
-            items={featureTabs.map(t => ({ id: t.id, label: t.name, title: t.name }))} selected={tab} onselect={id => (tab = id as TabId)}
-            look="tabs" mode="tabs" label="Feature categories" controls="feature-list" fill class="tabs"
-        >
-            {#snippet icon(s)}<McItemIcon icon={featureTabs.find(t => t.id === s.id)!.icon} size="1.5rem" />{/snippet}
-        </OreSegments>
-
-        <div class="ore-card panel">
-            <div class="catalog" id="feature-list" role="tabpanel" aria-label={tabName}>
-                {#if tab === 'all'}
-                    <label class="search">
-                        <span class="sr-only">Search features</span>
-                        <input class="ore-field" type="search" placeholder="Search..." bind:value={query} />
-                    </label>
-                {/if}
-                <ul class="tiles">
-                    {#each shown as item (item.id)}
-                        {@const on = item.id === selected.id}
+        <div class="inv-col">
+            <OreSegments
+                items={featureTabs.map(t => ({ id: t.id, label: t.name, title: t.name }))} selected={tab} onselect={id => (tab = id as TabId)}
+                look="tabs" mode="tabs" label="Feature categories" controls="feature-list" fill iconOnly class="tabs"
+            >
+                {#snippet icon(s)}<McItemIcon icon={featureTabs.find(t => t.id === s.id)!.icon} size="1.5rem" />{/snippet}
+            </OreSegments>
+            <!-- The inventory: an Ore UI container with the game's item slots, one feature per slot. -->
+            <div class="ore-card raised inventory" id="feature-list" role="tabpanel" aria-label={tabName}>
+                <div class="ore-header inv-head">
+                    <p class="inv-title ore-title">{tab === 'all' ? 'Inventory' : tabName}</p>
+                    {#if tab === 'all'}
+                        <label class="search">
+                            <span class="sr-only">Search features</span>
+                            <input class="ore-field" type="search" placeholder="Search..." bind:value={query} />
+                        </label>
+                    {/if}
+                </div>
+                <ul class="slots" style:--cols={cols}>
+                    {#each slots as item, i (item?.id ?? `empty-${i}`)}
                         <li>
-                            <button type="button" class="tile ore-face {on ? 'ore-green sunk marked' : 'ore-dark'}" aria-pressed={on} onclick={() => pick(item)}>
-                                <span class="tile-in">
-                                    <McItemIcon icon={item.icon} glint={item.glint} size="2.25rem" />
-                                    <span class="tile-name ore-text">{item.name}</span>
-                                </span>
-                            </button>
+                            {#if item}
+                                <button
+                                    type="button" class="slot" class:on={item.id === selected.id} data-name={item.name}
+                                    aria-label={item.name} aria-pressed={item.id === selected.id} onclick={() => pick(item)}
+                                >
+                                    <McItemIcon icon={item.icon} glint={item.glint} size="72%" />
+                                </button>
+                            {:else}
+                                <span class="slot empty" aria-hidden="true"></span>
+                            {/if}
                         </li>
                     {/each}
                 </ul>
                 {#if shown.length === 0}<p class="none">Nothing found. Try "chat", "roles" or "/ban".</p>{/if}
                 <p class="count ore-text">{features.length} features · all free</p>
             </div>
+        </div>
 
             <!-- The selected feature: what it does, its commands, and how it looks in both worlds. -->
             {#key selected.id}
                 <article class="ore-card dark raised detail" bind:this={detail} in:fade={{ duration: 160 }} aria-live="polite">
                     <header class="d-head">
-                        <span class="slot"><McItemIcon icon={selected.icon} glint={selected.glint} size="2.5rem" /></span>
+                        <span class="slot big"><McItemIcon icon={selected.icon} glint={selected.glint} size="2.5rem" /></span>
                         <div>
                             <h3 class="ore-title" style:color={rarityColor[selected.rarity ?? 'common']}>{selected.name}</h3>
                             <p class="lore">{selected.lore.join(' ')}</p>
@@ -151,7 +166,6 @@
                     <OreButton href={selected.guide} class="guide">Read the guide</OreButton>
                 </article>
             {/key}
-        </div>
     </div>
 </section>
 
@@ -159,25 +173,43 @@
     .features { padding: clamp(4rem, 9vw, 6.5rem) 1rem clamp(4rem, 8vw, 6rem); background: var(--color-ore-deep); }
     .section-head { margin-bottom: clamp(2rem, 5vw, 3rem); }
 
-    .browser { max-width: 72rem; margin: 0 auto; }
-    .browser :global(.tabs) { position: relative; z-index: 1; margin-bottom: calc(-1 * var(--t)); }
-    .panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 1.25rem; align-items: start; padding: 1.25rem; }
+    .browser { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 1.5rem; align-items: start; max-width: 72rem; margin: 0 auto; }
+    /* Creative-style tabs on top of the inventory: icons, the chosen one's name in the title bar. */
+    .inv-col :global(.tabs) { position: relative; z-index: 1; margin-bottom: calc(-1 * var(--t)); }
 
-    /* ── The list: a search field and a grid of tiles ─────────────────── */
-    .search { display: block; margin-bottom: 0.9rem; }
-    .search input { display: block; width: 100%; height: 2.75rem; padding: calc(2 * var(--t)) 0.75rem 0; }
-    .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr)); gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
-    .tile { display: block; width: 100%; height: 100%; min-height: 6rem; padding: 0.6rem 0.35rem; cursor: pointer; }
-    .tile-in { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; height: 100%; }
-    .tile-name { font-size: 0.875rem; line-height: 1.2; text-align: center; text-wrap: balance; }
-    .none { margin: 0.75rem 0 0; color: var(--color-ore-white); }
-    .count { margin: 1rem 0 0; font-size: 0.875rem; color: var(--color-ore-white); }
+    /* ── The inventory ─────────────────────────────────────────────────── */
+    .inventory { padding-inline: 0; }
+    .inv-head { display: flex; align-items: center; gap: 0.75rem; min-height: 3.25rem; padding: 0.5rem 0.75rem calc(0.5rem + 3 * var(--t)); }
+    .inv-title { flex: 1; margin: 0; font-size: 1.1rem; color: #000; white-space: nowrap; }
+    .search { flex: 0 1 11rem; min-width: 0; }
+    .search input { display: block; width: 100%; height: 2.25rem; padding: calc(2 * var(--t)) 0.6rem 0; font-size: 1rem; }
+    .slots { display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); gap: var(--t); margin: 0; padding: 0.75rem 0.75rem 0; list-style: none; }
+    /* The game's item slot: grey, shaded in at the top left. */
+    .slot {
+        position: relative; display: grid; place-items: center; width: 100%; aspect-ratio: 1; padding: 0;
+        border: 0; background: #8b8b8b; box-shadow: inset var(--t) var(--t) 0 #373737, inset calc(-1 * var(--t)) calc(-1 * var(--t)) 0 #fff;
+        cursor: pointer;
+    }
+    .slot.empty { cursor: default; }
+    .slot:not(.empty, .big):hover::before { content: ''; position: absolute; inset: var(--t); background: rgb(255 255 255 / 0.35); }
+    /* The chosen one: a white frame, like the selected hotbar slot. */
+    .slot.on { z-index: 1; outline: calc(2 * var(--t)) solid #fff; outline-offset: calc(-1 * var(--t)); box-shadow: 0 0 0 calc(3 * var(--t)) #1e1e1f; }
+    .slot:focus-visible { z-index: 2; }
+    /* The item's name over the slot when you point at it, like hover text in the game. */
+    .slot[data-name]:hover::after {
+        content: attr(data-name); position: absolute; bottom: calc(100% + 0.4rem); left: 50%; z-index: 3; transform: translateX(-50%);
+        padding: 0.3rem 0.5rem; border: var(--t) solid #1e1e1f; background: #313233; color: #fff;
+        font-family: var(--font-pixel); font-size: 0.875rem; line-height: 1.2; white-space: nowrap; pointer-events: none;
+    }
+    @media (hover: none) { .slot[data-name]:hover::after { display: none; } }
+    .slot.big { width: 3.5rem; flex: none; cursor: default; border: var(--t) solid #1e1e1f; }
+    .none { margin: 0.75rem 0.75rem 0; color: var(--color-ore-white); }
+    .count { margin: 0.75rem 0.75rem 0.25rem; font-size: 0.875rem; color: var(--color-ore-white); }
 
     /* ── The selected feature ──────────────────────────────────────────── */
     .detail { padding: 1.25rem 1.25rem calc(1.25rem + 3 * var(--t)); scroll-margin-top: 1rem; }
     .d-head { display: flex; align-items: center; gap: 1rem; }
     /* The item in an inventory slot. */
-    .slot { display: grid; place-items: center; flex: none; width: 3.5rem; height: 3.5rem; border: var(--t) solid #1e1e1f; background: #8b8b8b; box-shadow: inset var(--t) var(--t) 0 #373737, inset calc(-1 * var(--t)) calc(-1 * var(--t)) 0 #fff; }
     h3 { margin: 0; font-size: 1.5rem; line-height: 1.2; }
     .lore { margin: 0.3rem 0 0; color: #d0d1d4; line-height: 1.5; }
     .cmds { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0 0; padding: 0; list-style: none; }
@@ -191,21 +223,12 @@
     .shot { display: block; max-width: 100%; height: auto; margin-top: 0.5rem; border-radius: 8px; }
     .detail :global(.guide) { margin-top: 0.25rem; }
 
-    /* Smaller screens: icons only on the tabs (the name stays for screen readers and as a tooltip). */
-    @media (max-width: 1100px) {
-        .browser :global(.tabs .label > span:last-child) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-    }
     @media (max-width: 900px) {
-        .panel { grid-template-columns: 1fr; padding: 1rem; }
+        .browser { grid-template-columns: minmax(0, 1fr); }
     }
     @media (max-width: 560px) {
-        .panel { padding: 0.75rem; }
-        .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.4rem; }
-        .tile { min-height: 5.5rem; }
         .detail { padding: 1rem 0.9rem calc(1rem + 3 * var(--t)); }
-    }
-    /* The smallest phones: two tiles a row, so names like "Advancements" fit. */
-    @media (max-width: 374px) {
-        .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .inv-head { flex-wrap: wrap; }
+        .search { flex: 1 1 100%; }
     }
 </style>

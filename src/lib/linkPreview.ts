@@ -45,15 +45,9 @@ export function homeEmbed(): ComponentEmbed {
             '-# Free Discord bot and server plugin · No bot to host, no config files',
             thumbnail('/logo.png'),
         ),
-        {
-            type: 12,
-            items: [
-                galleryItem('/hero/inventory.png', 'A player inventory, rendered in Discord'),
-                galleryItem('/showcase/userinfo.png', 'Player stats with /userinfo'),
-                galleryItem('/showcase/serverinfo.png', 'Server info with /serverinfo'),
-                galleryItem('/showcase/statchannel.png', 'Stat channels with the server status'),
-            ],
-        },
+        // One image only: Discord crops gallery images into a mosaic, and ours all have
+        // different shapes. A single image is shown whole. Matches the guide's preview.
+        { type: 12, items: [galleryItem('/showcase/userinfo.png', 'Player stats with /userinfo')] },
         text('**Set up in three steps:** add the bot, install the plugin, run `/connect`.'),
         { type: 14 },
         row(

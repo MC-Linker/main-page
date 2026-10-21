@@ -2,6 +2,7 @@
     import type { Snippet } from 'svelte';
     import PixelArt from '$lib/pixel/PixelArt.svelte';
     import type { Sprite } from '$lib/pixel/sprites';
+    import { createHills, STRIP_BLOCKS } from './hillsGl';
 
     type Props = {
         night?: boolean;
@@ -47,6 +48,62 @@
         palette: { m: '#e9ecef', M: '#ced4da', c: '#adb5bd' },
     };
 
+    /** Seconds for the hills to pan by one loop, like the old CSS animation. */
+    const PAN_SECONDS = 160;
+
+    // Draws the hills with WebGL. The DOM strip stays as the fallback (and the first paint) until it works.
+    let gl = $state(false);
+    function hillsCanvas(canvas: HTMLCanvasElement) {
+        const hills = createHills(canvas, { heights, trees, tree });
+        if(!hills) return;
+        gl = true;
+
+        let frame = 0;
+        let visible = false;
+        let start = performance.now();
+        let offset = 0;
+        const render = () => hills.draw(offset);
+        const tick = (now: number) => {
+            offset = ((now - start) / 1000) * (hills.loop / PAN_SECONDS);
+            render();
+            frame = requestAnimationFrame(tick);
+        };
+        // Only animate while on screen, and not at all for reduced motion.
+        const update = () => {
+            cancelAnimationFrame(frame);
+            if(visible && !motion.matches) {
+                start = performance.now() - (offset / hills.loop) * PAN_SECONDS * 1000;
+                frame = requestAnimationFrame(tick);
+            }
+            else render();
+        };
+
+        const resize = new ResizeObserver(([entry]) => {
+            // The exact device pixel box when the browser gives one that matches the zoom (emulators may not).
+            const w = Math.round(entry.contentRect.width * devicePixelRatio);
+            const h = Math.round(entry.contentRect.height * devicePixelRatio);
+            const box = entry.devicePixelContentBoxSize?.[0];
+            const exact = box && Math.abs(box.inlineSize - w) <= 1 && Math.abs(box.blockSize - h) <= 1;
+            canvas.width = exact ? box.inlineSize : w;
+            canvas.height = exact ? box.blockSize : h;
+            render();
+        });
+        try { resize.observe(canvas, { box: 'device-pixel-content-box' }); }
+        catch { resize.observe(canvas); }
+        const seen = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; update(); });
+        seen.observe(canvas);
+        const motion = matchMedia('(prefers-reduced-motion: reduce)');
+        motion.addEventListener('change', update);
+
+        return () => {
+            cancelAnimationFrame(frame);
+            resize.disconnect();
+            seen.disconnect();
+            motion.removeEventListener('change', update);
+            hills.destroy();
+        };
+    }
+
     // Fixed star positions so server and client render the same sky.
     const stars = Array.from({ length: 36 }, (_, i) => ({
         x: (i * 37.3 + (i % 3) * 11) % 100,
@@ -71,7 +128,8 @@
         </div>
     {/if}
     {#if hills}
-        <div class="terrain" aria-hidden="true">
+        <div class="terrain hill-terrain" class:gl aria-hidden="true" style:--strip={STRIP_BLOCKS}>
+            <canvas class="gl" {@attach hillsCanvas}></canvas>
             <div class="strip">
                 {#each [0, 1] as copy (copy)}
                     <div class="land">
@@ -158,7 +216,8 @@
     }
 
     /* Panorama hills */
-    .strip { display: flex; width: max-content; animation: pan 160s linear infinite; }
+    /* Static: it is the first paint and the no-WebGL fallback. The canvas does the panning. */
+    .strip { display: flex; width: max-content; }
     .land { display: flex; align-items: flex-end; }
     .col {
         position: relative;
@@ -171,7 +230,11 @@
         image-rendering: pixelated;
     }
     .tree { position: absolute; bottom: 100%; left: calc(var(--tile) * -0.75); }
-    @keyframes pan { to { transform: translateX(-50%); } }
+    .hill-terrain { height: calc(var(--strip) * var(--tile)); }
+    .hill-terrain .strip { position: absolute; left: 0; bottom: 0; }
+    canvas.gl { position: absolute; inset: 0; width: 100%; height: 100%; display: none; }
+    .hill-terrain.gl canvas.gl { display: block; }
+    .hill-terrain.gl .strip { display: none; }
 
     .rainfall {
         position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0;

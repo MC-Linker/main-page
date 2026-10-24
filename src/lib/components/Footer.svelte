@@ -18,7 +18,7 @@
                 <li><a href={links.plugin.modrinth} target="_blank" rel="noopener"><BrandIcon brand="modrinth" size="1em" /> Modrinth</a></li>
                 <li><a href={links.plugin.hangar} target="_blank" rel="noopener"><BrandIcon brand="hangar" size="1em" /> Hangar</a></li>
                 <li><a href={links.plugin.spigot} target="_blank" rel="noopener"><BrandIcon brand="spigot" size="1em" /> SpigotMC</a></li>
-                <li><span class="soon" title="Coming soon"><BrandIcon brand="curseforge" size="1em" /> CurseForge (soon)</span></li>
+                <li><a href={links.plugin.curseforge} target="_blank" rel="noopener"><BrandIcon brand="curseforge" size="1em" /> CurseForge</a></li>
             </ul>
         </nav>
         <nav aria-label="Mod downloads">
@@ -60,9 +60,8 @@
     .tagline { margin: 0.75rem 0 0; color: var(--color-ore-white); }
     h2 { margin: 0 0 0.75rem; font-size: 0.9rem; font-weight: 400; color: var(--color-mc-gray); }
     ul { display: flex; flex-direction: column; gap: 0.45rem; margin: 0; padding: 0; list-style: none; }
-    a, .soon { display: inline-flex; align-items: center; gap: 0.45rem; color: var(--color-ore-white); text-decoration: none; }
+    a { display: inline-flex; align-items: center; gap: 0.45rem; color: var(--color-ore-white); text-decoration: none; }
     a:hover { color: #fff; text-decoration: underline; }
-    .soon { color: #8c8d90; cursor: default; }
     .legal { margin: 0; padding: 1.25rem 1rem 1.5rem; text-align: center; font-size: 0.78rem; letter-spacing: 0.02em; text-transform: uppercase; color: #8c8d90; }
     @media (max-width: 560px) {
         .inner { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem 1.5rem; }

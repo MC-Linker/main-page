@@ -19,7 +19,7 @@ export type Platform = {
 };
 
 const modrinth: Download = { name: 'Modrinth', href: links.plugin.modrinth, brand: 'modrinth', color: '#1bae5a', recommended: true };
-const curseforgePlugin: Download = { name: 'CurseForge', href: links.plugin.curseforge, brand: 'curseforge', color: '#e1592c', disabled: true };
+const curseforgePlugin: Download = { name: 'CurseForge', href: links.plugin.curseforge, brand: 'curseforge', color: '#e1592c' };
 const curseforgeMods: Download = { name: 'CurseForge', href: links.plugin.curseforgeMods, brand: 'curseforge', color: '#e1592c' };
 const hangar: Download = { name: 'Hangar', href: links.plugin.hangar, brand: 'hangar', color: '#2d6be0' };
 const spigot: Download = { name: 'SpigotMC', href: links.plugin.spigot, brand: 'spigot', color: '#d99a06' };

@@ -15,7 +15,8 @@
      * The hero: a fullscreen split, Minecraft on the left (the game itself: the world,
      * chat bottom-left, a hotbar) and a Discord channel on the right. An intro screen
      * comes first over the split, out of focus. Try it live, the first scroll or swipe,
-     * or a tap on the blurred chats opens it once (~1s); it never closes again.
+     * or a tap on the intro opens it (~1s). Scrolling up at the top closes it again and
+     * pauses the demo until it opens.
      */
 
     const bridge = new Bridge();
@@ -37,7 +38,6 @@
     /** 0 = the intro screen, 1 = the split in focus. */
     let p = $state(0);
     let started = false;
-    let opening = false;
     /** How long the opening takes, in ms. */
     const OPEN_MS = 1100;
 
@@ -89,29 +89,52 @@
         };
     }
 
-    /** Opens the split: the intro fades, the split comes into focus, the logo flies onto the chain. */
-    function open() {
-        if(opening || p >= 1) return;
-        opening = true;
+    /** Where the intro is heading: 1 = open, 0 = closed. */
+    let target = 0;
+    let frame = 0;
+
+    /** Plays the intro towards open (1) or closed (0), from wherever it is now. */
+    function animate(to: 0 | 1) {
+        if(target === to && (p === to || frame)) return;
+        target = to;
+        cancelAnimationFrame(frame);
+        frame = 0;
+        if(to === 1) bridge.paused = false;
+        else {
+            // The demo waits while the intro shows, and nothing in the chats stays focused.
+            bridge.paused = true;
+            (document.activeElement as HTMLElement | null)?.blur();
+        }
         if(reducedMotion.current) {
-            p = 1;
-            start();
+            p = to;
+            if(to === 1) start();
             return;
         }
+        const from = p;
         const t0 = performance.now();
+        const duration = OPEN_MS * Math.abs(to - from);
         const step = (now: number) => {
             measure();
-            p = Math.min(1, (now - t0) / OPEN_MS);
-            if(p > 0.5) start();
-            if(p < 1) requestAnimationFrame(step);
+            const t = duration ? Math.min(1, (now - t0) / duration) : 1;
+            p = from + (to - from) * t;
+            if(to === 1 && p > 0.5) start();
+            frame = t < 1 ? requestAnimationFrame(step) : 0;
         };
-        requestAnimationFrame(step);
+        frame = requestAnimationFrame(step);
     }
+
+    /** Opens the split: the intro fades, the split comes into focus, the logo flies onto the chain. */
+    const open = () => animate(1);
+    /** Back to the intro, with the demo paused. */
+    const close = () => animate(0);
 
     /** Already past the hero (a reload further down, a link to a section): just be open. */
     function onscroll() {
-        if(p < 1 && !opening && window.scrollY > 10) {
-            opening = true;
+        if(target === 0 && window.scrollY > 10) {
+            target = 1;
+            cancelAnimationFrame(frame);
+            frame = 0;
+            bridge.paused = false;
             p = 1;
             start();
         }
@@ -121,26 +144,38 @@
         bridge.transfer = transfer;
         onscroll();
 
-        // While the intro shows at the top, the first scroll, swipe or scroll key opens it
-        // instead of moving the page (and further ones wait until it is open).
-        const waiting = () => p < 1 && window.scrollY <= 10;
-        const wheel = (e: WheelEvent) => {
-            if(!waiting() || e.deltaY <= 0 || e.ctrlKey) return;
+        // At the top of the page, scrolling drives the intro instead of the page: down opens it
+        // (and the page waits until it is open), up from the open split closes it again.
+        const atTop = () => window.scrollY <= 10;
+        /** Whether a scroll up there would scroll something inside the split (the Discord messages). */
+        const scrollsInside = (t: EventTarget | null) => {
+            const list = (t as HTMLElement | null)?.closest?.('.dc-list');
+            return !!list && list.scrollTop > 0;
+        };
+        const go = (e: Event, down: boolean) => {
+            if(!atTop()) return;
+            if(down && target === 0) open();
+            else if(down && p < 1) { /* still opening: let it finish */ }
+            else if(!down && target === 1 && !scrollsInside(e.target)) close();
+            else if(!down && p > 0) { /* still closing */ }
+            else return;
             e.preventDefault();
-            open();
+        };
+        const wheel = (e: WheelEvent) => {
+            if(e.ctrlKey || !e.deltaY) return;
+            go(e, e.deltaY > 0);
         };
         let touchY = 0;
         const touchstart = (e: TouchEvent) => (touchY = e.touches[0].clientY);
         const touchmove = (e: TouchEvent) => {
-            if(!waiting() || touchY - e.touches[0].clientY < 6) return;
-            e.preventDefault();
-            open();
+            const dy = touchY - e.touches[0].clientY;
+            if(Math.abs(dy) >= 6) go(e, dy > 0);
         };
         const keydown = (e: KeyboardEvent) => {
-            if(!waiting() || isTextField(e.target) || !['ArrowDown', 'PageDown', ' ', 'End'].includes(e.key)) return;
+            if(isTextField(e.target)) return;
             if(e.key === ' ' && (e.target as HTMLElement | null)?.closest?.('a, button')) return;
-            e.preventDefault();
-            open();
+            if(['ArrowDown', 'PageDown', ' ', 'End'].includes(e.key)) go(e, true);
+            else if(['ArrowUp', 'PageUp', 'Home'].includes(e.key)) go(e, false);
         };
         window.addEventListener('wheel', wheel, { passive: false });
         window.addEventListener('touchstart', touchstart, { passive: true });
@@ -151,6 +186,7 @@
             window.removeEventListener('touchstart', touchstart);
             window.removeEventListener('touchmove', touchmove);
             window.removeEventListener('keydown', keydown);
+            cancelAnimationFrame(frame);
         };
     });
 

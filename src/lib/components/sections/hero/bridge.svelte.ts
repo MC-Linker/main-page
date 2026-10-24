@@ -101,6 +101,8 @@ export class Bridge {
     private lineId = 1;
     private messageId = 1;
     private scriptRunning = false;
+    /** While true, the script waits before its next step (the hero's intro is showing). */
+    paused = false;
 
     mcLine(text: string) {
         this.mc.push({ id: this.lineId++, text });
@@ -473,6 +475,7 @@ export class Bridge {
         ];
         for(const [wait, step] of steps) {
             await sleep(wait);
+            while(this.paused) await sleep(200);
             await step();
         }
     }

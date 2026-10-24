@@ -129,15 +129,16 @@
     <OreDropdown id="nav-links" bind:open align="right" size="sm" tone="dark" class="links">
         <span class="wide-only">Links</span><span class="narrow-only">Menu</span>
         {#snippet popup()}
-            <div class="group" class:narrow-only={onHome}>
-                <p class="group-title ore-text">{onHome ? 'This page' : 'Home page'}</p>
+            <!-- On phones the home page lists its sections here too. Other pages only have the links. -->
+            {#if onHome}<div class="group narrow-only">
+                <p class="group-title ore-text">This page</p>
                 {#each homeSections as s, i (s.id)}
-                    <OreMenuRow title={s.name} subtitle={s.title} href={sectionHref(s.id)} selected={onHome && i === current} current="location" chevron={false}>
+                    <OreMenuRow title={s.name} subtitle={s.title} href={sectionHref(s.id)} selected={i === current} current="location" chevron={false}>
                         {#snippet icon()}<McItemIcon icon={s.icon} size="1.75rem" />{/snippet}
                     </OreMenuRow>
                 {/each}
                 <p class="group-title ore-text">Links</p>
-            </div>
+            </div>{/if}
             {#each siteLinks as l (l.name)}
                 <OreMenuRow title={l.title} subtitle={l.hint} href={l.href} external={l.newTab} selected={page.url.pathname === l.href} chevron={!l.newTab}>
                     {#snippet icon()}<McItemIcon icon={l.icon} glint={l.cta} size="1.75rem" />{/snippet}

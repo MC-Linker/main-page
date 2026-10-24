@@ -54,3 +54,12 @@ export const craftingTable: Sprite = {
     rows: ['oooooooooo', 'otTttTttTo', 'oTTTTTTTTo', 'otTttTttTo', 'oTTTTTTTTo', 'osSssssSso', 'osSssssSso', 'osSsWWsSso', 'osSssssSso', 'oooooooooo'],
     palette: { o: '#3b2611', t: '#c49a62', T: '#8a6a3d', s: '#9c6f3e', S: '#6e4b28', W: '#cfcfcf' },
 };
+
+/** The GitHub mark: the Octocat in a white circle, for the open source code. */
+export const githubBlock: Sprite = {
+    rows: [
+        '....oooooo....', '..oowwwwwwoo..', '.owwDwwwwDwwo.', '.owwDDDDDDwwo.', 'owwDDDDDDDDwwo', 'owwDDDDDDDDwwo', 'owwDDDDDDDDwwo',
+        'owwwDDDDDDwwwo', 'owDwwDDDDwwwwo', '.owDDDDDDwwwo.', '.owwwDDDDwwwo.', '..oowDDDDwoo..', '....oDDDDo....', '.....oooo.....',
+    ],
+    palette: { o: '#24292f', D: '#24292f', w: '#ffffff' },
+};

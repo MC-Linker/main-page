@@ -1,5 +1,5 @@
 import type { ItemIcon } from '$lib/mc/item';
-import { book, chest, craftingTable, discordBlock, emerald, heart, letter, map } from '$lib/pixel/items';
+import { book, chest, craftingTable, githubBlock, heart, letter, map } from '$lib/pixel/items';
 import { links } from './links';
 
 /** The header's section tabs: sections of the home page. Keep in sync with routes/+page.svelte. */
@@ -16,10 +16,9 @@ export const homeSections: HomeSection[] = [
 export type SiteLink = { name: string; title: string; hint: string; href: string; icon: ItemIcon; newTab?: boolean; cta?: boolean };
 
 export const siteLinks: SiteLink[] = [
-    { name: 'Add bot', title: 'Add to Discord', hint: 'Opens Discord in a new tab', href: links.invite, icon: { sprite: discordBlock }, newTab: true, cta: true },
-    { name: 'Plugin', title: 'Get the plugin', hint: 'Opens Modrinth in a new tab', href: links.plugin.modrinth, icon: { sprite: emerald }, newTab: true },
     { name: 'Guide', title: 'Guide', hint: 'Opens the guide in a new tab', href: links.guide, icon: { sprite: map }, newTab: true },
     { name: 'Support', title: 'Support server', hint: 'Opens Discord in a new tab', href: links.support, icon: { sprite: letter }, newTab: true },
+    { name: 'GitHub', title: 'GitHub', hint: 'MC Linker is completely open source', href: links.socials.github, icon: { sprite: githubBlock }, newTab: true },
     { name: 'Donate', title: 'Donate', hint: 'Opens GitHub Sponsors in a new tab', href: links.donate, icon: { sprite: heart }, newTab: true },
     { name: 'Team', title: 'Meet the team', hint: 'The people behind MC Linker', href: links.pages.team, icon: { head: 'lianecx' } },
 ];

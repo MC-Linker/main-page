@@ -7,7 +7,6 @@
 
     // Picking the server software from a server list, like the Servers tab of the game's Play screen.
     let platform = $state(platforms[0].id);
-    const current = $derived(platforms.find(p => p.id === platform)!);
     let list: HTMLElement;
 
     // The list works like one control: arrow keys move the choice (and focus) up and down.
@@ -45,31 +44,40 @@
             </div>
         </div>
 
+        <!-- Every platform's downloads share one grid cell and only the chosen one shows, so switching never changes the step's height. -->
         <div class="downloads">
-            <p class="label ore-text">Download for {current.name}</p>
-            <div class="buttons">
-                {#each current.downloads as d (d.name)}
-                    <OreButton
-                        href={d.href} external disabled={d.disabled}
-                        variant={d.recommended ? 'primary' : 'secondary'} hero={d.recommended} size={d.recommended ? 'lg' : 'md'}
-                        badge={d.disabled ? 'Coming soon' : d.recommended ? 'Recommended' : undefined}
-                        class={d.recommended ? 'wide' : ''}
-                    >
-                        {#if d.brand}<BrandIcon brand={d.brand} size="1.1em" />{/if}{d.name}
-                    </OreButton>
-                {/each}
-            </div>
-            <p class="drop">Drop the file into your <code class="ore-tag">{current.folder}/</code> folder, then restart the server.</p>
-            <ul class="notes">
-                {#if current.alsoWorksOn}<li>Also works on {current.alsoWorksOn}.</li>{/if}
-                {#each platformNotes as n (n)}<li>{n}</li>{/each}
-            </ul>
+            {#each platforms as p (p.id)}
+                {@const on = platform === p.id}
+                <div class="dl" class:on aria-hidden={!on} inert={!on}>
+                    <p class="label ore-text">Download for {p.name}</p>
+                    <div class="buttons">
+                        {#each p.downloads as d (d.name)}
+                            <OreButton
+                                href={d.href} external disabled={d.disabled}
+                                variant={d.recommended ? 'primary' : 'secondary'} hero={d.recommended} size={d.recommended ? 'lg' : 'md'}
+                                badge={d.disabled ? 'Coming soon' : d.recommended ? 'Recommended' : undefined}
+                                class={d.recommended ? 'wide' : ''}
+                            >
+                                {#if d.brand}<BrandIcon brand={d.brand} size="1.1em" />{/if}{d.name}
+                            </OreButton>
+                        {/each}
+                    </div>
+                    <p class="drop">Drop the file into your <code class="ore-tag">{p.folder}/</code> folder, then restart the server.</p>
+                    <ul class="notes">
+                        {#if p.alsoWorksOn}<li>Also works on {p.alsoWorksOn}.</li>{/if}
+                        {#each platformNotes as n (n)}<li>{n}</li>{/each}
+                    </ul>
+                </div>
+            {/each}
         </div>
     </div>
 </StepCard>
 
 <style>
     .split { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 1.5rem 2rem; }
+    .downloads { display: grid; }
+    .dl { grid-area: 1 / 1; min-width: 0; }
+    .dl:not(.on) { visibility: hidden; }
     .label { margin: 0 0 0.6rem; font-size: 0.95rem; color: var(--color-ore-white); }
     /* ── The server list ─────────────────────────────────────────────── */
     .servers { align-self: start; }

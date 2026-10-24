@@ -93,6 +93,7 @@
         embeds: [{ ...embedStyle.success, title: 'Disconnected From Plugin', description: 'The plugin connection was successfully disconnected.' }],
     };
     const dcMessages = { waiting: verification, linked, disconnected };
+    const phases: Phase[] = ['waiting', 'linked', 'disconnected'];
     const mcLines = [
         { id: 1, text: '&eAttempting to connect to the Discord bot...' },
         { id: 2, text: '&aSuccessfully connected to Discord!' },
@@ -108,7 +109,11 @@
     <div class="sides">
         <div class="side" bind:this={dcSide}>
             <DcWindow channel="general">
-                <discord-messages no-background>
+                <!-- All three replies sit in one cell, the hidden ones only holding its height, so the step keeps the tallest one's size. -->
+                <discord-messages no-background class="stack">
+                    {#each phases as p (p)}
+                        <div class="sizer" aria-hidden="true"><DcMessage msg={dcMessages[p]} /></div>
+                    {/each}
                     {#key phase}
                         <div in:fly={{ y: 8, duration: 200 }}>
                             <DcMessage msg={dcMessages[phase]} />
@@ -119,8 +124,15 @@
         </div>
         <div class="side" bind:this={mcSide}>
             <div class="console" aria-label="Minecraft chat">
-                <McChat lines={shownMcLines} />
-                <div class="fake-input ore-field">{typed || ' '}{#if typed}<i class="caret"></i>{/if}</div>
+                <div class="stack lines">
+                    <div class="sizer" aria-hidden="true"><McChat lines={mcLines} /></div>
+                    <McChat lines={shownMcLines} />
+                </div>
+                <!-- The full code, hidden, keeps the chat bar as tall as it gets once the code is typed in. -->
+                <div class="fake-input ore-field stack">
+                    <span class="sizer" aria-hidden="true">{code}<i class="caret"></i></span>
+                    <span>{typed || ' '}{#if typed}<i class="caret"></i>{/if}</span>
+                </div>
             </div>
         </div>
     </div>
@@ -130,6 +142,11 @@
     .intro { margin: 0 0 1.25rem; color: var(--color-ore-white); line-height: 1.6; }
     .sides { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; align-items: start; }
     .side { min-width: 0; }
+    /* Children share one grid cell, so the cell is as tall as the tallest of them. */
+    .stack { display: grid; }
+    .stack > :global(*) { grid-area: 1 / 1; min-width: 0; margin: 0; }
+    .stack > .sizer { visibility: hidden; }
+    .lines { align-items: end; }
     /* Minecraft's chat over a dark night sky, with the chat bar the code gets typed into. */
     .console {
         display: flex; flex-direction: column; justify-content: flex-end; gap: 0.5rem; min-height: 12rem; padding: 0.9rem;

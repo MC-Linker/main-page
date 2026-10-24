@@ -283,10 +283,11 @@
     /* ── The selected feature ──────────────────────────────────────────── */
     .detail-cell { display: grid; }
     .detail-cell > * { grid-area: 1 / 1; min-width: 0; }
+    /* The hidden copies only hold the cell's height; the shown panel keeps its own size. */
     .sizer { visibility: hidden; }
-    .detail { display: flex; flex-direction: column; padding: 1.25rem 1.25rem calc(1.25rem + 3 * var(--t)); scroll-margin-top: 1rem; }
-    /* The guide link sits at the bottom of the panel, however short this feature's preview is. */
-    .detail :global(.guide) { margin-top: auto; align-self: flex-start; }
+    .detail-cell > article { align-self: start; }
+    .detail { padding: 1.25rem 1.25rem calc(1.25rem + 3 * var(--t)); scroll-margin-top: 1rem; }
+    .detail :global(.guide) { margin-top: 0.25rem; }
     .d-head { display: flex; align-items: center; gap: 1rem; }
     /* The item in an inventory slot. */
     h3 { margin: 0; font-size: 1.5rem; line-height: 1.2; }

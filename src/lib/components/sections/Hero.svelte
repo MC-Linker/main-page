@@ -30,7 +30,10 @@
     let dcEnd: HTMLElement;
     let mcChat: McChat;
     let channel: DemoChannel;
+    let introLogo: HTMLElement;
     let pulsing = $state(false);
+    /** How far the intro's logo moves and scales to land on the chain at the seam. */
+    let flight = $state({ x: 0, y: 0, s: 1 });
     /** 0 = the intro screen, 1 = the split in focus. */
     let p = $state(0);
     let started = false;
@@ -76,7 +79,20 @@
         const r = track.getBoundingClientRect();
         const run = r.height - window.innerHeight;
         p = Math.min(1, Math.max(0, -r.top / (run * 0.85)));
+        if(p < 1) measure();
         if(p > 0.5) start();
+    }
+
+    /** Where the chain is, relative to the intro logo's own place (offsets ignore its transform). */
+    function measure() {
+        if(!introLogo || !logo || !stage) return;
+        const box = stage.getBoundingClientRect();
+        const chain = logo.getBoundingClientRect();
+        flight = {
+            x: chain.left - box.left - introLogo.offsetLeft,
+            y: chain.top - box.top - introLogo.offsetTop,
+            s: chain.width / introLogo.offsetWidth,
+        };
     }
 
     /** "Try it live": scroll down to where the split is fully open. */
@@ -129,20 +145,24 @@
     </div>
 
     <!-- ── The seam: the chain joining both worlds. Messages pass through it. ── -->
-    <div class="seam">
-        <span class="chain" class:pulsing bind:this={logo}><img src="/logo-outlined.svg" alt="" width="1006" height="518" /></span>
+    <div class="seam" class:landed={p >= 1}>
+        <span class="chain" class:pulsing bind:this={logo}><img src="/logo-outlined.svg" alt="" width="1006" height="532" /></span>
     </div>
 
     <!-- ── Intro screen: over the split, out of focus, until you scroll ── -->
     {#if p < 1}<div class="veil"></div>{/if}
-        <div class="intro" style:opacity={1 - Math.min(1, q * 2.5)} style:pointer-events={p > 0.4 ? 'none' : 'auto'}>
-            <img class="intro-logo" src="/logo-outlined.svg" alt="MC Linker" width="1006" height="518" />
+        <div class="intro" style:pointer-events={p > 0.4 ? 'none' : 'auto'}>
+            <!-- Flies down into the seam as you scroll, and becomes the chain between the chats. -->
+            <img class="intro-logo" class:landed={p >= 1} bind:this={introLogo} src="/logo-outlined.svg" alt="MC Linker" width="1006" height="532"
+                style:transform="translate({flight.x * q}px, {flight.y * q}px) scale({1 + (flight.s - 1) * q})" />
+            <div class="intro-text" style:opacity={1 - Math.min(1, q * 2.5)}>
             <p class="eyebrow mc-text">Minecraft <span>⇄</span> Discord</p>
             <p class="headline ore-title">The easiest<br /><span class="nowrap">Minecraft–Discord</span> link.</p>
             <p class="sub">Chat both ways, run commands, see stats and inventories. One plugin, one slash command, no config files.</p>
             <div class="ctas">
                 <OreButton href={links.invite} external variant="discord" hero size="lg"><BrandIcon brand="discord" size="1.15em" /> Add to Discord</OreButton>
-                <OreButton onclick={open} hero size="lg">Try it live ↓</OreButton>
+                <OreButton onclick={open} hero size="lg">▶ Try it live</OreButton>
+            </div>
             </div>
         </div>
 </section>
@@ -176,11 +196,13 @@
     .mc-top { position: absolute; top: 1rem; left: 1.25rem; z-index: 1; display: flex; flex-direction: column; gap: 0.35rem; }
     .mc-logo { width: clamp(9rem, 14vw, 13rem); height: auto; filter: drop-shadow(0 3px 0 rgb(0 0 0 / 0.4)); }
     .server { align-self: flex-start; padding: 0.2rem 0.45rem; background: rgb(0 0 0 / 0.45); font-size: 0.8rem; color: #fff; }
-    .mc-hud { position: absolute; inset: auto 0 0 0; z-index: 1; display: flex; flex-direction: column; gap: 0.75rem; padding: 0 1rem 0.9rem; }
-    .mc-chat { width: min(100%, 36rem); height: min(26rem, calc(100svh - var(--nav-h) - 16rem)); display: flex; flex-direction: column; justify-content: flex-end; }
+    .mc-hud { position: absolute; inset: auto 0 0 0; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 0.9rem; padding: 0 5.5rem 0.9rem; }
+    /* Centred on its side, clear of the chain on the seam. */
+    .mc-chat { width: min(100%, 42rem); height: min(36rem, calc(100svh - var(--nav-h) - 13rem)); display: flex; flex-direction: column; justify-content: flex-end; }
+    .mc-chat :global(.chat) { font-size: 1.15rem; }
     .mc-chat :global(.chat) { flex: 1; min-height: 0; justify-content: flex-end; }
     .mc-chat :global(.lines) { flex: 1; min-height: 0; overflow: hidden; }
-    .hotbar { align-self: center; display: flex; padding: 3px; background: rgb(0 0 0 / 0.55); border: 2px solid #1e1e1f; }
+    .hotbar { display: flex; padding: 3px; background: rgb(0 0 0 / 0.55); border: 2px solid #1e1e1f; }
     .slot { display: grid; place-items: center; width: clamp(2.1rem, 3.2vw, 2.9rem); aspect-ratio: 1; border: 2px solid #8b8b8b; border-right-color: #373737; border-bottom-color: #373737; background: rgb(139 139 139 / 0.35); }
     .slot.sel { outline: 3px solid #fff; outline-offset: -1px; position: relative; z-index: 1; }
     .slot img { width: 70%; image-rendering: pixelated; }
@@ -200,7 +222,8 @@
     .dc-main { flex: 1; display: flex; min-width: 0; min-height: 0; }
     .dc-main :global(.window) { border-radius: 0; box-shadow: none; }
     /* Keep the messages clear of the chain on the seam. */
-    .dc-main :global(.content), .dc-main :global(.footer) { padding-left: 5.25rem; }
+    /* The messages in a centred column, clear of the chain on the seam. */
+    .dc-main :global(.content), .dc-main :global(.footer) { padding-inline: max(5.5rem, calc((100% - 46rem) / 2)); }
 
     /* ── The seam ── */
     .split::after { content: ''; position: absolute; inset: 0 auto 0 50%; width: 4px; margin-left: -2px; background: #000; z-index: 2; pointer-events: none; }
@@ -209,7 +232,7 @@
     .chain img { width: 100%; height: auto; transition: transform 0.25s cubic-bezier(.3, 1.6, .5, 1); }
     .chain.pulsing img { transform: scale(1.14) rotate(-10deg); }
     @keyframes bob { 50% { transform: translateY(-4px); } }
-    .seam { opacity: calc((var(--q) - 0.6) * 2.5); }
+    .seam:not(.landed) { visibility: hidden; }
 
     /* The message in flight (see hero/packet.ts). */
     .split :global(.packet) {
@@ -227,7 +250,9 @@
     }
     /* The logo, big, with a black outline and shadow traced along its shapes (logo-outlined.svg),
        so it stands out from both worlds. */
-    .intro-logo { position: relative; display: block; width: clamp(11rem, 20vw, 17rem); height: auto; }
+    .intro-logo { position: relative; z-index: 1; display: block; width: clamp(11rem, 20vw, 17rem); height: auto; transform-origin: 0 0; will-change: transform; }
+    .intro-logo.landed { visibility: hidden; }
+    .intro-text { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
     .eyebrow { margin: 0; font-size: 1rem; color: var(--color-mc-yellow); text-shadow: 0.12em 0.12em 0 #3f3f00; }
     .eyebrow span { color: #fff; }
     .nowrap { white-space: nowrap; }
@@ -238,7 +263,7 @@
     /* ── Phones: Minecraft on top, Discord below, the chain on the seam between ── */
     @media (max-width: 760px) {
         .titlebar { display: none; }
-        .dc-main :global(.content), .dc-main :global(.footer) { padding-left: 1rem; }
+        .dc-main :global(.content), .dc-main :global(.footer) { padding-inline: 1rem; }
         .split { grid-template-columns: minmax(0, 1fr); grid-template-rows: 44fr 56fr; min-height: 0; }
         .split::after { inset: 44% 0 auto 0; width: auto; height: 4px; margin: -2px 0 0; }
         .seam { top: 44%; }
@@ -247,6 +272,8 @@
         .mc-top { top: 2.4rem; left: 0.75rem; }
         .mc-logo { width: 7rem; }
         .mc-hud { padding: 0 0.5rem 1.4rem; gap: 0.4rem; }
+        .mc-chat :global(.chat) { font-size: 1rem; }
+        .mc-chat { width: 100%; }
         .mc-chat { height: auto; max-height: calc(44svh - 6rem); }
         .hotbar { display: none; }
         .headline { font-size: 2rem; }

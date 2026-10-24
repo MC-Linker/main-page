@@ -17,7 +17,7 @@
         <div class="body">
             <p>Add the bot, install the plugin, run <code class="ore-tag">/connect</code>. It's free, and it takes about a minute.</p>
             <div class="buttons">
-                <OreButton href="#install" hero size="lg">Get the Plugin</OreButton>
+                <OreButton href="#install" hero size="lg">Get the Plugin<span class="up" aria-hidden="true"></span></OreButton>
                 <OreButton href={links.invite} external variant="discord" hero size="lg"><BrandIcon brand="discord" size="1.15em" /> Add to Discord</OreButton>
             </div>
             <p class="fine ore-text">Paper · Spigot · Fabric · Forge · NeoForge · <a href={links.guide} target="_blank" rel="noopener">Read the guide</a></p>
@@ -26,6 +26,15 @@
 </section>
 
 <style>
+    /* "Get the Plugin" scrolls back up to the setup steps: a pixel arrow pointing up, in the text colour. */
+    .up {
+        display: inline-block;
+        width: 0.5em;
+        height: 0.6em;
+        margin-left: -0.25em;
+        background: currentColor;
+        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 5 6' shape-rendering='crispEdges'%3E%3Cpath d='M2 0h1v6H2zM1 1h1v1H1zM3 1h1v1H3zM0 2h1v1H0zM4 2h1v1H4z'/%3E%3C/svg%3E") center / contain no-repeat;
+    }
     .cta {
         position: relative;
         isolation: isolate;

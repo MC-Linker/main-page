@@ -63,6 +63,8 @@
         if(dx > 0 && canBack) turn(-1);
     }
 
+    const noSelect = (e: MouseEvent) => e.preventDefault();
+
     const sideOf = (i: number): PageSide => (!spread ? 'single' : i === 0 ? 'left' : 'right');
 </script>
 
@@ -92,12 +94,15 @@
             {#if shown.length < perView}<div class="page right blank" aria-hidden="true"></div>{/if}
         </div>
         <!-- The page-turn buttons, in Ore UI style. -->
-        <div class="turn back" class:gone={!canBack}>
+        <!-- Pressing a turn button never selects text, even when clicked fast or once it is hidden. -->
+        <!-- svelte-ignore a11y_no_static_element_interactions -->
+        <div class="turn back" class:gone={!canBack} onmousedown={noSelect}>
             <OreButton variant="secondary" size="sm" onclick={() => turn(-1)} disabled={!canBack} label="Previous page">
                 <span class="chev"><PixelArt sprite={backArrow()} width="100%" /></span>
             </OreButton>
         </div>
-        <div class="turn next" class:gone={!canNext}>
+        <!-- svelte-ignore a11y_no_static_element_interactions -->
+        <div class="turn next" class:gone={!canNext} onmousedown={noSelect}>
             <OreButton variant="secondary" size="sm" onclick={() => turn(1)} disabled={!canNext} label="Next page">
                 <span class="chev"><PixelArt sprite={chevronRight('#000000')} width="100%" /></span>
             </OreButton>
@@ -196,7 +201,11 @@
     .turn { position: absolute; bottom: calc(var(--u) * 8); }
     .turn.back { left: calc(var(--u) * 9); }
     .turn.next { right: calc(var(--u) * 8); }
-    .turn.gone { visibility: hidden; }
+    /* At the first or last page the button stays in place, just invisible and inert,
+       so fast clicks land on it rather than on the page text behind. */
+    .turn { user-select: none; transition: opacity 0.15s; }
+    .turn.gone { opacity: 0; }
+    .turn.gone :global(.ore-btn) { pointer-events: none; }
     .turn :global(.ore-btn) { width: 2.75rem; padding-inline: 0; }
     .chev { display: block; width: calc(4 * var(--t)); }
 </style>

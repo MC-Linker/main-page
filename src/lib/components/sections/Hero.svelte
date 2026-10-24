@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { MediaQuery } from 'svelte/reactivity';
-    import { isTextField, reducedMotion } from '$lib/browser';
+    import { isTextField, reducedMotion, scrollBehavior } from '$lib/browser';
     import BrandIcon from '$lib/components/BrandIcon.svelte';
     import { links } from '$lib/data';
     import McChat from '$lib/mc/McChat.svelte';
@@ -128,8 +128,22 @@
     /** Back to the intro, with the demo paused. */
     const close = () => animate(0);
 
+    /** Scrolling back up to the intro (Home in the header): don't count as being past the hero. */
+    let returning = false;
+
+    /** Home, the header's logo or its up arrow: back to the top, and to the intro. */
+    function showIntro() {
+        returning = window.scrollY > 10;
+        close();
+        window.scrollTo({ top: 0, behavior: scrollBehavior() });
+    }
+
     /** Already past the hero (a reload further down, a link to a section): just be open. */
     function onscroll() {
+        if(returning) {
+            if(window.scrollY <= 10) returning = false;
+            return;
+        }
         if(target === 0 && window.scrollY > 10) {
             target = 1;
             cancelAnimationFrame(frame);
@@ -177,6 +191,18 @@
             if(['ArrowDown', 'PageDown', ' ', 'End'].includes(e.key)) go(e, true);
             else if(['ArrowUp', 'PageUp', 'Home'].includes(e.key)) go(e, false);
         };
+        // Links to the top of the page bring the intro back.
+        const click = (e: MouseEvent) => {
+            if(e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+            const a = (e.target as HTMLElement | null)?.closest?.('a[href="#top"], a[href="/#top"]');
+            if(!a) return;
+            e.preventDefault();
+            e.stopPropagation();
+            showIntro();
+        };
+        // Capture: before SvelteKit's router, which handles same-page hash links itself.
+        window.addEventListener('click', click, true);
+        window.addEventListener('show-intro', showIntro);
         window.addEventListener('wheel', wheel, { passive: false });
         window.addEventListener('touchstart', touchstart, { passive: true });
         window.addEventListener('touchmove', touchmove, { passive: false });
@@ -186,6 +212,8 @@
             window.removeEventListener('touchstart', touchstart);
             window.removeEventListener('touchmove', touchmove);
             window.removeEventListener('keydown', keydown);
+            window.removeEventListener('click', click, true);
+            window.removeEventListener('show-intro', showIntro);
             cancelAnimationFrame(frame);
         };
     });
@@ -237,7 +265,7 @@
             <div class="intro-text" style:opacity={1 - Math.min(1, q * 2.5)}>
             <p class="eyebrow mc-text">Minecraft <span>⇄</span> Discord</p>
             <p class="headline ore-title">The easiest<br /><span class="nowrap">Minecraft–Discord</span> link.</p>
-            <p class="sub">Chat both ways, run commands, see stats and inventories. One plugin, one slash command, no config files.</p>
+            <p class="sub">Chat both ways, run commands, see stats and inventories and more.<br />One plugin, one bot, one command to setup.</p>
             <div class="ctas">
                 <OreButton href={links.invite} external variant="discord" hero size="lg"><BrandIcon brand="discord" size="1.15em" /> Add to Discord</OreButton>
                 <OreButton onclick={open} hero size="lg">▶ Try it live</OreButton>

@@ -81,7 +81,9 @@
         if(!Number.isInteger(n) || n < 1 || n > homeSections.length) return;
         e.preventDefault();
         const s = homeSections[n - 1];
-        if(onHome) document.getElementById(s.id)?.scrollIntoView();
+        // The first section is the hero: going there brings back its intro screen (see Hero.svelte).
+        if(onHome && s.id === 'top') window.dispatchEvent(new Event('show-intro'));
+        else if(onHome) document.getElementById(s.id)?.scrollIntoView();
         else void goto(`/#${s.id}`);
     }
 </script>

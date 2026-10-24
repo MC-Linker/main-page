@@ -13,7 +13,7 @@
             <p class="tagline">Link your Minecraft server with Discord.</p>
         </div>
         <nav aria-label="Plugin downloads">
-            <h2 class="ore-text">Plugin</h2>
+            <p class="col-label ore-text">Plugin</p>
             <ul>
                 <li><a href={links.plugin.modrinth} target="_blank" rel="noopener"><BrandIcon brand="modrinth" size="1em" /> Modrinth</a></li>
                 <li><a href={links.plugin.hangar} target="_blank" rel="noopener"><BrandIcon brand="hangar" size="1em" /> Hangar</a></li>
@@ -22,14 +22,14 @@
             </ul>
         </nav>
         <nav aria-label="Mod downloads">
-            <h2 class="ore-text">Mods</h2>
+            <p class="col-label ore-text">Mods</p>
             <ul>
                 <li><a href={links.plugin.modrinth} target="_blank" rel="noopener"><BrandIcon brand="modrinth" size="1em" /> Modrinth</a></li>
                 <li><a href={links.plugin.curseforgeMods} target="_blank" rel="noopener"><BrandIcon brand="curseforge" size="1em" /> CurseForge</a></li>
             </ul>
         </nav>
         <nav aria-label="Community">
-            <h2 class="ore-text">Community</h2>
+            <p class="col-label ore-text">Community</p>
             <ul>
                 <li><a href={links.support} target="_blank" rel="noopener"><BrandIcon brand="discord" size="1em" /> Support server</a></li>
                 <li><a href={links.socials.github} target="_blank" rel="noopener"><BrandIcon brand="github" size="1em" /> GitHub</a></li>
@@ -39,7 +39,7 @@
             </ul>
         </nav>
         <nav aria-label="More">
-            <h2 class="ore-text">More</h2>
+            <p class="col-label ore-text">More</p>
             <ul>
                 <li><a href={links.guide} target="_blank" rel="noopener">Guide</a></li>
                 <li><a href={links.pages.team}>Meet the team</a></li>
@@ -58,7 +58,7 @@
     .brand { flex: 1 1 14rem; }
     .brand img { display: block; width: 10.5rem; height: auto; }
     .tagline { margin: 0.75rem 0 0; color: var(--color-ore-white); }
-    h2 { margin: 0 0 0.75rem; font-size: 0.9rem; font-weight: 400; color: var(--color-mc-gray); }
+    .col-label { margin: 0 0 0.75rem; font-size: 0.9rem; font-weight: 400; color: var(--color-mc-gray); }
     ul { display: flex; flex-direction: column; gap: 0.45rem; margin: 0; padding: 0; list-style: none; }
     a { display: inline-flex; align-items: center; gap: 0.45rem; color: var(--color-ore-white); text-decoration: none; }
     a:hover { color: #fff; text-decoration: underline; }

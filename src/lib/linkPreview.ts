@@ -85,3 +85,25 @@ export function embedScript(embed: ComponentEmbed): string {
     if(bytes > 3000) throw new Error(`Component embed is ${bytes} bytes, Discord allows 3000`);
     return `<script id="discord:component-embed" type="application/json">${json}</script>`;
 }
+
+/** Structured data for search engines on the home page: the site, who makes it, and the app itself. */
+export function homeJsonLd(): string {
+    const org = `${site.url}/#org`;
+    const data = {
+        '@context': 'https://schema.org',
+        '@graph': [
+            { '@type': 'WebSite', '@id': `${site.url}/#website`, name: site.name, url: `${site.url}/`, publisher: { '@id': org } },
+            {
+                '@type': 'Organization', '@id': org, name: site.name, url: `${site.url}/`, logo: absolute('/logo.png'),
+                sameAs: [links.socials.github, links.socials.youtube, links.socials.topgg, links.plugin.modrinth],
+            },
+            {
+                '@type': 'SoftwareApplication', name: site.name, url: `${site.url}/`, description: site.description,
+                applicationCategory: 'GameApplication', operatingSystem: 'Discord, Minecraft Java server',
+                image: absolute('/logo.png'), publisher: { '@id': org },
+                offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+            },
+        ],
+    };
+    return `<script type="application/ld+json">${JSON.stringify(data).replace(/</g, '\\u003c')}</script>`;
+}

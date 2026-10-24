@@ -11,12 +11,15 @@
 </script>
 
 <svelte:head>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={absolute(path)} />
     <meta property="og:site_name" content={site.name} />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={absolute(image)} />
     <meta property="og:url" content={absolute(path)} />
+    <meta property="og:locale" content="en_US" />
     <meta name="twitter:card" content="summary" />
     {#if embed}{@html embedScript(embed)}{/if}
 </svelte:head>

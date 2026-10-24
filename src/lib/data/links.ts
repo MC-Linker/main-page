@@ -1,7 +1,7 @@
 const guideBase = 'https://guide.mclinker.com';
 
 /** Builds a link into the guide. `path` is relative to the guide root, e.g. `features/chat-bridge`. */
-export const guide = (path = '') => `${guideBase}/${path ? `guide/${path}.html` : ''}`;
+export const guide = (path = '') => `${guideBase}/${path ? `guide/${path}` : ''}`;
 
 export const links = {
     invite: 'https://discord.com/api/oauth2/authorize?client_id=712759741528408064',

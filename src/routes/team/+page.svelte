@@ -17,7 +17,6 @@
 
 <svelte:head>
     <title>The team · MC Linker</title>
-    <meta name="description" content="The people who build MC Linker." />
 </svelte:head>
 <LinkPreview title="The team · MC Linker" description="The people who build MC Linker." path="/team" embed={teamEmbed()} />
 
@@ -51,10 +50,10 @@
     <header class="head">
         <McWorld class="world" tile={30} hills blur={3} />
         <div class="ore-card raised title-card">
-            <h1 id="team-title" class="title">
-                <img class="logo" src="/the-team.png" alt="The Team" width="1270" height="261" />
+            <div class="title">
+                <h1 id="team-title"><img class="logo" src="/the-team.png" alt="The Team" width="1270" height="261" /></h1>
                 <span class="splash mc-text" aria-hidden="true">{splash}</span>
-            </h1>
+            </div>
             <hr class="ore-divider" />
             <p class="edition mojang">The people behind <span class="brand">MC Linker</span></p>
             <p class="lead">A small crew who like Minecraft, Discord and building things that link the two.</p>
@@ -103,7 +102,8 @@
         text-align: center;
         backdrop-filter: blur(6px);
     }
-    .title { position: relative; margin: 0 0 1.5rem; font-weight: 400; line-height: 1; }
+    .title { position: relative; margin: 0 0 1.5rem; line-height: 1; }
+    .title h1 { margin: 0; font-weight: 400; line-height: 1; }
     .logo { display: block; width: 100%; height: auto; filter: drop-shadow(0 3px 0 rgb(0 0 0 / 0.35)); }
     /* The yellow splash text on the logo's corner, like in the game. */
     .splash {

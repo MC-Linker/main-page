@@ -6,10 +6,11 @@
     import Hero from '$lib/components/sections/Hero.svelte';
     import Setup from '$lib/components/sections/Setup.svelte';
     import { site } from '$lib/data';
-    import { homeEmbed } from '$lib/linkPreview';
+    import { homeEmbed, homeJsonLd } from '$lib/linkPreview';
 </script>
 
 <LinkPreview title={site.name} description={site.description} path="/" embed={homeEmbed()} />
+<svelte:head>{@html homeJsonLd()}</svelte:head>
 
 <!-- The sections, top to bottom. The header bar links to them by id (see data/navigation.ts). -->
 <Hero />

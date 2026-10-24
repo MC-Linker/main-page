@@ -12,7 +12,6 @@
 
 <svelte:head>
     <title>{title} · MC Linker</title>
-    <meta name="description" content={description} />
 </svelte:head>
 
 <!-- An Ore UI screen: the header bar shows the trail, the text sits on a panel. -->

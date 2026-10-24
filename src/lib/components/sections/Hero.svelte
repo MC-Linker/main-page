@@ -166,16 +166,15 @@
         <span class="chain" class:pulsing bind:this={logo}><img src="/logo-outlined.svg" alt="" width="1006" height="532" /></span>
     </div>
 
-    <!-- ── Intro screen: over the split, out of focus, until it opens. A tap on it (not its buttons) opens it too. ── -->
+    <!-- ── Intro screen: over the split, out of focus, until it opens. A tap on its empty background opens it too. ── -->
     {#if p < 1}<div class="veil"></div>{/if}
         <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions (keyboard: Try it live, or a scroll key) -->
-        <div class="intro" style:pointer-events={p > 0.4 ? 'none' : 'auto'} onclick={e => !(e.target as HTMLElement).closest('a, button') && open()}>
+        <div class="intro" style:pointer-events={p > 0.4 ? 'none' : 'auto'} onclick={e => e.target === e.currentTarget && open()}>
             <!-- Flies down into the seam as it opens, and becomes the chain between the chats. -->
             <img class="intro-logo" class:landed={p >= 1} bind:this={introLogo} src="/logo-outlined.svg" alt="MC Linker" width="1006" height="532"
                 style:transform="translate({flight.x * q}px, {flight.y * q}px) scale({1 + (flight.s - 1) * q})" />
             <div class="intro-text" style:opacity={1 - Math.min(1, q * 2.5)}>
-            <p class="eyebrow mc-text">Minecraft <span>⇄</span> Discord</p>
-            <p class="headline ore-title">The easiest<br /><span class="nowrap">Minecraft–Discord</span> link.</p>
+            <p class="headline ore-title">The easiest<br /><span class="worlds">Minecraft <span class="arrows">⇄</span> Discord</span> link.</p>
             <p class="sub">Chat both ways, run commands, see stats and inventories and more.<br />One plugin, one bot, one command to setup.</p>
             <div class="ctas">
                 <OreButton href={links.invite} external variant="discord" hero size="lg"><BrandIcon brand="discord" size="1.15em" /> Add to Discord</OreButton>
@@ -272,9 +271,11 @@
     .intro-logo { position: relative; z-index: 1; display: block; width: clamp(11rem, 20vw, 17rem); height: auto; transform-origin: 0 0; will-change: transform; }
     .intro-logo.landed { visibility: hidden; }
     .intro-text { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
-    .eyebrow { margin: 0; font-size: 1rem; color: var(--color-mc-yellow); text-shadow: 0.12em 0.12em 0 #3f3f00; }
-    .eyebrow span { color: #fff; }
-    .nowrap { white-space: nowrap; }
+    /* The two worlds in the game's yellow, like a splash text. */
+    .worlds { white-space: nowrap; color: var(--color-mc-yellow); text-shadow: 0.08em 0.08em 0 #3f3f00; }
+    .worlds .arrows { color: #fff; text-shadow: 0.08em 0.08em 0 rgb(0 0 0 / 0.6); }
+    /* Only the empty background opens the split; the text stays selectable. */
+    .intro > :global(*) { cursor: auto; }
     .headline { margin: 0; font-size: clamp(2rem, 4.4vw, 3.6rem); line-height: 1.1; color: #fff; text-shadow: 0.08em 0.08em 0 rgb(0 0 0 / 0.6); text-wrap: balance; }
     .sub { max-width: 34rem; margin: 0; font-size: 1.05rem; line-height: 1.55; color: var(--color-ore-white); text-wrap: balance; }
     .ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; margin-top: 0.5rem; }

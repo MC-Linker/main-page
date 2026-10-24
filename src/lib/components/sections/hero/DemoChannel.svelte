@@ -81,6 +81,8 @@
         flex: 1;
         min-height: 10rem;
         height: 0;
+        /* Room between the last message and the message box, like Discord's. */
+        padding-bottom: 1.25rem;
         overflow-y: auto;
         overscroll-behavior: contain;
         scrollbar-width: thin;

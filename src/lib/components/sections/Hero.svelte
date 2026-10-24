@@ -7,7 +7,7 @@
     import McChat from '$lib/mc/McChat.svelte';
     import McWorld from '$lib/mc/McWorld.svelte';
     import GrassBlock from '$lib/pixel/GrassBlock.svelte';
-    import { Bridge, type Direction } from './hero/bridge.svelte';
+    import { Bridge, type Direction, mcCommands } from './hero/bridge.svelte';
     import DemoChannel from './hero/DemoChannel.svelte';
     import { flyPacket } from './hero/packet';
 
@@ -117,7 +117,7 @@
             </div>
             <div class="p-body mc-body">
                 <div class="mc-chat" bind:this={mcEnd}>
-                    <McChat bind:this={mcChat} lines={bridge.mc} max={40} onsubmit={fromMinecraft} label="Minecraft chat (demo)" placeholder={keyboard.current ? 'Press T to chat' : 'Tap to chat'} />
+                    <McChat bind:this={mcChat} commands={mcCommands} lines={bridge.mc} max={40} onsubmit={fromMinecraft} label="Minecraft chat (demo)" placeholder={keyboard.current ? 'Press T to chat' : 'Tap to chat'} />
                 </div>
             </div>
             <p class="hint ore-text">{#if keyboard.current}<kbd>T</kbd> to chat · {/if}try <code>/time set night</code></p>

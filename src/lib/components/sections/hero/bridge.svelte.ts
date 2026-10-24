@@ -1,6 +1,7 @@
 import { sleep } from '$lib/browser';
 import { links } from '$lib/data';
 import { type Author, bot, chatWebhook, colors, type DcMsg, type Embed, embedStyle, type SlashCommand, success, visitor } from '$lib/discord/types';
+import type { CommandTree } from '$lib/mc/suggest';
 import type { McLine } from '$lib/mc/text';
 import type { LookName } from '$lib/pixel/heads';
 
@@ -26,6 +27,22 @@ const members = {
 
 /** The visitor, as the user of a slash command. */
 const you = { user: visitor.name, avatar: visitor.avatar };
+
+const playerNames = (rest: CommandTree = {}): CommandTree => Object.fromEntries(['@s', 'Lianecx', 'Cubey'].map(p => [p, rest]));
+
+/** The commands the demo's Minecraft chat understands, for its suggestions (see runMinecraft and execute). */
+export const mcCommands: CommandTree = {
+    time: { set: { day: {}, noon: {}, night: {}, midnight: {} } },
+    weather: { clear: {}, rain: {}, thunder: {} },
+    gamemode: Object.fromEntries(['survival', 'creative', 'adventure', 'spectator'].map(m => [m, playerNames()])),
+    give: playerNames({ diamond: { '<count>': {} }, golden_apple: { '<count>': {} }, cake: { '<count>': {} } }),
+    say: { '<message>': {} },
+    list: {},
+    dm: { TheAnnoying: { '<message>': {} }, Bnux: { '<message>': {} } },
+    discord: {},
+    verify: {},
+    linker: {},
+};
 
 export const demoCommands: SlashCommand[] = [
     {
@@ -242,14 +259,16 @@ export class Bridge {
 
     private showInfoPage(id: number, page: InfoPage) {
         const pages: Record<InfoPage, { label: string; style?: 'danger'; embed: () => Embed }> = {
-            server: { label: 'Server Information', embed: () => this.serverEmbed() },
+            server: { label: 'General Information', embed: () => this.serverEmbed() },
             world: { label: 'World Information', embed: () => this.worldEmbed() },
             admin: { label: 'Admin Information', style: 'danger', embed: () => this.adminEmbed() },
         };
-        const others = (Object.keys(pages) as InfoPage[]).filter(p => p !== page);
+        // Like the real bot (its Pagination helper): all buttons stay, and the open page's turns blurple.
         this.dcEdit(id, {
             embeds: [pages[page].embed()],
-            buttons: others.map(p => ({ label: pages[p].label, style: pages[p].style, onclick: () => this.showInfoPage(id, p) })),
+            buttons: (Object.keys(pages) as InfoPage[]).map(p => ({
+                label: pages[p].label, style: p === page ? 'primary' : pages[p].style, onclick: () => this.showInfoPage(id, p),
+            })),
         });
     }
 

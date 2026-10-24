@@ -28,7 +28,7 @@
         <p class="answer">{@html faq[p.index].a}</p>
     {:else}
         <h3 class="bold">More answers</h3>
-        <p class="answer">The guide has a longer <a href={guide('help/faq')}>FAQ</a> and a <a href={guide('help/troubleshooting')}>troubleshooting</a> page for when something doesn't work.</p>
+        <p class="answer">The guide has a longer <a href={guide('help/faq')} target="_blank" rel="noopener">FAQ</a> and a <a href={guide('help/troubleshooting')} target="_blank" rel="noopener">troubleshooting</a> page for when something doesn't work.</p>
         <p class="answer">Thanks for reading!</p>
         <p class="sign">- <a class="team" href="/team" target="_blank">The MC Linker team</a></p>
     {/if}

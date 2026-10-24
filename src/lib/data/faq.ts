@@ -26,6 +26,6 @@ export const faq: Faq[] = [
     },
     {
         q: 'Where do I get help?',
-        a: 'The <a href="https://guide.mclinker.com">guide</a> covers every command, and the team answers questions on the <a href="https://discord.gg/rX36kZUGNK">support server</a>.',
+        a: 'The <a href="https://guide.mclinker.com" target="_blank" rel="noopener">guide</a> covers every command, and the team answers questions on the <a href="https://discord.gg/rX36kZUGNK" target="_blank" rel="noopener">support server</a>.',
     },
 ];

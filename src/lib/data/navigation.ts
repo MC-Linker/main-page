@@ -18,7 +18,7 @@ export type SiteLink = { name: string; title: string; hint: string; href: string
 export const siteLinks: SiteLink[] = [
     { name: 'Add bot', title: 'Add to Discord', hint: 'Opens Discord in a new tab', href: links.invite, icon: { sprite: discordBlock }, newTab: true, cta: true },
     { name: 'Plugin', title: 'Get the plugin', hint: 'Opens Modrinth in a new tab', href: links.plugin.modrinth, icon: { sprite: emerald }, newTab: true },
-    { name: 'Guide', title: 'Guide', hint: 'Every command and setting', href: links.guide, icon: { sprite: map } },
+    { name: 'Guide', title: 'Guide', hint: 'Opens the guide in a new tab', href: links.guide, icon: { sprite: map }, newTab: true },
     { name: 'Support', title: 'Support server', hint: 'Opens Discord in a new tab', href: links.support, icon: { sprite: letter }, newTab: true },
     { name: 'Donate', title: 'Donate', hint: 'Opens GitHub Sponsors in a new tab', href: links.donate, icon: { sprite: heart }, newTab: true },
     { name: 'Team', title: 'Meet the team', hint: 'The people behind MC Linker', href: links.pages.team, icon: { head: 'lianecx' } },

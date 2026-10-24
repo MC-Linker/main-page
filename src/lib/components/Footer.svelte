@@ -15,33 +15,33 @@
         <nav aria-label="Plugin downloads">
             <h2 class="ore-text">Plugin</h2>
             <ul>
-                <li><a href={links.plugin.modrinth}><BrandIcon brand="modrinth" size="1em" /> Modrinth</a></li>
-                <li><a href={links.plugin.hangar}><BrandIcon brand="hangar" size="1em" /> Hangar</a></li>
-                <li><a href={links.plugin.spigot}><BrandIcon brand="spigot" size="1em" /> SpigotMC</a></li>
+                <li><a href={links.plugin.modrinth} target="_blank" rel="noopener"><BrandIcon brand="modrinth" size="1em" /> Modrinth</a></li>
+                <li><a href={links.plugin.hangar} target="_blank" rel="noopener"><BrandIcon brand="hangar" size="1em" /> Hangar</a></li>
+                <li><a href={links.plugin.spigot} target="_blank" rel="noopener"><BrandIcon brand="spigot" size="1em" /> SpigotMC</a></li>
                 <li><span class="soon" title="Coming soon"><BrandIcon brand="curseforge" size="1em" /> CurseForge (soon)</span></li>
             </ul>
         </nav>
         <nav aria-label="Mod downloads">
             <h2 class="ore-text">Mods</h2>
             <ul>
-                <li><a href={links.plugin.modrinth}><BrandIcon brand="modrinth" size="1em" /> Modrinth</a></li>
-                <li><a href={links.plugin.curseforgeMods}><BrandIcon brand="curseforge" size="1em" /> CurseForge</a></li>
+                <li><a href={links.plugin.modrinth} target="_blank" rel="noopener"><BrandIcon brand="modrinth" size="1em" /> Modrinth</a></li>
+                <li><a href={links.plugin.curseforgeMods} target="_blank" rel="noopener"><BrandIcon brand="curseforge" size="1em" /> CurseForge</a></li>
             </ul>
         </nav>
         <nav aria-label="Community">
             <h2 class="ore-text">Community</h2>
             <ul>
-                <li><a href={links.support}><BrandIcon brand="discord" size="1em" /> Support server</a></li>
-                <li><a href={links.socials.github}><BrandIcon brand="github" size="1em" /> GitHub</a></li>
-                <li><a href={links.donate}><BrandIcon brand="githubsponsors" size="1em" /> Donate</a></li>
-                <li><a href={links.socials.youtube}><BrandIcon brand="youtube" size="1em" /> YouTube</a></li>
-                <li><a href={links.socials.topgg}><BrandIcon brand="topgg" size="1em" /> Top.gg</a></li>
+                <li><a href={links.support} target="_blank" rel="noopener"><BrandIcon brand="discord" size="1em" /> Support server</a></li>
+                <li><a href={links.socials.github} target="_blank" rel="noopener"><BrandIcon brand="github" size="1em" /> GitHub</a></li>
+                <li><a href={links.donate} target="_blank" rel="noopener"><BrandIcon brand="githubsponsors" size="1em" /> Donate</a></li>
+                <li><a href={links.socials.youtube} target="_blank" rel="noopener"><BrandIcon brand="youtube" size="1em" /> YouTube</a></li>
+                <li><a href={links.socials.topgg} target="_blank" rel="noopener"><BrandIcon brand="topgg" size="1em" /> Top.gg</a></li>
             </ul>
         </nav>
         <nav aria-label="More">
             <h2 class="ore-text">More</h2>
             <ul>
-                <li><a href={links.guide}>Guide</a></li>
+                <li><a href={links.guide} target="_blank" rel="noopener">Guide</a></li>
                 <li><a href={links.pages.team}>Meet the team</a></li>
                 <li><a href={links.pages.terms}>Terms of Service</a></li>
                 <li><a href={links.pages.privacy}>Privacy Policy</a></li>

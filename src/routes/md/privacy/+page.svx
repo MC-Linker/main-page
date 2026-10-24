@@ -128,4 +128,4 @@ privacy policies. Any data collected through these third-party websites is separ
 If you have any questions about this Privacy Policy, you can contact us:
 
 - By email: [info@mclinker.com](mailto:info@mclinker.com)
-- Support Discord Server: [MC Linker Hub](https://discord.gg/rX36kZUGNK)
+- Support Discord Server: <a href="https://discord.gg/rX36kZUGNK" target="_blank" rel="noopener">MC Linker Hub</a>

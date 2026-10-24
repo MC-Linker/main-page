@@ -53,12 +53,27 @@
 
     // Draws the hills with WebGL. The DOM strip stays as the fallback (and the first paint) until it works.
     let gl = $state(false);
+    /** The canvas has faded in fully, so the DOM strip under it can go. */
+    let glDone = $state(false);
     function hillsCanvas(canvas: HTMLCanvasElement) {
         const hills = createHills(canvas, { heights, trees, tree });
         if(!hills) return;
         // Swap the DOM strip for the canvas only once a real frame is drawn: until then (or if the
         // GPU context is lost, e.g. on quick reloads) the canvas can show up blank or white.
-        const lost = (e: Event) => { e.preventDefault(); gl = false; };
+        const lost = (e: Event) => { e.preventDefault(); gl = glDone = false; };
+        let shown = 0;
+        /** Fades the canvas in over the strip a few frames after it first drew, then drops the strip. */
+        const reveal = () => {
+            if(gl || shown) return;
+            let frames = 0;
+            const wait = () => {
+                if(hills.lost()) { shown = 0; return; }
+                if(++frames < 4) { shown = requestAnimationFrame(wait); return; }
+                gl = true;
+                shown = window.setTimeout(() => (glDone = gl), 450);
+            };
+            shown = requestAnimationFrame(wait);
+        };
         canvas.addEventListener('webglcontextlost', lost);
 
         let frame = 0;
@@ -90,7 +105,7 @@
             canvas.width = exact ? box.inlineSize : w;
             canvas.height = exact ? box.blockSize : h;
             render();
-            if(canvas.width && canvas.height && !gl) requestAnimationFrame(() => (gl = !hills.lost()));
+            if(canvas.width && canvas.height) reveal();
         });
         try { resize.observe(canvas, { box: 'device-pixel-content-box' }); }
         catch { resize.observe(canvas); }
@@ -105,6 +120,8 @@
             seen.disconnect();
             motion.removeEventListener('change', update);
             canvas.removeEventListener('webglcontextlost', lost);
+            cancelAnimationFrame(shown);
+            clearTimeout(shown);
             hills.destroy();
         };
     }
@@ -133,7 +150,7 @@
         </div>
     {/if}
     {#if hills}
-        <div class="terrain hill-terrain" class:gl aria-hidden="true" style:--strip={STRIP_BLOCKS}>
+        <div class="terrain hill-terrain" class:gl class:gl-done={glDone} aria-hidden="true" style:--strip={STRIP_BLOCKS}>
             <canvas class="gl" {@attach hillsCanvas}></canvas>
             <div class="strip">
                 {#each [0, 1] as copy (copy)}
@@ -237,10 +254,12 @@
     .tree { position: absolute; bottom: 100%; left: calc(var(--tile) * -0.75); }
     .hill-terrain { height: calc(var(--strip) * var(--tile)); }
     .hill-terrain .strip { position: absolute; left: 0; bottom: 0; }
-    /* Hidden, not display: none, so it has a size to draw at before it is shown. */
-    canvas.gl { position: absolute; inset: 0; width: 100%; height: 100%; visibility: hidden; }
-    .hill-terrain.gl canvas.gl { visibility: visible; }
-    .hill-terrain.gl .strip { display: none; }
+    /* Transparent, not display: none, so it has a size to draw at before it is shown. It fades in
+       over the DOM strip a few frames after its first draw (a fresh WebGL canvas can flash white),
+       and the strip goes once it is fully in. */
+    canvas.gl { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; opacity: 0; transition: opacity 0.4s ease; }
+    .hill-terrain.gl canvas.gl { opacity: 1; }
+    .hill-terrain.gl-done .strip { display: none; }
 
     .rainfall {
         position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0;

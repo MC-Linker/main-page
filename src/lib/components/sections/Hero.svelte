@@ -12,8 +12,8 @@
     import { flyPacket } from './hero/packet';
 
     /*
-     * The hero: a fullscreen split, Minecraft on the left (the game itself: the world,
-     * chat bottom-left, a hotbar) and a Discord channel on the right. An intro screen
+     * The hero: a fullscreen split, Minecraft on the left (the game itself: the world
+     * and its chat) and a Discord channel on the right. An intro screen
      * comes first over the split, out of focus. Try it live, the first scroll or swipe,
      * or a tap on the intro opens it (~1s). Scrolling up at the top closes it again and
      * pauses the demo until it opens.
@@ -190,7 +190,6 @@
         };
     });
 
-    const hotbar = ['iron_sword', 'compass', 'clock', 'writable_book', 'spyglass', 'name_tag', 'emerald', 'oak_sign', 'chain'];
     const ease = (t: number) => t * t * (3 - 2 * t);
     const q = $derived(ease(p));
 </script>
@@ -210,9 +209,6 @@
         <div class="mc-hud">
             <div class="mc-chat" bind:this={mcEnd}>
                 <McChat bind:this={mcChat} commands={mcCommands} lines={bridge.mc} max={stacked.current ? 6 : 12} onsubmit={fromMinecraft} label="Minecraft chat (demo)" placeholder={keyboard.current ? 'Press T to chat' : 'Tap to chat'} />
-            </div>
-            <div class="hotbar" aria-hidden="true">
-                {#each hotbar as item, i (item)}<span class="slot" class:sel={i === 0}><img src="/mc/items/{item}.png" alt="" /></span>{/each}
             </div>
         </div>
     </div>
@@ -277,14 +273,10 @@
     .server { align-self: flex-start; padding: 0.2rem 0.45rem; background: rgb(0 0 0 / 0.45); font-size: 0.8rem; color: #fff; }
     .mc-hud { position: absolute; inset: auto 0 0 0; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 0.9rem; padding: 0 5.5rem 0.9rem; }
     /* Centred on its side, clear of the chain on the seam. */
-    .mc-chat { width: min(100%, 42rem); height: min(36rem, calc(100svh - var(--nav-h) - 13rem)); display: flex; flex-direction: column; justify-content: flex-end; }
+    .mc-chat { width: min(100%, 42rem); height: min(36rem, calc(100svh - var(--nav-h) - 9rem)); display: flex; flex-direction: column; justify-content: flex-end; }
     .mc-chat :global(.chat) { font-size: 1.15rem; }
     .mc-chat :global(.chat) { flex: 1; min-height: 0; justify-content: flex-end; }
     .mc-chat :global(.lines) { flex: 1; min-height: 0; overflow: hidden; }
-    .hotbar { display: flex; padding: 3px; background: rgb(0 0 0 / 0.55); border: 2px solid #1e1e1f; }
-    .slot { display: grid; place-items: center; width: clamp(2.1rem, 3.2vw, 2.9rem); aspect-ratio: 1; border: 2px solid #8b8b8b; border-right-color: #373737; border-bottom-color: #373737; background: rgb(139 139 139 / 0.35); }
-    .slot.sel { outline: 3px solid #fff; outline-offset: -1px; position: relative; z-index: 1; }
-    .slot img { width: 70%; image-rendering: pixelated; }
 
     /* ── Discord ── */
     .half.dc {
@@ -354,7 +346,6 @@
         .mc-chat :global(.chat) { font-size: 1rem; }
         .mc-chat { width: 100%; }
         .mc-chat { height: auto; max-height: calc(44svh - 6rem); }
-        .hotbar { display: none; }
         .headline { font-size: 2rem; }
         .sub { font-size: 0.95rem; }
     }

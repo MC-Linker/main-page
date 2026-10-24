@@ -10,7 +10,7 @@
     import OreDropdown from '$lib/ore/OreDropdown.svelte';
     import OreMenuRow from '$lib/ore/OreMenuRow.svelte';
     import OreSegments from '$lib/ore/OreSegments.svelte';
-    import { backArrow, outArrow, upArrow } from '$lib/ore/sprites';
+    import { backArrow, upArrow } from '$lib/ore/sprites';
     import PixelArt from '$lib/pixel/PixelArt.svelte';
 
     /**
@@ -141,9 +141,6 @@
             {#each siteLinks as l (l.name)}
                 <OreMenuRow title={l.title} subtitle={l.hint} href={l.href} external={l.newTab} selected={page.url.pathname === l.href} chevron={!l.newTab}>
                     {#snippet icon()}<McItemIcon icon={l.icon} glint={l.cta} size="1.75rem" />{/snippet}
-                    {#snippet trailing()}
-                        {#if l.newTab}<span class="out" aria-hidden="true"><PixelArt sprite={outArrow()} width="100%" /></span><span class="sr-only">(opens in a new tab)</span>{/if}
-                    {/snippet}
                 </OreMenuRow>
             {/each}
         {/snippet}
@@ -224,7 +221,6 @@
     .group { display: flex; flex-direction: column; gap: var(--t); }
     .group.narrow-only { display: none; }
     .group-title { margin: 0; padding: 0.45rem 0.6rem 0.3rem; font-size: 0.8rem; color: #1e1e1f; text-transform: uppercase; letter-spacing: 0.06em; }
-    .out { display: block; width: calc(6 * var(--t)); }
 
     /* Scroll progress, along the bottom edge: the slider's green fill. */
     .progress {

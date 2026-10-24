@@ -20,7 +20,7 @@
                 <OreButton href="#install" hero size="lg">Get the Plugin</OreButton>
                 <OreButton href={links.invite} external variant="discord" hero size="lg"><BrandIcon brand="discord" size="1.15em" /> Add to Discord</OreButton>
             </div>
-            <p class="fine ore-text">Paper · Spigot · Fabric · Forge · NeoForge · <a href={links.guide}>Read the guide</a></p>
+            <p class="fine ore-text">Paper · Spigot · Fabric · Forge · NeoForge · <a href={links.guide} target="_blank" rel="noopener">Read the guide</a></p>
         </div>
     </div>
 </section>
@@ -49,6 +49,8 @@
     .body > p:first-child { margin: 0; color: var(--color-ore-white); line-height: 1.8; }
     code { font-size: 0.9rem; color: var(--color-mc-yellow); }
     .buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 1.4rem; }
+    /* Room for "Add to Discord" and its new-tab arrow on one line. */
+    .buttons :global(.ore-btn) { padding-inline: 0.75rem; }
     .fine { margin: 1.1rem 0 0; font-size: 0.875rem; color: var(--color-ore-white); }
     .fine a { color: #fff; }
 

@@ -160,7 +160,7 @@
             {/if}
         {/each}
     </div>
-    <OreButton href={item.guide} class="guide">Read the guide</OreButton>
+    <OreButton href={item.guide} external class="guide">Read the guide</OreButton>
 {/snippet}
 
 <svelte:window bind:innerWidth={vw} bind:innerHeight={vh} onscroll={() => (tip = null)} />

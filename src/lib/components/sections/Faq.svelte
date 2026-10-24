@@ -5,8 +5,6 @@
     import McBook, { type PageSide } from '$lib/mc/McBook.svelte';
     import McWorld from '$lib/mc/McWorld.svelte';
     import OreButton from '$lib/ore/OreButton.svelte';
-    import { outArrow } from '$lib/ore/sprites';
-    import PixelArt from '$lib/pixel/PixelArt.svelte';
 
     // The FAQ as a written book: contents, one page per question, and a last page.
     type Page = { kind: 'contents' } | { kind: 'answer'; index: number } | { kind: 'end' };
@@ -32,7 +30,7 @@
         <h3 class="bold">More answers</h3>
         <p class="answer">The guide has a longer <a href={guide('help/faq')}>FAQ</a> and a <a href={guide('help/troubleshooting')}>troubleshooting</a> page for when something doesn't work.</p>
         <p class="answer">Thanks for reading!</p>
-        <p class="sign">- <a class="team" href="/team" target="_blank">The MC Linker team<span class="out" aria-hidden="true"><PixelArt sprite={outArrow('#0000aa')} width="100%" /></span><span class="sr-only">(opens in a new tab)</span></a></p>
+        <p class="sign">- <a class="team" href="/team" target="_blank">The MC Linker team</a></p>
     {/if}
     <!-- Back to the contents. On an open spread, the left page has the link. -->
     {#if p.kind !== 'contents' && side !== 'right'}
@@ -54,7 +52,7 @@
     <McBook count={pages.length} label="Questions and answers" spread={wide.current} page={bookPage} />
 
     <div class="done">
-        <OreButton href={links.guide} variant="secondary" size="lg">Read the guide</OreButton>
+        <OreButton href={links.guide} external variant="secondary" size="lg">Read the guide</OreButton>
         <OreButton href={links.support} external variant="discord" size="lg"><BrandIcon brand="discord" size="1.1em" /> Ask on Discord</OreButton>
     </div>
 </section>
@@ -87,7 +85,6 @@
     .sign { margin: 1.5em 0 0; text-align: right; color: #4d4535; }
     .team { color: #0000aa; text-decoration: underline; text-underline-offset: 0.18em; text-decoration-thickness: 0.0625em; }
     .team:hover { color: #5555ff; }
-    .out { display: inline-block; width: 0.55em; margin-left: 0.3em; vertical-align: 0.15em; }
     .to-contents { position: absolute; left: 50%; bottom: calc(var(--u) * 10 - var(--pad-bottom)); transform: translateX(-50%); font-size: 0.85em; }
 
     .done { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 17rem)); justify-content: center; gap: 0.75rem; margin-top: 2rem; }

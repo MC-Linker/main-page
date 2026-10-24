@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { Snippet } from 'svelte';
     import PixelArt from '$lib/pixel/PixelArt.svelte';
-    import { chevronRight } from './sprites';
+    import { chevronRight, outArrow } from './sprites';
 
     /**
      * Ore UI's browse-list row: a thumbnail, a title, a muted line under it and an arrow,
@@ -37,11 +37,13 @@
         {#if subtitle}<span class="sub">{subtitle}</span>{/if}
     </span>
     {#if trailing}<span class="trail">{@render trailing()}</span>{/if}
-    {#if chevron}<span class="chev" aria-hidden="true"><PixelArt sprite={chevronRight()} width="100%" /></span>{/if}
+    {#if href && external}<span class="out" aria-hidden="true"><PixelArt sprite={outArrow()} width="100%" /></span><span class="sr-only">(opens in a new tab)</span>
+    {:else if chevron}<span class="chev" aria-hidden="true"><PixelArt sprite={chevronRight()} width="100%" /></span>{/if}
 {/snippet}
 
 {#if href}
-    <a class="row {className}" class:selected {href} {onclick} {role} {tabindex} aria-current={selected ? current : undefined} target={external ? '_blank' : undefined} rel={external ? 'noopener' : undefined}>{@render inner()}</a>
+    <!-- It draws its own new-tab arrow in place of the chevron, so the site-wide one stays off (own-arrow). -->
+    <a class="row own-arrow {className}" class:selected {href} {onclick} {role} {tabindex} aria-current={selected ? current : undefined} target={external ? '_blank' : undefined} rel={external ? 'noopener' : undefined}>{@render inner()}</a>
 {:else}
     <button
         type="button" class="row {className}" class:selected {onclick} {role} {tabindex}
@@ -76,4 +78,5 @@
     .sub { font-size: 0.85rem; line-height: 1.35; color: var(--color-ore-white); }
     .trail { display: flex; align-items: center; gap: 0.5rem; flex: none; }
     .chev { flex: none; width: calc(4 * var(--t)); }
+    .out { flex: none; width: calc(6 * var(--t)); }
 </style>

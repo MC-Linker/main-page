@@ -361,3 +361,22 @@ discord-messages > * + * { margin-top: 1.0625rem; }
     background: var(--color-ore-green-light) !important;
     height: 3px !important;
 }
+
+/* Every link that opens a new tab ends in a small pixel arrow pointing out, in the link's own colour.
+   Screen readers hear "(opens in a new tab)" instead. Links that draw their own arrow have .own-arrow. */
+a[target="_blank"]:not(.ore-btn, .own-arrow)::after,
+/* Ore buttons draw it inside their label, so it stays beside the words when the label wraps. */
+a.ore-btn[target="_blank"] > .label::after {
+    content: "" / " (opens in a new tab)";
+    display: inline-block;
+    flex: none;
+    width: 0.55em;
+    height: 0.55em;
+    margin-left: 0.3em;
+    vertical-align: 0.2em;
+    background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 6' shape-rendering='crispEdges'%3E%3Crect x='2' y='0' width='1' height='1'/%3E%3Crect x='3' y='0' width='1' height='1'/%3E%3Crect x='4' y='0' width='1' height='1'/%3E%3Crect x='5' y='0' width='1' height='1'/%3E%3Crect x='4' y='1' width='1' height='1'/%3E%3Crect x='5' y='1' width='1' height='1'/%3E%3Crect x='3' y='2' width='1' height='1'/%3E%3Crect x='5' y='2' width='1' height='1'/%3E%3Crect x='2' y='3' width='1' height='1'/%3E%3Crect x='5' y='3' width='1' height='1'/%3E%3Crect x='1' y='4' width='1' height='1'/%3E%3Crect x='0' y='5' width='1' height='1'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 6' shape-rendering='crispEdges'%3E%3Crect x='2' y='0' width='1' height='1'/%3E%3Crect x='3' y='0' width='1' height='1'/%3E%3Crect x='4' y='0' width='1' height='1'/%3E%3Crect x='5' y='0' width='1' height='1'/%3E%3Crect x='4' y='1' width='1' height='1'/%3E%3Crect x='5' y='1' width='1' height='1'/%3E%3Crect x='3' y='2' width='1' height='1'/%3E%3Crect x='5' y='2' width='1' height='1'/%3E%3Crect x='2' y='3' width='1' height='1'/%3E%3Crect x='5' y='3' width='1' height='1'/%3E%3Crect x='1' y='4' width='1' height='1'/%3E%3Crect x='0' y='5' width='1' height='1'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+/* The label already spaces its parts out; pull the arrow back to the same distance as in text. */
+a.ore-btn[target="_blank"] > .label::after { margin-left: -0.25em; }

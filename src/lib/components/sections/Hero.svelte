@@ -130,13 +130,13 @@
 
     <!-- ── The seam: the chain joining both worlds. Messages pass through it. ── -->
     <div class="seam">
-        <span class="chain" class:pulsing bind:this={logo}><img src="/logo-horizontal.svg" alt="" width="980" height="472" /></span>
+        <span class="chain" class:pulsing bind:this={logo}><img src="/logo-outlined.svg" alt="" width="1006" height="518" /></span>
     </div>
 
     <!-- ── Intro screen: over the split, out of focus, until you scroll ── -->
     {#if p < 1}<div class="veil"></div>{/if}
         <div class="intro" style:opacity={1 - Math.min(1, q * 2.5)} style:pointer-events={p > 0.4 ? 'none' : 'auto'}>
-            <img class="intro-logo" src="/logo-bg.png" alt="MC Linker" width="1024" height="1024" />
+            <img class="intro-logo" src="/logo-outlined.svg" alt="MC Linker" width="1006" height="518" />
             <p class="eyebrow mc-text">Minecraft <span>⇄</span> Discord</p>
             <p class="headline ore-title">The easiest<br /><span class="nowrap">Minecraft–Discord</span> link.</p>
             <p class="sub">Chat both ways, run commands, see stats and inventories. One plugin, one slash command, no config files.</p>
@@ -200,12 +200,12 @@
     .dc-main { flex: 1; display: flex; min-width: 0; min-height: 0; }
     .dc-main :global(.window) { border-radius: 0; box-shadow: none; }
     /* Keep the messages clear of the chain on the seam. */
-    .dc-main :global(.content), .dc-main :global(.footer) { padding-left: 5.75rem; }
+    .dc-main :global(.content), .dc-main :global(.footer) { padding-left: 5.25rem; }
 
     /* ── The seam ── */
     .split::after { content: ''; position: absolute; inset: 0 auto 0 50%; width: 4px; margin-left: -2px; background: #000; z-index: 2; pointer-events: none; }
     .seam { position: absolute; top: 50%; left: 50%; z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; transform: translate(-50%, -50%); pointer-events: none; }
-    .chain { width: clamp(7rem, 9.5vw, 10rem); padding: 0.6rem 0.9rem; border-radius: 999px; background: #0e141b; box-shadow: 0 0 0 1px rgb(255 255 255 / 0.1), 0 8px 24px rgb(0 0 0 / 0.5); animation: bob 4s ease-in-out infinite; }
+    .chain { width: clamp(7rem, 9.5vw, 10rem); animation: bob 4s ease-in-out infinite; }
     .chain img { width: 100%; height: auto; transition: transform 0.25s cubic-bezier(.3, 1.6, .5, 1); }
     .chain.pulsing img { transform: scale(1.14) rotate(-10deg); }
     @keyframes bob { 50% { transform: translateY(-4px); } }
@@ -225,11 +225,9 @@
         padding: 1rem; text-align: center;
         background: radial-gradient(ellipse at center, rgb(0 0 0 / 0.45), transparent 70%);
     }
-    /* The logo on its own dark tile, like the bot's avatar, so it stands apart from both worlds. */
-    .intro-logo {
-        width: clamp(8rem, 12vw, 10.5rem); height: auto; border-radius: 22%;
-        box-shadow: 0 0 0 1px rgb(255 255 255 / 0.1), 0 12px 36px rgb(0 0 0 / 0.55);
-    }
+    /* The logo, big, with a black outline and shadow traced along its shapes (logo-outlined.svg),
+       so it stands out from both worlds. */
+    .intro-logo { position: relative; display: block; width: clamp(11rem, 20vw, 17rem); height: auto; }
     .eyebrow { margin: 0; font-size: 1rem; color: var(--color-mc-yellow); text-shadow: 0.12em 0.12em 0 #3f3f00; }
     .eyebrow span { color: #fff; }
     .nowrap { white-space: nowrap; }
@@ -244,7 +242,7 @@
         .split { grid-template-columns: minmax(0, 1fr); grid-template-rows: 44fr 56fr; min-height: 0; }
         .split::after { inset: 44% 0 auto 0; width: auto; height: 4px; margin: -2px 0 0; }
         .seam { top: 44%; }
-        .chain { width: 4.5rem; padding: 0.3rem 0.5rem; animation: none; }
+        .chain { width: 4.5rem; animation: none; }
         /* Below the header's hanging banner. */
         .mc-top { top: 2.4rem; left: 0.75rem; }
         .mc-logo { width: 7rem; }

@@ -160,9 +160,13 @@
     .pages { display: grid; grid-template-columns: 1fr; }
     .spread .pages { grid-template-columns: 1fr 1fr; }
     .page {
+        /* Room at the bottom for the page-turn buttons. */
+        --pad-bottom: calc(var(--u) * 19);
         position: relative;
+        display: flex;
+        flex-direction: column;
         min-height: 28rem;
-        padding: calc(var(--u) * 6) calc(var(--u) * 7) calc(var(--u) * 19) calc(var(--u) * 8);
+        padding: calc(var(--u) * 6) calc(var(--u) * 7) var(--pad-bottom) calc(var(--u) * 8);
         background:
             /* Shading towards the spine, in hard pixel steps. */
             linear-gradient(90deg, var(--page-shade-2) 0 var(--u), var(--page-shade-1) var(--u) calc(var(--u) * 3), transparent calc(var(--u) * 3)),
@@ -172,17 +176,21 @@
     }
     .spread .page { min-height: 30rem; }
     .page.left {
-        padding: calc(var(--u) * 6) calc(var(--u) * 9) calc(var(--u) * 17) calc(var(--u) * 7);
+        --pad-bottom: calc(var(--u) * 17);
+        padding: calc(var(--u) * 6) calc(var(--u) * 9) var(--pad-bottom) calc(var(--u) * 7);
         background:
             linear-gradient(270deg, var(--page-shade-2) 0 var(--u), var(--page-shade-1) var(--u) calc(var(--u) * 4), transparent calc(var(--u) * 4)),
             var(--page);
     }
     .page.right {
-        padding: calc(var(--u) * 6) calc(var(--u) * 7) calc(var(--u) * 17) calc(var(--u) * 9);
+        --pad-bottom: calc(var(--u) * 17);
+        padding: calc(var(--u) * 6) calc(var(--u) * 7) var(--pad-bottom) calc(var(--u) * 9);
         background:
             linear-gradient(90deg, var(--page-shade-2) 0 var(--u), var(--page-shade-1) var(--u) calc(var(--u) * 4), transparent calc(var(--u) * 4)),
             var(--page);
     }
+    /* Fills the page, so anything pinned to the bottom stays there while the page slides in. */
+    .content { position: relative; flex: 1; }
     .pageno { margin: 0 0 calc(var(--u) * 4); text-align: right; font-size: 0.9em; color: #4d4535; }
 
     .turn { position: absolute; bottom: calc(var(--u) * 8); }

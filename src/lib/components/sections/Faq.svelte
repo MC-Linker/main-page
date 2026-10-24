@@ -83,7 +83,7 @@
     .toc li { display: grid; grid-template-columns: 1.6em 1fr; }
     .toc li::before { counter-increment: q; content: counter(q) '.'; color: #4d4535; }
     .sign { margin: 1.5em 0 0; text-align: right; color: #4d4535; }
-    .to-contents { position: absolute; left: 50%; bottom: calc(var(--u) * 10); transform: translateX(-50%); font-size: 0.85em; }
+    .to-contents { position: absolute; left: 50%; bottom: calc(var(--u) * 10 - var(--pad-bottom)); transform: translateX(-50%); font-size: 0.85em; }
 
     .done { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 17rem)); justify-content: center; gap: 0.75rem; margin-top: 2rem; }
 </style>

@@ -124,7 +124,9 @@
     .section-head h2 { font-size: clamp(1.75rem, 3.5vw, 2.5rem); }
     .thanks { margin-top: clamp(3.5rem, 7vw, 5rem); }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18.5rem), 1fr)); gap: 1.25rem; max-width: 66rem; margin: 0 auto; }
-    .small-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 18rem)); justify-content: center; }
+    /* Flex instead of grid, so as many cards as fit share a row and a short last row stays centred. */
+    .small-grid { display: flex; flex-wrap: wrap; justify-content: center; max-width: 76rem; }
+    .small-grid > :global(*) { flex: 0 1 18rem; min-width: min(100%, 16rem); }
 
     .member { display: flex; flex-direction: column; min-width: 0; }
     /* The member's colour with a stone grain, so it keeps its hue. */

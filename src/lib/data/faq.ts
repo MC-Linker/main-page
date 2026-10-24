@@ -6,7 +6,7 @@ export type Faq = { q: string; a: string };
 export const faq: Faq[] = [
     {
         q: 'Is MC Linker free?',
-        a: `Yes, every feature is free. An optional <em>Customize MC Linker</em> subscription lets you run MC Linker as your own bot with your own name, avatar and status. But <a href="${links.donate}" target="_blank" rel="noopener">donations</a> are always welcome to support our hard work 😁`,
+        a: `Yes, every feature is free. An optional <em>Customize MC Linker</em> subscription lets you run MC Linker as your own bot with your own name, avatar and status. But <a href="${links.donate}" target="_blank" rel="noopener">donations</a> are always welcome to support our hard work! 😁`,
     },
     {
         q: 'Do I need to host a bot or edit config files?',

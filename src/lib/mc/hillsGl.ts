@@ -85,6 +85,8 @@ export type Hills = {
     draw(offset: number): void;
     /** Width of one loop of the strip, in texels. */
     loop: number;
+    /** Whether the GPU context is gone, so nothing it draws shows. */
+    lost(): boolean;
     destroy(): void;
 };
 
@@ -132,6 +134,7 @@ export function createHills(canvas: HTMLCanvasElement, land: Land): Hills | null
 
     return {
         loop: image.width,
+        lost: () => gl.isContextLost(),
         draw(offset) {
             // The canvas is exactly STRIP_BLOCKS tall, so its height sets the scale.
             gl.viewport(0, 0, canvas.width, canvas.height);

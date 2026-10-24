@@ -56,7 +56,10 @@
     function hillsCanvas(canvas: HTMLCanvasElement) {
         const hills = createHills(canvas, { heights, trees, tree });
         if(!hills) return;
-        gl = true;
+        // Swap the DOM strip for the canvas only once a real frame is drawn: until then (or if the
+        // GPU context is lost, e.g. on quick reloads) the canvas can show up blank or white.
+        const lost = (e: Event) => { e.preventDefault(); gl = false; };
+        canvas.addEventListener('webglcontextlost', lost);
 
         let frame = 0;
         let visible = false;
@@ -87,6 +90,7 @@
             canvas.width = exact ? box.inlineSize : w;
             canvas.height = exact ? box.blockSize : h;
             render();
+            if(canvas.width && canvas.height && !gl) requestAnimationFrame(() => (gl = !hills.lost()));
         });
         try { resize.observe(canvas, { box: 'device-pixel-content-box' }); }
         catch { resize.observe(canvas); }
@@ -100,6 +104,7 @@
             resize.disconnect();
             seen.disconnect();
             motion.removeEventListener('change', update);
+            canvas.removeEventListener('webglcontextlost', lost);
             hills.destroy();
         };
     }
@@ -232,8 +237,9 @@
     .tree { position: absolute; bottom: 100%; left: calc(var(--tile) * -0.75); }
     .hill-terrain { height: calc(var(--strip) * var(--tile)); }
     .hill-terrain .strip { position: absolute; left: 0; bottom: 0; }
-    canvas.gl { position: absolute; inset: 0; width: 100%; height: 100%; display: none; }
-    .hill-terrain.gl canvas.gl { display: block; }
+    /* Hidden, not display: none, so it has a size to draw at before it is shown. */
+    canvas.gl { position: absolute; inset: 0; width: 100%; height: 100%; visibility: hidden; }
+    .hill-terrain.gl canvas.gl { visibility: visible; }
     .hill-terrain.gl .strip { display: none; }
 
     .rainfall {

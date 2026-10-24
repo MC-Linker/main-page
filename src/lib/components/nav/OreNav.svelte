@@ -49,8 +49,11 @@
             if(el && el.getBoundingClientRect().top <= line) i = n;
         });
         current = i;
-        const max = document.documentElement.scrollHeight - window.innerHeight;
-        progress = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+        // A stretch of scrolling that only drives an effect (the hero's opening) doesn't count.
+        const skipEl = document.querySelector<HTMLElement>('[data-progress-skip]');
+        const skip = skipEl ? skipEl.offsetHeight - (skipEl.lastElementChild as HTMLElement | null)!.offsetHeight : 0;
+        const max = document.documentElement.scrollHeight - window.innerHeight - skip;
+        progress = max > 0 ? Math.min(1, Math.max(0, window.scrollY - skip) / max) : 0;
     }
 
     let frame = 0;
@@ -81,9 +84,7 @@
         if(!Number.isInteger(n) || n < 1 || n > homeSections.length) return;
         e.preventDefault();
         const s = homeSections[n - 1];
-        // The first section is the hero: going there brings back its intro screen (see Hero.svelte).
-        if(onHome && s.id === 'top') window.dispatchEvent(new Event('show-intro'));
-        else if(onHome) document.getElementById(s.id)?.scrollIntoView();
+        if(onHome) document.getElementById(s.id)?.scrollIntoView();
         else void goto(`/#${s.id}`);
     }
 </script>

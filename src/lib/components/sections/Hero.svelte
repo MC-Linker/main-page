@@ -14,9 +14,8 @@
     /*
      * The hero: a fullscreen split, Minecraft on the left (the game itself: the world
      * and its chat) and a Discord channel on the right. An intro screen
-     * comes first over the split, out of focus. Try it live, the first scroll or swipe,
-     * or a tap on the intro opens it (~1s). Scrolling up at the top closes it again and
-     * pauses the demo until it opens.
+     * comes first over the split, out of focus; the first bit of scrolling (or Try it live,
+     * or a tap on it) opens it, and scrolling back up closes it and pauses the demo.
      */
 
     const bridge = new Bridge();
@@ -32,14 +31,13 @@
     let mcChat: McChat;
     let channel: DemoChannel;
     let introLogo: HTMLElement;
+    let track: HTMLElement | undefined = $state();
     let pulsing = $state(false);
     /** How far the intro's logo moves and scales to land on the chain at the seam. */
     let flight = $state({ x: 0, y: 0, s: 1 });
     /** 0 = the intro screen, 1 = the split in focus. */
     let p = $state(0);
     let started = false;
-    /** How long the opening takes, in ms. */
-    const OPEN_MS = 1100;
 
     async function transfer(dir: Direction) {
         if(reducedMotion.current || !stage) return;
@@ -90,142 +88,54 @@
         };
     }
 
-    /** Where the intro is heading: 1 = open, 0 = closed. */
-    let target = 0;
-    let frame = 0;
+    /**
+     * The intro is driven by the page's own scroll: the hero sits in a taller track, and the first
+     * stretch of scrolling through it (RUN of the screen) opens the split. CSS scroll-snap settles
+     * it closed or open. Nothing is blocked, so every way of scrolling works.
+     */
+    /** How far the page can scroll while the split stays stuck: the opening's length. */
+    const run = () => track!.offsetHeight - stage.offsetHeight;
+    /** How far into that it is (the stuck split's offset in the track). */
+    const scrolled = () => stage.getBoundingClientRect().top - track!.getBoundingClientRect().top;
 
-    /** Plays the intro towards open (1) or closed (0), from wherever it is now. */
-    function animate(to: 0 | 1) {
-        if(target === to && (p === to || frame)) return;
-        target = to;
-        cancelAnimationFrame(frame);
-        frame = 0;
-        if(to === 1) bridge.paused = false;
-        else {
-            // The demo waits while the intro shows, and nothing in the chats stays focused.
-            bridge.paused = true;
-            (document.activeElement as HTMLElement | null)?.blur();
-        }
-        if(reducedMotion.current) {
-            p = to;
-            if(to === 1) start();
-            return;
-        }
-        const from = p;
-        const t0 = performance.now();
-        const duration = OPEN_MS * Math.abs(to - from);
-        const step = (now: number) => {
-            measure();
-            const t = duration ? Math.min(1, (now - t0) / duration) : 1;
-            p = from + (to - from) * t;
-            if(to === 1 && p > 0.5) start();
-            frame = t < 1 ? requestAnimationFrame(step) : 0;
-        };
-        frame = requestAnimationFrame(step);
-    }
-
-    /** Opens the split: the intro fades, the split comes into focus, the logo flies onto the chain. */
-    const open = () => animate(1);
-    /** Back to the intro, with the demo paused. */
-    const close = () => animate(0);
-
-    /** Scrolling back up to the intro (Home in the header): don't count as being past the hero. */
-    let returning = false;
-
-    /** Home, the header's logo or its up arrow: back to the top, and to the intro. */
-    function showIntro() {
-        returning = window.scrollY > 10;
-        close();
-        window.scrollTo({ top: 0, behavior: scrollBehavior() });
-    }
-
-    /** Already past the hero (a reload further down, a link to a section): just be open. */
     function onscroll() {
-        if(returning) {
-            if(window.scrollY <= 10) returning = false;
-            return;
-        }
-        if(target === 0 && window.scrollY > 10) {
-            target = 1;
-            cancelAnimationFrame(frame);
-            frame = 0;
-            bridge.paused = false;
-            p = 1;
-            start();
-        }
+        if(!track || !stage) return;
+        const next = run() > 0 ? Math.min(1, Math.max(0, scrolled() / run())) : 1;
+        if(next < 1) measure();
+        // Closing: nothing in the chats stays focused.
+        if(next < 0.9 && p >= 0.9 && stage.contains(document.activeElement)) (document.activeElement as HTMLElement).blur();
+        p = next;
+        // The demo plays while the split is open and waits while the intro shows.
+        bridge.paused = p < 0.9;
+        if(p > 0.5) start();
+        // Snap only around the opening, so the rest of the page scrolls freely.
+        document.documentElement.classList.toggle('hero-snap', scrolled() < run() + 40);
+    }
+
+    /** "Try it live": scroll to where the split is open. */
+    function open() {
+        if(!track || !stage) return;
+        window.scrollTo({ top: window.scrollY + run() - scrolled(), behavior: scrollBehavior() });
     }
 
     onMount(() => {
         bridge.transfer = transfer;
         onscroll();
-
-        // At the top of the page, scrolling drives the intro instead of the page: down opens it
-        // (and the page waits until it is open), up from the open split closes it again.
-        const atTop = () => window.scrollY <= 10;
-        /** Whether a scroll up there would scroll something inside the split (the Discord messages). */
-        const scrollsInside = (t: EventTarget | null) => {
-            const list = (t as HTMLElement | null)?.closest?.('.dc-list');
-            return !!list && list.scrollTop > 0;
-        };
-        const go = (e: Event, down: boolean) => {
-            if(!atTop()) return;
-            if(down && target === 0) open();
-            else if(down && p < 1) { /* still opening: let it finish */ }
-            else if(!down && target === 1 && !scrollsInside(e.target)) close();
-            else if(!down && p > 0) { /* still closing */ }
-            else return;
-            e.preventDefault();
-        };
-        const wheel = (e: WheelEvent) => {
-            if(e.ctrlKey || !e.deltaY) return;
-            go(e, e.deltaY > 0);
-        };
-        let touchY = 0;
-        const touchstart = (e: TouchEvent) => (touchY = e.touches[0].clientY);
-        const touchmove = (e: TouchEvent) => {
-            const dy = touchY - e.touches[0].clientY;
-            if(Math.abs(dy) >= 6) go(e, dy > 0);
-        };
-        const keydown = (e: KeyboardEvent) => {
-            if(isTextField(e.target)) return;
-            if(e.key === ' ' && (e.target as HTMLElement | null)?.closest?.('a, button')) return;
-            if(['ArrowDown', 'PageDown', ' ', 'End'].includes(e.key)) go(e, true);
-            else if(['ArrowUp', 'PageUp', 'Home'].includes(e.key)) go(e, false);
-        };
-        // Links to the top of the page bring the intro back.
-        const click = (e: MouseEvent) => {
-            if(e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-            const a = (e.target as HTMLElement | null)?.closest?.('a[href="#top"], a[href="/#top"]');
-            if(!a) return;
-            e.preventDefault();
-            e.stopPropagation();
-            showIntro();
-        };
-        // Capture: before SvelteKit's router, which handles same-page hash links itself.
-        window.addEventListener('click', click, true);
-        window.addEventListener('show-intro', showIntro);
-        window.addEventListener('wheel', wheel, { passive: false });
-        window.addEventListener('touchstart', touchstart, { passive: true });
-        window.addEventListener('touchmove', touchmove, { passive: false });
-        window.addEventListener('keydown', keydown);
-        return () => {
-            window.removeEventListener('wheel', wheel);
-            window.removeEventListener('touchstart', touchstart);
-            window.removeEventListener('touchmove', touchmove);
-            window.removeEventListener('keydown', keydown);
-            window.removeEventListener('click', click, true);
-            window.removeEventListener('show-intro', showIntro);
-            cancelAnimationFrame(frame);
-        };
+        return () => document.documentElement.classList.remove('hero-snap');
     });
 
     const ease = (t: number) => t * t * (3 - 2 * t);
     const q = $derived(ease(p));
 </script>
 
-<svelte:window onkeydown={shortcuts} {onscroll} />
+<svelte:window onkeydown={shortcuts} {onscroll} onresize={onscroll} />
 
-<section id="top" class="split" bind:this={stage} aria-labelledby="hero-title" style:--q={q} class:open={p >= 1}>
+<!-- The track: the hero sticks in it while the first stretch of scrolling opens the split.
+     The header's progress bar skips this stretch (data-progress-skip). -->
+<div id="top" class="track" bind:this={track} data-progress-skip>
+<span class="snap closed" aria-hidden="true"></span>
+<span class="snap opened" aria-hidden="true"></span>
+<section class="split" bind:this={stage} aria-labelledby="hero-title" style:--q={q} class:open={p >= 1}>
     <h1 id="hero-title" class="sr-only">MC Linker: Minecraft, linked with Discord</h1>
 
     <!-- ── Minecraft: the game itself ─────────────────────────────────── -->
@@ -274,11 +184,20 @@
             </div>
         </div>
 </section>
+</div>
 
 <style>
+    /* One screen for the hero, plus the stretch of scrolling that opens it. */
+    .track { --run: 40svh; position: relative; height: calc(100svh - var(--nav-h) + var(--run)); }
+    /* Where the page settles: the intro, or the open split. */
+    .snap { position: absolute; left: 0; width: 1px; height: 1px; scroll-snap-align: start; pointer-events: none; }
+    .snap.closed { top: 0; }
+    .snap.opened { top: var(--run); }
+    :global(html.hero-snap) { scroll-snap-type: y proximity; }
     .split {
         --seam: 0px;
-        position: relative;
+        position: sticky;
+        top: var(--nav-h);
         display: grid;
         grid-template-columns: 1fr 1fr;
         height: calc(100svh - var(--nav-h));

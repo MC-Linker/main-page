@@ -29,7 +29,7 @@
             <img class="avatar" src="/profiles/{m.username}.png" alt="" width="88" height="88" loading="lazy" />
             <div class="name">
                 <h3 id="member-{m.username}" class="ore-title">{m.username}</h3>
-                <p class="status ore-text"><i aria-hidden="true"></i>Online</p>
+                <p class="status ore-text" class:offline={m.status === 'offline'}><i aria-hidden="true"></i>{m.status === 'offline' ? 'Offline' : 'Online'}</p>
             </div>
         </div>
         <div class="body">
@@ -147,6 +147,7 @@
     h3 { margin: 0; font-size: 1.3rem; line-height: 1.2; color: #fff; overflow-wrap: anywhere; }
     .status { display: flex; align-items: center; gap: 0.4rem; margin: 0.3rem 0 0; font-size: 0.8rem; color: var(--color-mc-gray); }
     .status i { width: calc(4 * var(--t)); height: calc(4 * var(--t)); background: var(--color-mc-green); box-shadow: 0 0 0 var(--t) var(--color-ore-outline); }
+    .status.offline i { background: var(--color-mc-dark-gray); }
 
     .body { display: flex; flex-direction: column; gap: 1rem; flex: 1; padding: 1rem 1rem 1.1rem; }
     .about { margin: 0; font-size: 0.92rem; line-height: 1.6; color: var(--color-ore-white); }

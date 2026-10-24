@@ -5,6 +5,8 @@ export type Member = {
     roles: string[];
     /** Accent used for the profile banner. */
     color: string;
+    /** Discord-style presence on the card. Defaults to online. */
+    status?: 'online' | 'offline';
 };
 
 export const team: { core: Member[]; specialThanks: Member[] } = {
@@ -29,11 +31,13 @@ export const team: { core: Member[]; specialThanks: Member[] } = {
             about: 'Hey! I manage the deployment of the MC Linker Discord bot and the testing Minecraft server. I also help with the architecture of the project.',
             roles: ['DevOps'],
             color: '#915d2a',
+            status: 'offline',
         },
     ],
     specialThanks: [
         { username: 'Hannibal', github: 'N1Lowbob', roles: ['Donator'], color: '#c27c0e' },
         { username: 'fALECX', github: 'falecx', roles: ['Supporter'], color: '#3b8ea5' },
+        { username: 'Ewan', github: 'ewanhowell5195', roles: ['Contributor'], color: '#df5050' },
     ],
 };
 
@@ -46,4 +50,5 @@ export const roleColors: Record<string, string> = {
     DevOps: '#5555ff',
     Donator: '#ffff55',
     Supporter: '#aaaaaa',
+    Contributor: '#ff5555',
 };

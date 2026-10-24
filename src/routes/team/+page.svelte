@@ -23,12 +23,12 @@
 
 {#snippet card(m: Member, small = false)}
     <!-- An Ore UI panel per member: a banner in their colour, the avatar framed like a world's thumbnail, then their about text and roles. -->
-    <article class="ore-card raised member" class:small aria-labelledby="member-{m.username}">
+    <article class="ore-card raised member" class:small aria-labelledby="member-{m.username.replace(/\s+/g, '-')}">
         <div class="banner" style:--accent={m.color} aria-hidden="true"></div>
         <div class="who">
             <img class="avatar" src="/profiles/{m.username}.png" alt="" width="88" height="88" loading="lazy" />
             <div class="name">
-                <h3 id="member-{m.username}" class="ore-title">{m.username}</h3>
+                <h3 id="member-{m.username.replace(/\s+/g, '-')}" class="ore-title">{m.username}</h3>
                 <p class="status ore-text" class:offline={m.status === 'offline'}><i aria-hidden="true"></i>{m.status === 'offline' ? 'Offline' : 'Online'}</p>
             </div>
         </div>

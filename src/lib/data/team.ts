@@ -38,6 +38,7 @@ export const team: { core: Member[]; specialThanks: Member[] } = {
         { username: 'Hannibal', github: 'N1Lowbob', roles: ['Donator'], color: '#c27c0e' },
         { username: 'fALECX', github: 'falecx', roles: ['Supporter'], color: '#3b8ea5' },
         { username: 'Ewan', github: 'ewanhowell5195', roles: ['Contributor'], color: '#df5050' },
+        { username: 'Punch the Monkey', roles: ['Donator', 'Supporter'], color: '#009506' },
     ],
 };
 

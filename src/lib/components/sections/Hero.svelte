@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { MediaQuery } from 'svelte/reactivity';
-    import { isTextField, reducedMotion, scrollBehavior } from '$lib/browser';
+    import { isTextField, reducedMotion } from '$lib/browser';
     import BrandIcon from '$lib/components/BrandIcon.svelte';
     import { links } from '$lib/data';
     import McChat from '$lib/mc/McChat.svelte';
@@ -14,7 +14,8 @@
     /*
      * The hero: a fullscreen split, Minecraft on the left (the game itself: the world,
      * chat bottom-left, a hotbar) and a Discord channel on the right. An intro screen
-     * comes first over the split, out of focus; scrolling pulls the split into focus.
+     * comes first over the split, out of focus. Try it live, the first scroll or swipe,
+     * or a tap on the blurred chats opens it once (~1s); it never closes again.
      */
 
     const bridge = new Bridge();
@@ -24,7 +25,6 @@
     const stacked = new MediaQuery('(max-width: 760px)', false);
 
     let stage: HTMLElement;
-    let track: HTMLElement | undefined = $state();
     let logo: HTMLElement;
     let mcEnd: HTMLElement;
     let dcEnd: HTMLElement;
@@ -37,6 +37,9 @@
     /** 0 = the intro screen, 1 = the split in focus. */
     let p = $state(0);
     let started = false;
+    let opening = false;
+    /** How long the opening takes, in ms. */
+    const OPEN_MS = 1100;
 
     async function transfer(dir: Direction) {
         if(reducedMotion.current || !stage) return;
@@ -74,15 +77,6 @@
         void bridge.playScript(!reducedMotion.current);
     }
 
-    function onscroll() {
-        if(!track) return;
-        const r = track.getBoundingClientRect();
-        const run = r.height - window.innerHeight;
-        p = Math.min(1, Math.max(0, -r.top / (run * 0.85)));
-        if(p < 1) measure();
-        if(p > 0.5) start();
-    }
-
     /** Where the chain is, relative to the intro logo's own place (offsets ignore its transform). */
     function measure() {
         if(!introLogo || !logo || !stage) return;
@@ -95,16 +89,69 @@
         };
     }
 
-    /** "Try it live": scroll down to where the split is fully open. */
+    /** Opens the split: the intro fades, the split comes into focus, the logo flies onto the chain. */
     function open() {
-        if(!track) return;
-        const r = track.getBoundingClientRect();
-        window.scrollTo({ top: window.scrollY + r.top + (r.height - window.innerHeight), behavior: scrollBehavior() });
+        if(opening || p >= 1) return;
+        opening = true;
+        if(reducedMotion.current) {
+            p = 1;
+            start();
+            return;
+        }
+        const t0 = performance.now();
+        const step = (now: number) => {
+            measure();
+            p = Math.min(1, (now - t0) / OPEN_MS);
+            if(p > 0.5) start();
+            if(p < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+    }
+
+    /** Already past the hero (a reload further down, a link to a section): just be open. */
+    function onscroll() {
+        if(p < 1 && !opening && window.scrollY > 10) {
+            opening = true;
+            p = 1;
+            start();
+        }
     }
 
     onMount(() => {
         bridge.transfer = transfer;
         onscroll();
+
+        // While the intro shows at the top, the first scroll, swipe or scroll key opens it
+        // instead of moving the page (and further ones wait until it is open).
+        const waiting = () => p < 1 && window.scrollY <= 10;
+        const wheel = (e: WheelEvent) => {
+            if(!waiting() || e.deltaY <= 0 || e.ctrlKey) return;
+            e.preventDefault();
+            open();
+        };
+        let touchY = 0;
+        const touchstart = (e: TouchEvent) => (touchY = e.touches[0].clientY);
+        const touchmove = (e: TouchEvent) => {
+            if(!waiting() || touchY - e.touches[0].clientY < 6) return;
+            e.preventDefault();
+            open();
+        };
+        const keydown = (e: KeyboardEvent) => {
+            if(!waiting() || isTextField(e.target) || !['ArrowDown', 'PageDown', ' ', 'End'].includes(e.key)) return;
+            if(e.key === ' ' && (e.target as HTMLElement | null)?.closest?.('a, button')) return;
+            e.preventDefault();
+            open();
+        };
+        window.addEventListener('wheel', wheel, { passive: false });
+        window.addEventListener('touchstart', touchstart, { passive: true });
+        window.addEventListener('touchmove', touchmove, { passive: false });
+        window.addEventListener('keydown', keydown);
+        return () => {
+            window.removeEventListener('wheel', wheel);
+            window.removeEventListener('touchstart', touchstart);
+            window.removeEventListener('touchmove', touchmove);
+            window.removeEventListener('keydown', keydown);
+        };
     });
 
     const hotbar = ['iron_sword', 'compass', 'clock', 'writable_book', 'spyglass', 'name_tag', 'emerald', 'oak_sign', 'chain'];
@@ -112,10 +159,9 @@
     const q = $derived(ease(p));
 </script>
 
-<svelte:window onkeydown={shortcuts} onscroll={onscroll} onresize={onscroll} />
+<svelte:window onkeydown={shortcuts} {onscroll} />
 
-<div id="top" class="track" bind:this={track}>
-<section class="split" bind:this={stage} aria-labelledby="hero-title" style:--q={q} class:open={p >= 1}>
+<section id="top" class="split" bind:this={stage} aria-labelledby="hero-title" style:--q={q} class:open={p >= 1}>
     <h1 id="hero-title" class="sr-only">MC Linker: Minecraft, linked with Discord</h1>
 
     <!-- ── Minecraft: the game itself ─────────────────────────────────── -->
@@ -149,10 +195,11 @@
         <span class="chain" class:pulsing bind:this={logo}><img src="/logo-outlined.svg" alt="" width="1006" height="532" /></span>
     </div>
 
-    <!-- ── Intro screen: over the split, out of focus, until you scroll ── -->
+    <!-- ── Intro screen: over the split, out of focus, until it opens. A tap on it (not its buttons) opens it too. ── -->
     {#if p < 1}<div class="veil"></div>{/if}
-        <div class="intro" style:pointer-events={p > 0.4 ? 'none' : 'auto'}>
-            <!-- Flies down into the seam as you scroll, and becomes the chain between the chats. -->
+        <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions (keyboard: Try it live, or a scroll key) -->
+        <div class="intro" style:pointer-events={p > 0.4 ? 'none' : 'auto'} onclick={e => !(e.target as HTMLElement).closest('a, button') && open()}>
+            <!-- Flies down into the seam as it opens, and becomes the chain between the chats. -->
             <img class="intro-logo" class:landed={p >= 1} bind:this={introLogo} src="/logo-outlined.svg" alt="MC Linker" width="1006" height="532"
                 style:transform="translate({flight.x * q}px, {flight.y * q}px) scale({1 + (flight.s - 1) * q})" />
             <div class="intro-text" style:opacity={1 - Math.min(1, q * 2.5)}>
@@ -166,11 +213,8 @@
             </div>
         </div>
 </section>
-</div>
 
 <style>
-    /* The track is taller than the screen; the split sticks while you scroll through it. */
-    .track { position: relative; height: calc(2.2 * (100svh - var(--nav-h))); }
     .split {
         --seam: 0px;
         position: relative;
@@ -181,7 +225,6 @@
         overflow: hidden;
         isolation: isolate;
     }
-    .split { position: sticky; top: var(--nav-h); }
 
     .half { position: relative; min-width: 0; min-height: 0; overflow: hidden; }
     /* Intro: the split, out of focus and darkened behind the intro, comes into focus as you scroll. */
@@ -243,7 +286,7 @@
 
     /* ── Intro ── */
     .intro {
-        position: absolute; inset: 0; z-index: 5;
+        position: absolute; inset: 0; z-index: 5; cursor: pointer;
         display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
         padding: 1rem; text-align: center;
         background: radial-gradient(ellipse at center, rgb(0 0 0 / 0.45), transparent 70%);

@@ -9,17 +9,18 @@ type Ends = { mc: HTMLElement; dc: HTMLElement; logo: HTMLElement };
  */
 export async function flyPacket(stage: HTMLElement, ends: Ends, dir: Direction): Promise<void> {
     const box = stage.getBoundingClientRect();
-    const point = (el: HTMLElement, side?: 'left' | 'right' | 'top') => {
+    const point = (el: HTMLElement, at: 'middle' | 'top' | 'latest') => {
         const r = el.getBoundingClientRect();
-        const x = side === 'left' ? r.left + 12 : side === 'right' ? r.right - 12 : r.left + r.width / 2;
-        const y = side === 'top' ? r.top + 12 : r.top + r.height / 2;
-        return [x - box.left, y - box.top];
+        // "latest": where the newest message shows, near the bottom of the chat.
+        const y = at === 'top' ? r.top + 12 : at === 'latest' ? r.bottom - Math.min(60, r.height / 4) : r.top + r.height / 2;
+        return [r.left + r.width / 2 - box.left, y - box.top];
     };
-    // Side by side the chats face each other; stacked (phones) they sit above and below the logo.
+    // Side by side, the packet flies between the newest lines of both chats, so the whole trip
+    // shows; stacked (phones), the chats sit above and below the logo.
     const stacked = ends.mc.getBoundingClientRect().bottom <= ends.dc.getBoundingClientRect().top;
-    const [mx, my] = point(ends.mc, stacked ? undefined : 'right');
-    const [dx, dy] = point(ends.dc, stacked ? 'top' : 'left');
-    const [lx, ly] = point(ends.logo);
+    const [mx, my] = point(ends.mc, stacked ? 'middle' : 'latest');
+    const [dx, dy] = point(ends.dc, stacked ? 'top' : 'latest');
+    const [lx, ly] = point(ends.logo, 'middle');
     const [x0, y0, x1, y1] = dir === 'toDiscord' ? [mx, my, dx, dy] : [dx, dy, mx, my];
 
     const packet = document.createElement('span');

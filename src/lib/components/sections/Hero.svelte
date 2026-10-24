@@ -47,7 +47,8 @@
             pulsing = true;
             setTimeout(() => (pulsing = false), 240);
         }, 360);
-        await flyPacket(stage, { mc: mcEnd, dc: dcEnd, logo }, dir);
+        const dc = dcEnd.querySelector<HTMLElement>('.dc-list') ?? dcEnd;
+        await flyPacket(stage, { mc: mcEnd, dc, logo }, dir);
     }
 
     function fromMinecraft(text: string) {

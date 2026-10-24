@@ -26,38 +26,55 @@
     }));
 
     // Messages with pages (/userinfo, /serverinfo): the buttons switch the page and admin buttons answer privately.
+    type FollowUp = { command: string; response: string };
     let page = $state(0);
-    let followUp = $state<{ command: string; response: string } | null>(null);
-    const paged = $derived.by<DcMsg | null>(() => {
-        const p = selected.preview.paged;
+    let followUp = $state<FollowUp | null>(null);
+    function pagedMsg(item: Feature, pg: number): DcMsg | null {
+        const p = item.preview.paged;
         if(!p) return null;
-        const current = p.pages[page];
+        const current = p.pages[pg];
         return {
             id: 1, author: p.author, interaction: p.interaction, embeds: current.embeds,
-            buttons: p.pages.map((pg, i) => ({
-                label: pg.label,
-                style: i === page ? 'primary' : (pg.style ?? 'secondary'),
+            buttons: p.pages.map((pg2, i) => ({
+                label: pg2.label,
+                style: i === pg ? 'primary' : (pg2.style ?? 'secondary'),
                 onclick: () => { page = i; followUp = null; },
             })),
             buttonRows: current.actions && [current.actions.map(a => ({ label: a.label, style: a.style, onclick: () => { followUp = a.followUp ?? null; } }))],
         };
-    });
-    const followUpMsg = $derived<DcMsg | null>(followUp && {
-        id: 2, author: bot, ephemeral: true,
-        embeds: [{ color: colors.blue, title: 'Command Executed', description: `Command: \`${followUp.command}\`\n${followUp.response}` }],
-    });
-    const hasDiscord = $derived(!!(selected.preview.dc || selected.preview.paged || selected.preview.images));
+    }
+    function followUpMsg(fu: FollowUp | null): DcMsg | null {
+        return fu && {
+            id: 2, author: bot, ephemeral: true,
+            embeds: [{ color: colors.blue, title: 'Command Executed', description: `Command: \`${fu.command}\`\n${fu.response}` }],
+        };
+    }
+    const hasDiscord = (item: Feature) => !!(item.preview.dc || item.preview.paged || item.preview.images);
     // The world a feature starts in comes first.
-    const worlds = $derived((selected.from === 'discord' ? ['discord', 'minecraft'] : ['minecraft', 'discord']) as ('discord' | 'minecraft')[]);
+    const worldsOf = (item: Feature) => (item.from === 'discord' ? ['discord', 'minecraft'] : ['minecraft', 'discord']) as ('discord' | 'minecraft')[];
+
+    // Every state the details panel can be in: each feature, each page of a paged message, and
+    // each page with its longest private answer. Hidden copies of all of them share the panel's
+    // grid cell, so the panel is always as tall as the tallest and picking an item never resizes the section.
+    const sizes = features.flatMap(f => {
+        const pages = f.preview.paged?.pages;
+        if(!pages) return [{ item: f, pg: 0, fu: null as FollowUp | null }];
+        return pages.flatMap((p, i) => {
+            const answers = (p.actions ?? []).map(a => a.followUp).filter(Boolean) as FollowUp[];
+            const longest = answers.sort((x, y) => y.response.length - x.response.length)[0];
+            return [{ item: f, pg: i, fu: null as FollowUp | null }, ...(longest ? [{ item: f, pg: i, fu: longest }] : [])];
+        });
+    });
 
     // Phones: the details are under the inventory, so picking something scrolls to them.
     const narrow = new MediaQuery('(max-width: 900px)', false);
     // Phones get six bigger slots per row instead of nine, so they're easy to tap.
     const small = new MediaQuery('(max-width: 560px)', false);
     const cols = $derived(small.current ? 6 : 9);
-    // Always fill whole rows (at least two), like a real inventory.
+    // Always fill whole rows, like a real inventory.
     const slots = $derived.by<(Feature | null)[]>(() => {
-        const rows = Math.max(2, Math.ceil(shown.length / cols));
+        // Every tab and search gets as many rows as the full inventory, so the panel keeps its height.
+        const rows = Math.max(2, Math.ceil(features.length / cols), Math.ceil(shown.length / cols));
         return [...shown, ...Array(rows * cols - shown.length).fill(null)];
     });
     let detail = $state<HTMLElement>();
@@ -96,6 +113,56 @@
     }
 </script>
 
+{#snippet panel(item: Feature, pg: number, fu: FollowUp | null)}
+    {@const paged = pagedMsg(item, pg)}
+    {@const answer = followUpMsg(fu)}
+    <header class="d-head">
+        <span class="slot big"><McItemIcon icon={item.icon} glint={item.glint} size="2.5rem" /></span>
+        <div>
+            <h3 class="ore-title" style:color={rarityColor[item.rarity ?? 'common']}>{item.name}</h3>
+            <p class="lore">{item.lore.join(' ')}</p>
+        </div>
+    </header>
+    {#if item.commands.length}
+        <ul class="cmds">{#each item.commands as c (c)}<li class="ore-tag">{c}</li>{/each}</ul>
+    {/if}
+    {#if item.preview.options}
+        <div class="options">
+            {#each item.preview.options as group (group.title)}
+                <div class="option">
+                    <p class="label ore-text">{group.title}</p>
+                    <OreRadioGroup label={group.title} choices={group.choices} />
+                </div>
+            {/each}
+        </div>
+    {/if}
+    <div class="worlds">
+        {#each worldsOf(item) as world (world)}
+            {#if world === 'minecraft' && item.preview.mc}
+                <div class="world">
+                    <p class="label ore-text">In Minecraft</p>
+                    <div class="mc-box"><McChat lines={item.preview.mc.map((text, id) => ({ id, text: text.replace(/^> /, '&f') }))} /></div>
+                </div>
+            {:else if world === 'discord' && hasDiscord(item)}
+                <div class="world">
+                    <p class="label ore-text">In Discord</p>
+                    {#if item.preview.dc || paged}
+                        <discord-messages no-background class="dc-box">
+                            {#each item.preview.dc ?? [] as msg, i (i)}<DcMessage msg={{ ...msg, id: i }} />{/each}
+                            {#if paged}<DcMessage msg={paged} />{/if}
+                            {#if answer}<DcMessage msg={answer} />{/if}
+                        </discord-messages>
+                    {/if}
+                    {#each item.preview.images ?? [] as img (img.src)}
+                        <img class="shot" src={img.src} alt={img.alt} />
+                    {/each}
+                </div>
+            {/if}
+        {/each}
+    </div>
+    <OreButton href={item.guide} class="guide">Read the guide</OreButton>
+{/snippet}
+
 <svelte:window bind:innerWidth={vw} bind:innerHeight={vh} onscroll={() => (tip = null)} />
 
 {#if tip}
@@ -126,12 +193,11 @@
             <div class="ore-card raised inventory" id="feature-list" role="tabpanel" aria-label={tabName}>
                 <div class="ore-header inv-head">
                     <p class="inv-title ore-title">{tab === 'all' ? 'Inventory' : tabName}</p>
-                    {#if tab === 'all'}
-                        <label class="search">
-                            <span class="sr-only">Search features</span>
-                            <input class="ore-field" type="search" placeholder="Search..." bind:value={query} oninput={() => (tip = null)} />
-                        </label>
-                    {/if}
+                    <!-- Only the full inventory can be searched; the other tabs keep its space so the panel doesn't resize. -->
+                    <label class="search" class:off={tab !== 'all'} inert={tab !== 'all'}>
+                        <span class="sr-only">Search features</span>
+                        <input class="ore-field" type="search" placeholder="Search..." bind:value={query} oninput={() => (tip = null)} />
+                    </label>
                 </div>
                 <ul class="slots" style:--cols={cols}>
                     {#each slots as item, i (item?.id ?? `empty-${i}`)}
@@ -156,55 +222,16 @@
         </div>
 
             <!-- The selected feature: what it does, its commands, and how it looks in both worlds. -->
-            {#key selected.id}
-                <article class="ore-card dark raised detail" bind:this={detail} in:fade={{ duration: 160 }} aria-live="polite">
-                    <header class="d-head">
-                        <span class="slot big"><McItemIcon icon={selected.icon} glint={selected.glint} size="2.5rem" /></span>
-                        <div>
-                            <h3 class="ore-title" style:color={rarityColor[selected.rarity ?? 'common']}>{selected.name}</h3>
-                            <p class="lore">{selected.lore.join(' ')}</p>
-                        </div>
-                    </header>
-                    {#if selected.commands.length}
-                        <ul class="cmds">{#each selected.commands as c (c)}<li class="ore-tag">{c}</li>{/each}</ul>
-                    {/if}
-                    {#if selected.preview.options}
-                        <div class="options">
-                            {#each selected.preview.options as group (group.title)}
-                                <div class="option">
-                                    <p class="label ore-text">{group.title}</p>
-                                    <OreRadioGroup label={group.title} choices={group.choices} />
-                                </div>
-                            {/each}
-                        </div>
-                    {/if}
-                    <div class="worlds">
-                        {#each worlds as world (world)}
-                            {#if world === 'minecraft' && selected.preview.mc}
-                                <div class="world">
-                                    <p class="label ore-text">In Minecraft</p>
-                                    <div class="mc-box"><McChat lines={selected.preview.mc.map((text, id) => ({ id, text: text.replace(/^> /, '&f') }))} /></div>
-                                </div>
-                            {:else if world === 'discord' && hasDiscord}
-                                <div class="world">
-                                    <p class="label ore-text">In Discord</p>
-                                    {#if selected.preview.dc || paged}
-                                        <discord-messages no-background class="dc-box">
-                                            {#each selected.preview.dc ?? [] as msg, i (i)}<DcMessage msg={{ ...msg, id: i }} />{/each}
-                                            {#if paged}<DcMessage msg={paged} />{/if}
-                                            {#if followUpMsg}<DcMessage msg={followUpMsg} />{/if}
-                                        </discord-messages>
-                                    {/if}
-                                    {#each selected.preview.images ?? [] as img (img.src)}
-                                        <img class="shot" src={img.src} alt={img.alt} />
-                                    {/each}
-                                </div>
-                            {/if}
-                        {/each}
-                    </div>
-                    <OreButton href={selected.guide} class="guide">Read the guide</OreButton>
-                </article>
-            {/key}
+            <div class="detail-cell">
+                {#each sizes as v, i (i)}
+                    <div class="ore-card dark raised detail sizer" aria-hidden="true" inert>{@render panel(v.item, v.pg, v.fu)}</div>
+                {/each}
+                {#key selected.id}
+                    <article class="ore-card dark raised detail" bind:this={detail} in:fade={{ duration: 160 }} aria-live="polite">
+                        {@render panel(selected, page, followUp)}
+                    </article>
+                {/key}
+            </div>
     </div>
 </section>
 
@@ -224,6 +251,7 @@
     .inv-head { display: flex; align-items: center; gap: 0.75rem; min-height: 3.25rem; padding: 0.5rem 0.75rem calc(0.5rem + 3 * var(--t)); }
     .inv-title { flex: 1; margin: 0; font-size: 1.1rem; color: #000; white-space: nowrap; }
     .search { flex: 0 1 11rem; min-width: 0; }
+    .search.off { visibility: hidden; }
     .search input { display: block; width: 100%; height: 2.25rem; padding: calc(2 * var(--t)) 0.6rem 0; font-size: 1rem; }
     .slots { display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); gap: var(--t); margin: 0; padding: 0.75rem 0.75rem 0; list-style: none; }
     /* The game's item slot: grey, shaded in at the top left. */
@@ -253,7 +281,12 @@
     .count { margin: 0.75rem 0.75rem 0.25rem; font-size: 0.875rem; color: var(--color-ore-white); }
 
     /* ── The selected feature ──────────────────────────────────────────── */
-    .detail { padding: 1.25rem 1.25rem calc(1.25rem + 3 * var(--t)); scroll-margin-top: 1rem; }
+    .detail-cell { display: grid; }
+    .detail-cell > * { grid-area: 1 / 1; min-width: 0; }
+    .sizer { visibility: hidden; }
+    .detail { display: flex; flex-direction: column; padding: 1.25rem 1.25rem calc(1.25rem + 3 * var(--t)); scroll-margin-top: 1rem; }
+    /* The guide link sits at the bottom of the panel, however short this feature's preview is. */
+    .detail :global(.guide) { margin-top: auto; align-self: flex-start; }
     .d-head { display: flex; align-items: center; gap: 1rem; }
     /* The item in an inventory slot. */
     h3 { margin: 0; font-size: 1.5rem; line-height: 1.2; }
@@ -267,7 +300,6 @@
     .mc-box { padding: 0.75rem; border: var(--t) solid #1e1e1f; background: linear-gradient(#78a6f7, #b4d3ff); font-size: 0.9rem; }
     .dc-box { display: block; padding: 0.5rem 1rem; background: var(--color-dc); border-radius: 8px; line-height: 1.375; }
     .shot { display: block; max-width: 100%; height: auto; margin-top: 0.5rem; border-radius: 8px; }
-    .detail :global(.guide) { margin-top: 0.25rem; }
 
     @media (max-width: 900px) {
         .browser { grid-template-columns: minmax(0, 1fr); }

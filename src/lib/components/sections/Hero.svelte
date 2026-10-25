@@ -159,7 +159,6 @@
 <span class="snap closed" aria-hidden="true"></span>
 <span class="snap opened" aria-hidden="true"></span>
 <section class="split" bind:this={stage} aria-labelledby="hero-title" style:--q={q} class:open={p >= 1}>
-    <h1 id="hero-title" class="sr-only">MC Linker: Minecraft, linked with Discord</h1>
 
     <!-- ── Minecraft: the game itself ─────────────────────────────────── -->
     <div class="half mc" inert={p < 0.9}>
@@ -192,14 +191,15 @@
     <!-- ── Intro screen: over the split, out of focus, until it opens. A tap on its empty background opens it too. ── -->
     {#if p < 1}<div class="veil"></div>{/if}
         <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions (keyboard: Try it live, or a scroll key) -->
-        <div class="intro" inert={p >= 0.5} style:pointer-events={p > 0.4 ? 'none' : 'auto'} onclick={e => e.target === e.currentTarget && open()}>
+        <div class="intro" style:pointer-events={p > 0.4 ? 'none' : 'auto'} onclick={e => e.target === e.currentTarget && open()}>
             <!-- Flies down into the seam as it opens, and becomes the chain between the chats. -->
             <img class="intro-logo" class:landed={p >= 1} bind:this={introLogo} src="/logo-outlined.svg" alt="MC Linker" width="1006" height="532"
                 style:transform="translate({flight.x * q}px, {flight.y * q}px) scale({1 + (flight.s - 1) * q})" />
             <div class="intro-text" style:opacity={1 - Math.min(1, q * 2.5)}>
-            <p class="headline ore-title">The easiest<br /><span class="worlds">Minecraft <span class="arrows">⇄</span> Discord</span> link.</p>
+            <h1 id="hero-title" class="headline ore-title"><span class="sr-only">{'MC Linker: '}</span>The easiest<br /><span class="worlds">Minecraft <span class="arrows">⇄</span> Discord</span> link.</h1>
             <p class="sub">Chat both ways, run commands, see stats and inventories and more.<br />One plugin, one bot, one command to setup.</p>
-            <div class="ctas">
+            <!-- Faded out once the split opens: then they can't be tabbed to either. -->
+            <div class="ctas" inert={p >= 0.5}>
                 <OreButton href={links.invite} external variant="discord" hero size="lg"><BrandIcon brand="discord" size="1.15em" /> Add to Discord</OreButton>
                 <OreButton onclick={open} hero size="lg">▶ Try it live</OreButton>
             </div>

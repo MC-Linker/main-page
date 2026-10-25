@@ -124,6 +124,7 @@
         {/snippet}
     </OreSegments>{/if}
 
+    <OreButton href={links.guide} external variant="contrast" size="sm" class="guide">Guide</OreButton>
     <OreButton href={links.invite} external variant="discord" size="sm" class="add"><BrandIcon brand="discord" size="1.1em" /> Add to Discord</OreButton>
 
     <OreDropdown id="nav-links" bind:open align="right" size="sm" tone="dark" class="links">
@@ -140,9 +141,11 @@
                 <p class="group-title ore-text">Links</p>
             </div>{/if}
             {#each siteLinks as l (l.name)}
-                <OreMenuRow title={l.title} subtitle={l.hint} href={l.href} external={l.newTab} selected={page.url.pathname === l.href} chevron={!l.newTab}>
-                    {#snippet icon()}<McItemIcon icon={l.icon} glint={l.cta} size="1.75rem" />{/snippet}
-                </OreMenuRow>
+                <div class="row" class:phone-only={l.phoneOnly}>
+                    <OreMenuRow title={l.title} subtitle={l.hint} href={l.href} external={l.newTab} selected={page.url.pathname === l.href} chevron={!l.newTab}>
+                        {#snippet icon()}<McItemIcon icon={l.icon} glint={l.cta} size="1.75rem" />{/snippet}
+                    </OreMenuRow>
+                </div>
             {/each}
         {/snippet}
     </OreDropdown>
@@ -215,7 +218,12 @@
     .crumb:not(.last) { flex: none; }
 
     .nav :global(.sections) { flex: none; }
-    .nav :global(.add) { flex: none; margin-left: auto; }
+    /* Guide and Add to Discord sit together on the right, before Links. */
+    .nav :global(.guide) { flex: none; margin-left: auto; }
+    .nav :global(.add) { flex: none; }
+    /* Menu rows are direct children of the popup; the wrapper only adds the phone-only switch. */
+    .row { display: contents; }
+    .row.phone-only { display: none; }
     .nav :global(.links) { flex: none; }
     .narrow-only { display: none; }
 
@@ -243,7 +251,8 @@
     /* Phones: sections and links in one "Menu" dropdown. */
     @media (max-width: 760px) {
         .nav { gap: 0.4rem; padding-inline: 0.4rem 0.6rem; }
-        .nav :global(.sections), .nav :global(.add), .trail, .wide-only { display: none; }
+        .nav :global(.sections), .nav :global(.guide), .nav :global(.add), .trail, .wide-only { display: none; }
+        .row.phone-only { display: contents; }
         .nav :global(.links) { margin-left: auto; }
         .narrow-only { display: inline; }
         .group.narrow-only { display: flex; }

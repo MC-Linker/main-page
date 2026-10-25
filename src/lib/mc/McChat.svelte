@@ -21,8 +21,10 @@
         label?: string;
         /** The commands to suggest while typing one, like the game does. */
         commands?: CommandTree;
+        /** Read new lines out to screen readers. Off for scripted demos until the visitor joins in. */
+        live?: boolean;
     };
-    let { lines, onsubmit, input = $bindable(), placeholder = 'Press T to chat', max = 9, label = 'Minecraft chat', commands }: Props = $props();
+    let { lines, onsubmit, input = $bindable(), placeholder = 'Press T to chat', max = 9, label = 'Minecraft chat', commands, live = false }: Props = $props();
 
     let value = $state('');
     let focused = $state(false);
@@ -72,7 +74,7 @@
 </script>
 
 <div class="chat">
-    <ol class="lines" aria-live="polite" aria-label={label}>
+    <ol class="lines" aria-live={live ? 'polite' : 'off'} aria-label={label}>
         {#each visible as line (line.id)}
             <li in:fly={{ y: 8, duration: 200 }}><McText text={line.text} /></li>
         {/each}

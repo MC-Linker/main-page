@@ -103,6 +103,14 @@ export class Bridge {
     private scriptRunning = false;
     /** While true, the script waits before its next step (the hero's intro is showing). */
     paused = false;
+    /** Set when the hero goes away: the script stops at its next step and timers are cleared. */
+    private destroyed = false;
+    private toastTimer = 0;
+
+    destroy() {
+        this.destroyed = true;
+        clearTimeout(this.toastTimer);
+    }
 
     mcLine(text: string) {
         this.mc.push({ id: this.lineId++, text });
@@ -431,7 +439,8 @@ export class Bridge {
         await this.transfer('toDiscord');
         this.mcLine(`&aDM sent to ${member.name}: ${text}`);
         this.dmToast = text;
-        setTimeout(() => { if(this.dmToast === text) this.dmToast = null; }, 4000);
+        clearTimeout(this.toastTimer);
+        this.toastTimer = window.setTimeout(() => { if(this.dmToast === text) this.dmToast = null; }, 4000);
     }
 
     // ── The conversation that plays on load ──────────────────────────────
@@ -475,7 +484,8 @@ export class Bridge {
         ];
         for(const [wait, step] of steps) {
             await sleep(wait);
-            while(this.paused) await sleep(200);
+            while(this.paused && !this.destroyed) await sleep(200);
+            if(this.destroyed) return;
             await step();
         }
     }

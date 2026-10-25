@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
+    import { registerDiscord } from '$lib/discord/register';
     import LinkPreview from '$lib/components/LinkPreview.svelte';
     import Faq from '$lib/components/sections/Faq.svelte';
     import Features from '$lib/components/sections/Features.svelte';
@@ -7,6 +9,9 @@
     import Setup from '$lib/components/sections/Setup.svelte';
     import { site } from '$lib/data';
     import { homeEmbed, homeJsonLd } from '$lib/linkPreview';
+
+    // Only the home page shows Discord messages, so only it loads their elements.
+    onMount(registerDiscord);
 </script>
 
 <LinkPreview title={site.name} description={site.description} path="/" embed={homeEmbed()} />

@@ -49,17 +49,24 @@
         await flyPacket(stage, { mc: mcEnd, dc, logo }, dir);
     }
 
+    /** The visitor has typed in a chat: from then on, screen readers hear the replies. */
+    let joined = $state(false);
+
     function fromMinecraft(text: string) {
+        joined = true;
         if(stacked.current) (document.activeElement as HTMLElement | null)?.blur();
         void bridge.runMinecraft(text);
     }
     function fromDiscord(text: string) {
+        joined = true;
         if(stacked.current) (document.activeElement as HTMLElement | null)?.blur();
         void bridge.runDiscord(text);
     }
 
     function shortcuts(e: KeyboardEvent) {
         if(p < 1 || e.ctrlKey || e.metaKey || e.altKey || isTextField(e.target)) return;
+        // Only while the split is on screen: further down, T and / are the browser's again.
+        if(stage.getBoundingClientRect().bottom < window.innerHeight / 2) return;
         if(e.key === 't' || e.key === 'T') {
             e.preventDefault();
             mcChat.start();
@@ -98,8 +105,21 @@
     /** How far into that it is (the stuck split's offset in the track). */
     const scrolled = () => stage.getBoundingClientRect().top - track!.getBoundingClientRect().top;
 
+    /** Scroll and resize: at most once a frame. */
+    let queued = false;
     function onscroll() {
+        if(queued) return;
+        queued = true;
+        requestAnimationFrame(() => {
+            queued = false;
+            update();
+        });
+    }
+
+    function update() {
         if(!track || !stage) return;
+        // Past the hero with the split open: nothing changes until it comes back.
+        if(p === 1 && track.getBoundingClientRect().bottom < 0) return;
         const next = run() > 0 ? Math.min(1, Math.max(0, scrolled() / run())) : 1;
         if(next < 1) measure();
         // Closing: nothing in the chats stays focused.
@@ -120,8 +140,11 @@
 
     onMount(() => {
         bridge.transfer = transfer;
-        onscroll();
-        return () => document.documentElement.classList.remove('hero-snap');
+        update();
+        return () => {
+            bridge.destroy();
+            document.documentElement.classList.remove('hero-snap');
+        };
     });
 
     const ease = (t: number) => t * t * (3 - 2 * t);
@@ -140,14 +163,14 @@
 
     <!-- ── Minecraft: the game itself ─────────────────────────────────── -->
     <div class="half mc" inert={p < 0.9}>
-        <McWorld class="world" night={bridge.night} rain={bridge.rain} tile={stacked.current ? 22 : 36} hills />
+        <McWorld class="world" night={bridge.night} rain={bridge.rain} tile="var(--hero-tile)" hills />
         <div class="mc-top">
             <img class="mc-logo" src="/brands/minecraft-logo.png" alt="Minecraft" width="1499" height="261" />
             <span class="server mc-text">testing.mclinker.com · {bridge.online.length} online</span>
         </div>
         <div class="mc-hud">
             <div class="mc-chat" bind:this={mcEnd}>
-                <McChat bind:this={mcChat} commands={mcCommands} lines={bridge.mc} max={stacked.current ? 6 : 12} onsubmit={fromMinecraft} label="Minecraft chat (demo)" placeholder={keyboard.current ? 'Press T to chat' : 'Tap to chat'} />
+                <McChat bind:this={mcChat} commands={mcCommands} lines={bridge.mc} max={stacked.current ? 6 : 12} onsubmit={fromMinecraft} label="Minecraft chat (demo)" live={joined} placeholder={keyboard.current ? 'Press T to chat' : 'Tap to chat'} />
             </div>
         </div>
     </div>
@@ -157,7 +180,7 @@
         <!-- Discord's desktop title bar, with the server's name. Also room for the header's hanging banner. -->
         <div class="titlebar" aria-hidden="true"><span>Your server</span></div>
         <div class="dc-main" bind:this={dcEnd}>
-            <DemoChannel bind:this={channel} {bridge} onsubmit={fromDiscord} />
+            <DemoChannel bind:this={channel} {bridge} onsubmit={fromDiscord} live={joined} />
         </div>
     </div>
 
@@ -169,7 +192,7 @@
     <!-- ── Intro screen: over the split, out of focus, until it opens. A tap on its empty background opens it too. ── -->
     {#if p < 1}<div class="veil"></div>{/if}
         <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions (keyboard: Try it live, or a scroll key) -->
-        <div class="intro" style:pointer-events={p > 0.4 ? 'none' : 'auto'} onclick={e => e.target === e.currentTarget && open()}>
+        <div class="intro" inert={p >= 0.5} style:pointer-events={p > 0.4 ? 'none' : 'auto'} onclick={e => e.target === e.currentTarget && open()}>
             <!-- Flies down into the seam as it opens, and becomes the chain between the chats. -->
             <img class="intro-logo" class:landed={p >= 1} bind:this={introLogo} src="/logo-outlined.svg" alt="MC Linker" width="1006" height="532"
                 style:transform="translate({flight.x * q}px, {flight.y * q}px) scale({1 + (flight.s - 1) * q})" />
@@ -195,6 +218,8 @@
     :global(html.hero-snap) { scroll-snap-type: y proximity; }
     .split {
         --seam: 0px;
+        /* The world's block size, set here so the prerendered page and phones agree (no shift on load). */
+        --hero-tile: 36px;
         position: sticky;
         top: var(--nav-h);
         display: grid;
@@ -282,6 +307,7 @@
 
     /* ── Phones: Minecraft on top, Discord below, the chain on the seam between ── */
     @media (max-width: 760px) {
+        .split { --hero-tile: 22px; }
         .titlebar { display: none; }
         .dc-main :global(.content), .dc-main :global(.footer) { padding-inline: 1rem; }
         .split { grid-template-columns: minmax(0, 1fr); grid-template-rows: 44fr 56fr; min-height: 0; }

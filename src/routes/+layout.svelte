@@ -5,22 +5,14 @@
     import 'nprogress/nprogress.css';
     import nProgress from 'nprogress';
     import { onMount } from 'svelte';
-    import { browser } from '$app/environment';
     import { navigating } from '$app/state';
     import favicon from '$lib/assets/favicon.ico';
     import Footer from '$lib/components/Footer.svelte';
     import OreNav from '$lib/components/nav/OreNav.svelte';
     import { site } from '$lib/data';
-    import { fixNarrowEmbeds } from '$lib/discord/narrow';
     import { textureVars } from '$lib/pixel/textures';
 
     let { children } = $props();
-
-    // The Discord message elements are Lit web components, which need the DOM. Load them in the
-    // browser only, so the Cloudflare worker (it renders the error page) doesn't crash on import.
-    if(browser) import('@skyra/discord-components-core');
-
-    onMount(fixNarrowEmbeds);
 
     // A thin progress bar while the next page loads. Browser only: on the Cloudflare worker, which
     // renders the error page for unknown paths, nprogress's CommonJS default import is undefined.

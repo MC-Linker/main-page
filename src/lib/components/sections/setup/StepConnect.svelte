@@ -126,7 +126,7 @@
             <div class="console" aria-label="Minecraft chat">
                 <div class="stack lines">
                     <div class="sizer" aria-hidden="true"><McChat lines={mcLines} /></div>
-                    <McChat lines={shownMcLines} />
+                    <McChat lines={shownMcLines} live />
                 </div>
                 <!-- The full code, hidden, keeps the chat bar as tall as it gets once the code is typed in. -->
                 <div class="fake-input ore-field stack">

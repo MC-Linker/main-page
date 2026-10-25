@@ -8,7 +8,8 @@
     import { type Bridge, demoCommands } from './bridge.svelte';
 
     /** The hero's Discord side: the demo's #minecraft-chat channel, with a DM notification on top. */
-    let { bridge, onsubmit }: { bridge: Bridge; onsubmit: (text: string) => void } = $props();
+    /** `live`: read new messages out to screen readers (once the visitor has joined in, not for the script). */
+    let { bridge, onsubmit, live = false }: { bridge: Bridge; onsubmit: (text: string) => void; live?: boolean } = $props();
 
     let list: HTMLElement;
     let messages: HTMLElement;
@@ -50,7 +51,7 @@
 
 <div class="channel">
     <DcWindow channel="minecraft-chat" topic="Linked with testing.mclinker.com · {bridge.online.length} online">
-        <div class="dc-list" bind:this={list} {onscroll} onwheel={e => e.deltaY < 0 && stop()} ontouchmove={stop} aria-live="polite" aria-label="Discord channel (demo)">
+        <div class="dc-list" bind:this={list} {onscroll} onwheel={e => e.deltaY < 0 && stop()} ontouchmove={stop} aria-live={live ? 'polite' : 'off'} aria-label="Discord channel (demo)">
             <discord-messages no-background bind:this={messages}>
                 {#each bridge.dc as msg (msg.id)}
                     <div in:fly={{ y: 10, duration: 220 }}><DcMessage {msg} /></div>
@@ -59,7 +60,7 @@
         </div>
         {#snippet footer()}
             <DcComposer bind:this={composer} placeholder="Message #minecraft-chat" commands={demoCommands} {onsubmit} label="Discord message (demo)" hint="Try a slash command!" />
-            <div class="typing" aria-live="polite">
+            <div class="typing" aria-live={live ? 'polite' : 'off'}>
                 {#if bridge.typing}<span transition:fade={{ duration: 150 }}><i></i><i></i><i></i> <b>{bridge.typing}</b> is typing…</span>{/if}
             </div>
         {/snippet}

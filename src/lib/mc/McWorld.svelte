@@ -7,8 +7,8 @@
     type Props = {
         night?: boolean;
         rain?: boolean;
-        /** Size of one block on screen. */
-        tile?: number;
+        /** Size of one block on screen: px, or any CSS length (e.g. a variable a media query sets, so SSR and phones agree). */
+        tile?: number | string;
         /** Height of the ground, in blocks. Columns can add bumps on top. */
         ground?: number;
         clouds?: boolean;
@@ -58,29 +58,39 @@
     function hillsCanvas(canvas: HTMLCanvasElement) {
         const hills = createHills(canvas, { heights, trees, tree });
         if(!hills) return;
+        let frame = 0;
+        let visible = false;
+        const motion = matchMedia('(prefers-reduced-motion: reduce)');
+        let revealFrame = 0;
+        let revealTimer = 0;
+        // A lost context stays lost (no restore): stop drawing and keep the DOM strip.
+        let dead = false;
+        const lost = () => {
+            dead = true;
+            gl = glDone = false;
+            cancelAnimationFrame(frame);
+            cancelAnimationFrame(revealFrame);
+            clearTimeout(revealTimer);
+        };
         // Swap the DOM strip for the canvas only once a real frame is drawn: until then (or if the
         // GPU context is lost, e.g. on quick reloads) the canvas can show up blank or white.
-        const lost = (e: Event) => { e.preventDefault(); gl = glDone = false; };
-        let shown = 0;
         /** Fades the canvas in over the strip a few frames after it first drew, then drops the strip. */
         const reveal = () => {
-            if(gl || shown) return;
+            if(gl || revealFrame || dead) return;
             let frames = 0;
             const wait = () => {
-                if(hills.lost()) { shown = 0; return; }
-                if(++frames < 4) { shown = requestAnimationFrame(wait); return; }
+                if(hills.lost()) { revealFrame = 0; return; }
+                if(++frames < 4) { revealFrame = requestAnimationFrame(wait); return; }
                 gl = true;
-                shown = window.setTimeout(() => (glDone = gl), 450);
+                revealTimer = window.setTimeout(() => (glDone = gl), 450);
             };
-            shown = requestAnimationFrame(wait);
+            revealFrame = requestAnimationFrame(wait);
         };
         canvas.addEventListener('webglcontextlost', lost);
 
-        let frame = 0;
-        let visible = false;
         let start = performance.now();
         let offset = 0;
-        const render = () => hills.draw(offset);
+        const render = () => { if(!dead) hills.draw(offset); };
         const tick = (now: number) => {
             offset = ((now - start) / 1000) * (hills.loop / PAN_SECONDS);
             render();
@@ -89,6 +99,7 @@
         // Only animate while on screen, and not at all for reduced motion.
         const update = () => {
             cancelAnimationFrame(frame);
+            if(dead) return;
             if(visible && !motion.matches) {
                 start = performance.now() - (offset / hills.loop) * PAN_SECONDS * 1000;
                 frame = requestAnimationFrame(tick);
@@ -111,7 +122,6 @@
         catch { resize.observe(canvas); }
         const seen = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; update(); });
         seen.observe(canvas);
-        const motion = matchMedia('(prefers-reduced-motion: reduce)');
         motion.addEventListener('change', update);
 
         return () => {
@@ -120,8 +130,8 @@
             seen.disconnect();
             motion.removeEventListener('change', update);
             canvas.removeEventListener('webglcontextlost', lost);
-            cancelAnimationFrame(shown);
-            clearTimeout(shown);
+            cancelAnimationFrame(revealFrame);
+            clearTimeout(revealTimer);
             hills.destroy();
         };
     }
@@ -134,7 +144,7 @@
     }));
 </script>
 
-<div class="world {className}" class:night class:rain class:hills class:blurred={blur > 0} style:--tile="{tile}px" style:--ground="{ground * tile}px" style:--blur="{blur}px">
+<div class="world {className}" class:night class:rain class:hills class:blurred={blur > 0} style:--tile={typeof tile === 'number' ? `${tile}px` : tile} style:--ground="calc({ground} * var(--tile))" style:--blur="{blur}px">
     <div class="sky day" aria-hidden="true"></div>
     <div class="sky dusk" aria-hidden="true"></div>
     <div class="stars" aria-hidden="true">
@@ -267,9 +277,10 @@
         background-size: 180px 180px, 130px 130px;
         filter: blur(calc(var(--blur) / 3));
         transition: opacity 0.8s ease;
-        animation: fall 0.5s linear infinite;
+        /* Only falls while it rains (it stays running through the fade out, then stops). */
+        animation: fall 0.5s linear infinite paused;
     }
-    .rain .rainfall { opacity: 1; }
+    .rain .rainfall { opacity: 1; animation-play-state: running; }
     @keyframes fall {
         from { background-position: 0 0, 40px 0; }
         to { background-position: -12px 180px, 32px 130px; }

@@ -25,7 +25,8 @@ type Thumbnail = { type: 11; media: { url: string } };
 type Section = { type: 9; components: Text[]; accessory: Thumbnail | Button };
 type Separator = { type: 14 };
 type Row = { type: 1; components: Button[] };
-type Child = Text | Section | Separator | Row;
+type Gallery = { type: 12; items: { media: { url: string }; description?: string }[] };
+type Child = Text | Section | Separator | Row | Gallery;
 export type ComponentEmbed = { component: { type: 17; accent_color: number; components: Child[] } };
 
 const text = (content: string): Text => ({ type: 10, content });
@@ -33,17 +34,13 @@ const button = (label: string, url: string): Button => ({ type: 2, style: 5, lab
 const row = (...buttons: Button[]): Row => ({ type: 1, components: buttons });
 const section = (content: string, accessory: Thumbnail | Button): Section => ({ type: 9, components: [text(content)], accessory });
 const thumbnail = (url: string): Thumbnail => ({ type: 11, media: { url: absolute(url) } });
+const gallery = (url: string, description?: string): Gallery => ({ type: 12, items: [{ media: { url: absolute(url) }, description }] });
 const container = (...components: Child[]): ComponentEmbed => ({ component: { type: 17, accent_color: accent, components } });
 
 export function homeEmbed(): ComponentEmbed {
+    // The share card says it all: the logo and "The easiest Minecraft ⇄ Discord link."
     return container(
-        section(
-            '# MC Linker\n' +
-            'Links your Minecraft server with Discord. Chat flows both ways, and inventories, stats, moderation and role sync work right from Discord.\n' +
-            '-# Free Discord bot and server plugin · No bot to host, no config files',
-            thumbnail('/logo.png'),
-        ),
-        text('**Set up in three steps:** add the bot, install the plugin, run `/connect`.'),
+        gallery('/og.jpg', 'MC Linker: The easiest Minecraft and Discord link.'),
         { type: 14 },
         row(
             button('Add to Discord', links.invite),

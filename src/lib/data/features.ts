@@ -249,7 +249,7 @@ export const features: Feature[] = [
                     {
                         label: 'General Information',
                         embeds: [serverInfo({
-                            title: 'Server Information', thumbnail: '/logo.png', image: '/showcase/serverlist.png', footer: 'Server IP: testing.mclinker.com (1.21.4)',
+                            title: 'Server Information', thumbnail: '/logo.png', image: '/showcase/serverlist.png', footer: 'Server IP: testing.mclinker.com (26.2)',
                             fields: [
                                 { name: 'Name', value: 'Example SMP', inline: true },
                                 { name: 'MOTD', value: 'Welcome to the Example SMP!', inline: true },

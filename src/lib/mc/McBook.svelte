@@ -93,6 +93,13 @@
             {/each}
             {#if shown.length < perView}<div class="page right blank" aria-hidden="true"></div>{/if}
         </div>
+        <!-- The other pages, hidden but in the page: search engines read them, and the browser's
+             find (Ctrl+F) can reach them, which turns the book to that page. -->
+        {#each { length: count }, n (n)}
+            {#if !shown.includes(n)}
+                <div class="found" hidden="until-found" onbeforematch={() => go(n)}>{@render pageContent(n, { go, side: 'single' })}</div>
+            {/if}
+        {/each}
         <!-- The page-turn buttons, in Ore UI style. -->
         <!-- Pressing a turn button never selects text, even when clicked fast or once it is hidden. -->
         <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -123,6 +130,8 @@
             drop-shadow(0 1.25rem 1.5rem rgb(0 0 0 / 0.5));
     }
     .book-wrap.spread { --u: 4px; width: min(54rem, 100%); }
+    /* Only ever shown for an instant, while find reveals it before the book turns to it. */
+    .found { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
     .book {
         --page: #f4ebd3;
         --page-shade-1: #e9dcbc;

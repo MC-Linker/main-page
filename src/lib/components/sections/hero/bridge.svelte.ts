@@ -1,84 +1,19 @@
 import { sleep } from '$lib/browser';
 import { links } from '$lib/data';
-import { type Author, bot, chatWebhook, colors, type DcMsg, type Embed, embedStyle, type SlashCommand, success, visitor } from '$lib/discord/types';
-import type { CommandTree } from '$lib/mc/suggest';
+import { type Author, bot, chatWebhook, colors, type DcMsg, type Embed, embedStyle, success } from '$lib/discord/types';
 import type { McLine } from '$lib/mc/text';
-import type { LookName } from '$lib/pixel/heads';
+import { discordToMc, eventEmbed, members, type Player, players, privateToMc, toShort, UNKNOWN_COMMAND, webhookFor, you } from './demo/data';
+import { adminEmbed, helpEmbed, serverEmbed, worldEmbed } from './demo/embeds';
+import { execute } from './demo/server';
+
+export { demoCommands, mcCommands } from './demo/data';
 
 /*
- * The hero's pretend Minecraft server and Discord channel. Messages and
- * command replies mirror the real bot and plugin (formats taken from the
- * plugin config and the bot's language file).
+ * The hero's pretend Minecraft server and Discord channel: the state both chats show, what
+ * happens when the visitor types in either, and the short conversation that plays on load.
+ * The cast and wording are in demo/data.ts, the server's commands in demo/server.ts, and
+ * the bot's bigger replies in demo/embeds.ts.
  */
-
-type Player = { name: string; look: LookName };
-
-const players: Record<string, Player> = {
-    cubey: { name: 'Cubey', look: 'cubey' },
-    lianecx: { name: 'Lianecx', look: 'lianecx' },
-    you: { name: 'You', look: 'newbie' },
-};
-
-const members = {
-    theannoying: { name: 'TheAnnoying', avatar: { head: 'theannoying' }, color: '#f47b67' } satisfies Author,
-    bnux: { name: 'Bnux', avatar: { head: 'bnux' }, color: '#3ba55d' } satisfies Author,
-    you: visitor,
-};
-
-/** The visitor, as the user of a slash command. */
-const you = { user: visitor.name, avatar: visitor.avatar };
-
-const playerNames = (rest: CommandTree = {}): CommandTree => Object.fromEntries(['@s', 'Lianecx', 'Cubey'].map(p => [p, rest]));
-
-/** The commands the demo's Minecraft chat understands, for its suggestions (see runMinecraft and execute). */
-export const mcCommands: CommandTree = {
-    time: { set: { day: {}, noon: {}, night: {}, midnight: {} } },
-    weather: { clear: {}, rain: {}, thunder: {} },
-    gamemode: Object.fromEntries(['survival', 'creative', 'adventure', 'spectator'].map(m => [m, playerNames()])),
-    give: playerNames({ diamond: { '<count>': {} }, golden_apple: { '<count>': {} }, cake: { '<count>': {} } }),
-    say: { '<message>': {} },
-    list: {},
-    dm: { TheAnnoying: { '<message>': {} }, Bnux: { '<message>': {} } },
-    discord: {},
-    verify: {},
-    linker: {},
-};
-
-export const demoCommands: SlashCommand[] = [
-    {
-        name: 'command',
-        description: 'Execute any command on the Minecraft-server.',
-        options: ['command'],
-        suggestions: ['time set night', 'time set day', 'weather rain', 'weather thunder', 'weather clear', 'give Cubey diamond 64', 'gamemode creative Cubey', 'list', 'say Hello from Discord!'],
-    },
-    { name: 'serverinfo', description: 'View information about the connected Minecraft server.' },
-    { name: 'inventory', description: 'Get an image of the current player\'s inventory.', options: ['user'], suggestions: ['TheAnnoying'] },
-    { name: 'message', description: 'Send private chat messages to members on the server.', options: ['user', 'message'], suggestions: ['Cubey psst, behind you', 'Lianecx nice build!'] },
-    { name: 'ban', description: 'Ban a player from the Minecraft server.', options: ['user', 'reason'], suggestions: ['Griefer too much TNT'] },
-    { name: 'help', description: 'Detailed description of every command.' },
-];
-
-/** What the game says to commands it doesn't know. */
-const UNKNOWN_COMMAND = 'Unknown or incomplete command, see below for error';
-
-// The plugin's default config.yml formats.
-const discordToMc = (name: string, text: string) => `&l&9Discord &8| &l&7${name} &8>>&r ${text}`;
-const privateToMc = (name: string, text: string) => `&9&o&lDiscord &8&o| &7&o${name} whispers to you: ${text}`;
-
-const shortcodes: Record<string, string> = {
-    '💀': ':skull:', '😂': ':joy:', '❤️': ':heart:', '🔥': ':fire:', '👍': ':thumbsup:', '🛏️': ':bed:',
-    '😭': ':sob:', '🎉': ':tada:', '👋': ':wave:', '😀': ':grinning:', '😄': ':smile:', '🙂': ':slight_smile:',
-};
-/** The bot turns emoji into :shortcodes: before sending them to Minecraft. */
-const toShort = (text: string) =>
-    text.replace(/\p{Extended_Pictographic}️?/gu, m => shortcodes[m] ?? shortcodes[m.replace('️', '')] ?? ':emoji:');
-
-const webhookFor = (p: Player): Author => ({ name: p.name, avatar: { head: p.look }, tag: 'APP' });
-const eventEmbed = (p: Player, description: string, color: string): Embed => ({
-    color,
-    author: { name: p.name, avatar: { head: p.look } },
-    description,
-});
 
 /** Which way a message travels through the link. */
 export type Direction = 'toDiscord' | 'toMinecraft';
@@ -201,7 +136,7 @@ export class Bridge {
             case 'inventory': return this.inventory(rest[0]);
             case 'message': return this.message(rest[0], rest.slice(1).join(' '));
             case 'ban': return this.ban(rest[0], rest.slice(1).join(' '));
-            case 'help': return this.help();
+            case 'help': return void this.botReply('/help', [helpEmbed()]);
             default: {
                 const id = this.pending!;
                 this.pending = null;
@@ -214,41 +149,18 @@ export class Bridge {
         }
     }
 
-    /** Runs a vanilla-ish command on the pretend server and returns its output. */
-    private execute(command: string): string | null {
-        const [verb, ...a] = command.replace(/^\//, '').trim().split(/\s+/);
-        const v = verb?.toLowerCase();
-        if(v === 'time' && a[0] === 'set') {
-            const ticks: Record<string, number> = { day: 1000, noon: 6000, night: 13000, midnight: 18000 };
-            const t = ticks[a[1]] ?? Number(a[1]);
-            if(Number.isNaN(t) || a[1] === undefined) return UNKNOWN_COMMAND;
-            this.night = (t % 24000) >= 12500 && (t % 24000) < 23500;
-            return `Set the time to ${t}`;
-        }
-        if(v === 'weather') {
-            if(a[0] === 'clear') { this.rain = false; return 'Set the weather to clear'; }
-            if(a[0] === 'rain') { this.rain = true; return 'Set the weather to rain'; }
-            if(a[0] === 'thunder') { this.rain = true; return 'Set the weather to rain & thunder'; }
-        }
-        if(v === 'say' && a.length) {
-            this.mcLine(`[Server] ${a.join(' ')}`);
-            return null;
-        }
-        if(v === 'list') return `There are ${this.online.length} of a max of 20 players online: ${this.online.join(', ')}`;
-        if(v === 'gamemode' && ['survival', 'creative', 'adventure', 'spectator'].includes(a[0])) {
-            const mode = a[0][0].toUpperCase() + a[0].slice(1);
-            return a[1] ? `Set ${a[1]}'s game mode to ${mode} Mode` : `Set own game mode to ${mode} Mode`;
-        }
-        if(v === 'give' && a[0] && a[1]) {
-            const item = a[1].replace('minecraft:', '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-            return `Gave ${a[2] ?? 1} [${item}] to ${a[0]}`;
-        }
-        return UNKNOWN_COMMAND;
+    /** Runs a command on the pretend server and applies what it changed. */
+    private run(command: string) {
+        const r = execute(this, command);
+        if(r.night !== undefined) this.night = r.night;
+        if(r.rain !== undefined) this.rain = r.rain;
+        if(r.said) this.mcLine(`[Server] ${r.said}`);
+        return r.output;
     }
 
     private async remoteCommand(command: string) {
         await this.transfer('toMinecraft');
-        const output = this.execute(command);
+        const output = this.run(command);
         if(output) this.mcLine(`&7&o[Server: ${output}]`);
         await this.transfer('toDiscord');
         this.botReply('/command', [{
@@ -269,9 +181,9 @@ export class Bridge {
 
     private showInfoPage(id: number, page: InfoPage) {
         const pages: Record<InfoPage, { label: string; style?: 'danger'; embed: () => Embed }> = {
-            server: { label: 'General Information', embed: () => this.serverEmbed() },
-            world: { label: 'World Information', embed: () => this.worldEmbed() },
-            admin: { label: 'Admin Information', style: 'danger', embed: () => this.adminEmbed() },
+            server: { label: 'General Information', embed: () => serverEmbed(this) },
+            world: { label: 'World Information', embed: () => worldEmbed(this) },
+            admin: { label: 'Admin Information', style: 'danger', embed: () => adminEmbed(this) },
         };
         // Like the real bot (its Pagination helper): all buttons stay, and the open page's turns blurple.
         this.dcEdit(id, {
@@ -280,56 +192,6 @@ export class Bridge {
                 label: pages[p].label, style: p === page ? 'primary' : pages[p].style, onclick: () => this.showInfoPage(id, p),
             })),
         });
-    }
-
-    private serverEmbed(): Embed {
-        return {
-            ...embedStyle.success,
-            color: colors.brand,
-            title: 'Server Information',
-            fields: [
-                { name: 'Name', value: 'Linker SMP', inline: true },
-                { name: 'MOTD', value: 'A cozy survival server', inline: true },
-                { name: 'Players', value: `${this.online.length}/20`, inline: true },
-                { name: 'Online', value: this.online.length ? this.online.join(', ') : 'Nobody' },
-            ],
-            image: '/showcase/serverlist.png',
-            footer: 'Server IP: testing.mclinker.com (26.2)',
-        };
-    }
-
-    private worldEmbed(): Embed {
-        return {
-            ...embedStyle.success,
-            color: colors.brand,
-            title: 'World Information',
-            fields: [
-                { name: 'World', value: 'world', inline: true },
-                { name: 'Difficulty', value: 'Normal', inline: true },
-                { name: 'Hardcore', value: 'No', inline: true },
-                { name: 'Time', value: this.night ? 'Night 🌙' : 'Day ☀️', inline: true },
-                { name: 'Weather', value: this.rain ? 'Rain 🌧️' : 'Clear', inline: true },
-                { name: 'Spawn', value: '0, 64, 0', inline: true },
-            ],
-            image: '/showcase/serverlist.png',
-            footer: 'Try /command time set night, then check again',
-        };
-    }
-
-    private adminEmbed(): Embed {
-        return {
-            ...embedStyle.success,
-            color: colors.red,
-            title: 'Admin Information',
-            fields: [
-                { name: 'Operators', value: 'Lianecx', inline: true },
-                { name: 'Whitelist', value: 'Off', inline: true },
-                { name: 'Banned players', value: this.banned.length ? this.banned.join(', ') : 'None', inline: true },
-                { name: 'Plugins', value: 'Discord-Linker, EssentialsX, WorldEdit' },
-            ],
-            image: '/showcase/serverlist.png',
-            footer: 'Only server admins can see this page',
-        };
     }
 
     private inventory(user?: string) {
@@ -363,6 +225,9 @@ export class Bridge {
             return;
         }
         reason ||= 'Banned by an operator.';
+        // Names aren't case-sensitive, like in the game: `/ban cubey` bans and kicks Cubey.
+        user = this.online.find(n => n.toLowerCase() === user.toLowerCase())
+            ?? this.banned.find(n => n.toLowerCase() === user.toLowerCase()) ?? user;
         if(!this.banned.includes(user)) this.banned.push(user);
         await this.transfer('toMinecraft');
         if(this.online.includes(user)) {
@@ -376,21 +241,6 @@ export class Bridge {
             color: colors.orange,
             title: 'Ban Player',
             description: `Successfully banned player **${user}**: \`${reason}\`\n\`\`\`Banned ${user}: ${reason}\`\`\``,
-        }]);
-    }
-
-    private help() {
-        this.botReply('/help', [{
-            color: colors.blue,
-            author: { name: 'MC Linker', icon: '/logo.png' },
-            title: 'Help Menu',
-            fields: [
-                { name: 'Main', value: 'Main commands such as `/inventory`, or `/advancements`.' },
-                { name: 'Moderation', value: 'Moderation commands such as `/ban` or `/command`.' },
-                { name: 'Other', value: 'Other commands such as `/message` or `/serverinfo`.' },
-                { name: 'Settings', value: 'Setup and settings such as `/connect` or `/chatchannel`.' },
-                { name: '​', value: `**Still need help?** [Read the guide](${links.guide})` },
-            ],
         }]);
     }
 
@@ -412,7 +262,7 @@ export class Bridge {
             case 'dm': return this.dm(a[0], a.slice(1).join(' '));
         }
 
-        const output = this.execute(text);
+        const output = this.run(text);
         if(output === UNKNOWN_COMMAND) {
             this.mcLine(`&c${output}`);
             return;

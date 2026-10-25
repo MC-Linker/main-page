@@ -20,7 +20,7 @@
                 <OreButton href="#install" hero size="lg">Get the Plugin<span class="up" aria-hidden="true"></span></OreButton>
                 <OreButton href={links.invite} external variant="discord" hero size="lg"><BrandIcon brand="discord" size="1.15em" /> Add to Discord</OreButton>
             </div>
-            <p class="fine ore-text">Paper · Spigot · Fabric · Forge · NeoForge · <a href={links.guide} target="_blank" rel="noopener">Read the guide</a></p>
+            <p class="fine ore-text">Paper · Spigot · Fabric · Forge · NeoForge · <a href={links.guide}>Read the guide</a></p>
         </div>
     </div>
 </section>

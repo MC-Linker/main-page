@@ -124,7 +124,7 @@
         {/snippet}
     </OreSegments>{/if}
 
-    <OreButton href={links.guide} external variant="contrast" size="sm" class="guide">Guide</OreButton>
+    <OreButton href={links.guide} variant="contrast" size="sm" class="guide">Guide</OreButton>
     <OreButton href={links.invite} external variant="discord" size="sm" class="add"><BrandIcon brand="discord" size="1.1em" /> Add to Discord</OreButton>
 
     <OreDropdown id="nav-links" bind:open align="right" size="sm" tone="dark" class="links">

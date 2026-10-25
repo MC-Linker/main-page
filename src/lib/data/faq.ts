@@ -9,7 +9,7 @@ export const faq: Faq[] = [
         a: `Yes, every feature is free. An optional <em>Customize MC Linker</em> subscription lets you run MC Linker as your own bot with your own name, avatar and status. But <a href="${links.donate}" target="_blank" rel="noopener">donations</a> are always welcome to support our hard work! 😁`,
     },
     {
-        q: 'Do I need to host a bot or edit config files?',
+        q: 'Do I need to create or host a bot or edit config files?',
         a: 'No. The bot is hosted for you, and everything is set up with slash commands in Discord. The plugin works out of the box.',
     },
     {

@@ -9,53 +9,54 @@ import { colors, type Embed, embedStyle } from '$lib/discord/types';
 /** The server state the embeds show. */
 export type State = { online: string[]; night: boolean; rain: boolean; banned: string[] };
 
+// Mirrors the real bot's /serverinfo (commands/other/ServerInfo.js and its en_us.json embeds):
+// the general page shows only the player count, and no page shows time or weather.
 export function serverEmbed(s: State): Embed {
     return {
         ...embedStyle.success,
         color: colors.brand,
         title: 'Server Information',
+        thumbnail: '/logo.png',
         fields: [
             { name: 'Name', value: 'Linker SMP', inline: true },
             { name: 'MOTD', value: 'A cozy survival server', inline: true },
             { name: 'Players', value: `${s.online.length}/20`, inline: true },
-            { name: 'Online', value: s.online.length ? s.online.join(', ') : 'Nobody' },
         ],
         image: '/showcase/serverlist.png',
         footer: 'Server IP: testing.mclinker.com (26.2)',
     };
 }
 
-export function worldEmbed(s: State): Embed {
+export function worldEmbed(_s: State): Embed {
     return {
         ...embedStyle.success,
         color: colors.brand,
         title: 'World Information',
         fields: [
-            { name: 'World', value: 'world', inline: true },
+            { name: 'Spawn Coordinates', value: 'Players will spawn at `0, 64, 0` in world: `world`' },
+            { name: 'Allow End/Nether', value: 'End: `Enabled`\nNether: `Enabled`' },
             { name: 'Difficulty', value: 'Normal', inline: true },
-            { name: 'Hardcore', value: 'No', inline: true },
-            { name: 'Time', value: s.night ? 'Night 🌙' : 'Day ☀️', inline: true },
-            { name: 'Weather', value: s.rain ? 'Rain 🌧️' : 'Clear', inline: true },
-            { name: 'Spawn', value: '0, 64, 0', inline: true },
+            { name: 'Gamerules (only non-default values)', value: 'keepInventory: true\nplayersSleepingPercentage: 50' },
         ],
-        image: '/showcase/serverlist.png',
-        footer: 'Try /command time set night, then check again',
     };
 }
 
+// Lists show names (empty ones are left out); users, IPs and operators show only a count.
 export function adminEmbed(s: State): Embed {
     return {
         ...embedStyle.success,
-        color: colors.red,
+        color: colors.brand,
         title: 'Admin Information',
         fields: [
-            { name: 'Operators', value: 'Lianecx', inline: true },
-            { name: 'Whitelist', value: 'Off', inline: true },
-            { name: 'Banned players', value: s.banned.length ? s.banned.join(', ') : 'None', inline: true },
-            { name: 'Plugins', value: 'Discord-Linker, EssentialsX, WorldEdit' },
+            { name: 'Plugins', value: 'Discord-Linker\nEssentialsX\nWorldEdit', inline: true },
+            { name: 'Datapacks', value: 'Vanilla\nBundle', inline: true },
+            { name: 'Whitelisted Users', value: '0', inline: true },
+            { name: 'Banned Users', value: String(s.banned.length), inline: true },
+            { name: 'Banned IPs', value: '0', inline: true },
+            { name: 'Operators', value: '1', inline: true },
+            { name: 'Whitelist', value: 'Disabled', inline: true },
+            { name: 'Seed', value: '`-4172144997902289642`', inline: true },
         ],
-        image: '/showcase/serverlist.png',
-        footer: 'Only server admins can see this page',
     };
 }
 

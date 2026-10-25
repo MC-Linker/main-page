@@ -29,7 +29,8 @@ export type Preview = {
     /** Minecraft chat lines. */
     mc?: string[];
     /** Screenshots shown under "In Discord". */
-    images?: { src: string; alt: string }[];
+    /** width and height: the file's pixel size, so the page saves the space before it loads. */
+    images?: { src: string; alt: string; width: number; height: number }[];
     /** For features that are set up with choices, the choices instead of a demo. */
     options?: { title: string; choices: { name: string; text: string }[] }[];
 };
@@ -295,7 +296,7 @@ export const features: Feature[] = [
         commands: ['/statchannel'],
         guide: guide('features/stat-channels'),
         tab: 'server', icon: texture('clock'), from: 'discord',
-        preview: { images: [{ src: '/showcase/statchannel.png', alt: 'Three voice channels showing the server status, the member count and the IP' }] },
+        preview: { images: [{ src: '/showcase/statchannel.png', alt: 'Three voice channels showing the server status, the member count and the IP', width: 285, height: 170 }] },
     },
     {
         id: 'customize',
@@ -304,7 +305,7 @@ export const features: Feature[] = [
         commands: ['/customize'],
         guide: guide('features/customization'),
         tab: 'server', icon: texture('painting'), glint: true, from: 'discord',
-        preview: { images: [{ src: '/hero/profilecustomization.png', alt: 'A custom MC Linker bot profile in villager fashion' }] },
+        preview: { images: [{ src: '/hero/profilecustomization.png', alt: 'A custom MC Linker bot profile in villager fashion', width: 514, height: 519 }] },
     },
     {
         id: 'role-sync',
@@ -373,8 +374,8 @@ export const features: Feature[] = [
         tab: 'accounts', icon: texture('emerald'), from: 'discord',
         preview: {
             images: [
-                { src: '/features/linked-roles-profile.png', alt: 'A Discord message from a member with a Minecraft badge, and the linked accounts that gave it' },
-                { src: '/features/linked-roles-apps.png', alt: 'The Minecraft app on a Discord profile, powered by MC Linker' },
+                { src: '/features/linked-roles-profile.png', alt: 'A Discord message from a member with a Minecraft badge, and the linked accounts that gave it', width: 669, height: 229 },
+                { src: '/features/linked-roles-apps.png', alt: 'The Minecraft app on a Discord profile, powered by MC Linker', width: 241, height: 170 },
             ],
         },
     },

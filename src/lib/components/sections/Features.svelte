@@ -1,9 +1,11 @@
 <script lang="ts">
+    import { onMount, tick } from 'svelte';
     import { MediaQuery } from 'svelte/reactivity';
     import { fade } from 'svelte/transition';
     import { scrollBehavior } from '$lib/browser';
     import { type Feature, features, featureTabs } from '$lib/data';
     import DcMessage from '$lib/discord/DcMessage.svelte';
+    import { registerDiscord } from '$lib/discord/register';
     import { bot, colors, type DcMsg } from '$lib/discord/types';
     import { rarityColor } from '$lib/mc/item';
     import McChat from '$lib/mc/McChat.svelte';
@@ -54,8 +56,10 @@
     const worldsOf = (item: Feature) => (item.from === 'discord' ? ['discord', 'minecraft'] : ['minecraft', 'discord']) as ('discord' | 'minecraft')[];
 
     // Every state the details panel can be in: each feature, each page of a paged message, and
-    // each page with its longest private answer. Hidden copies of all of them share the panel's
-    // grid cell, so the panel is always as tall as the tallest and picking an item never resizes the section.
+    // each page with its longest private answer. The panel is kept as tall as the tallest, so picking
+    // an item never resizes the section. To find that height, hidden copies of all of them are drawn
+    // in the browser for a moment (not in the page's HTML), measured, and removed again; again
+    // when the column's width changes.
     const sizes = features.flatMap(f => {
         const pages = f.preview.paged?.pages;
         if(!pages) return [{ item: f, pg: 0, fu: null as FollowUp | null }];
@@ -78,6 +82,43 @@
         return [...shown, ...Array(rows * cols - shown.length).fill(null)];
     });
     let detail = $state<HTMLElement>();
+
+    let cell: HTMLElement;
+    let measuring = $state(false);
+    let tallest = $state(0);
+    const frame = () => new Promise(r => requestAnimationFrame(r));
+    async function measure() {
+        await Promise.all([registerDiscord(), document.fonts.ready]);
+        measuring = true;
+        await tick();
+        // The Discord elements draw themselves a moment after they're added.
+        const parts = [...cell.querySelectorAll('.sizer *')] as (Element & { updateComplete?: Promise<unknown> })[];
+        await Promise.all(parts.map(el => el.updateComplete).filter(Boolean));
+        await frame();
+        await frame();
+        tallest = Math.max(0, ...[...cell.querySelectorAll<HTMLElement>('.sizer')].map(el => el.offsetHeight));
+        measuring = false;
+    }
+
+    onMount(() => {
+        // When the page is idle, then whenever the column's width changes (that changes the heights).
+        let width = 0;
+        let timer = 0;
+        const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 200));
+        const resize = new ResizeObserver(([entry]) => {
+            const w = Math.round(entry.contentRect.width);
+            if(w === width) return;
+            const first = !width;
+            width = w;
+            clearTimeout(timer);
+            timer = window.setTimeout(() => idle(() => void measure()), first ? 0 : 250);
+        });
+        resize.observe(cell);
+        return () => {
+            resize.disconnect();
+            clearTimeout(timer);
+        };
+    });
     // The item's details next to the pointer, like hover text in the game: its name, what it
     // does and its commands. Keyboard focus puts it beside the slot. Touch never shows it.
     let tip = $state<{ item: Feature; x: number; y: number } | null>(null);
@@ -154,7 +195,7 @@
                         </discord-messages>
                     {/if}
                     {#each item.preview.images ?? [] as img (img.src)}
-                        <img class="shot" src={img.src} alt={img.alt} />
+                        <img class="shot" src={img.src} alt={img.alt} width={img.width} height={img.height} loading="lazy" />
                     {/each}
                 </div>
             {/if}
@@ -222,10 +263,12 @@
         </div>
 
             <!-- The selected feature: what it does, its commands, and how it looks in both worlds. -->
-            <div class="detail-cell">
-                {#each sizes as v, i (i)}
-                    <div class="ore-card dark raised detail sizer" aria-hidden="true" inert>{@render panel(v.item, v.pg, v.fu)}</div>
-                {/each}
+            <div class="detail-cell" bind:this={cell} style:min-height={tallest ? `${tallest}px` : undefined}>
+                {#if measuring}
+                    {#each sizes as v, i (i)}
+                        <div class="ore-card dark raised detail sizer" aria-hidden="true" inert>{@render panel(v.item, v.pg, v.fu)}</div>
+                    {/each}
+                {/if}
                 {#key selected.id}
                     <article class="ore-card dark raised detail" bind:this={detail} in:fade={{ duration: 160 }} aria-live="polite">
                         {@render panel(selected, page, followUp)}

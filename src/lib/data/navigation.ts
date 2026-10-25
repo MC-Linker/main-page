@@ -12,11 +12,11 @@ export const homeSections: HomeSection[] = [
     { id: 'faq', name: 'FAQ', title: 'Questions and answers', icon: { sprite: book } },
 ];
 
-/** The header's "Links" dropdown: links that leave the page. */
-export type SiteLink = { name: string; title: string; hint: string; href: string; icon: ItemIcon; newTab?: boolean; cta?: boolean };
+/** The header's "Links" dropdown: links that leave the page. phoneOnly rows have their own header button on wider screens. */
+export type SiteLink = { name: string; title: string; hint: string; href: string; icon: ItemIcon; newTab?: boolean; cta?: boolean; phoneOnly?: boolean };
 
 export const siteLinks: SiteLink[] = [
-    { name: 'Guide', title: 'Guide', hint: 'Opens the guide in a new tab', href: links.guide, icon: { sprite: map }, newTab: true },
+    { name: 'Guide', title: 'Guide', hint: 'Opens the guide in a new tab', href: links.guide, icon: { sprite: map }, newTab: true, phoneOnly: true },
     { name: 'Support', title: 'Support server', hint: 'Opens Discord in a new tab', href: links.support, icon: { sprite: letter }, newTab: true },
     { name: 'GitHub', title: 'GitHub', hint: 'MC Linker is completely open source', href: links.socials.github, icon: { sprite: githubBlock }, newTab: true },
     { name: 'Donate', title: 'Donate', hint: 'Opens GitHub Sponsors in a new tab', href: links.donate, icon: { sprite: heart }, newTab: true },

@@ -37,6 +37,13 @@
         if((e.target as Element).closest('a[target="_blank"]')) button.focus();
     }
 
+    // Tabbing out of the dropdown closes it too. Only when focus lands somewhere else: Safari
+    // doesn't focus links on click, and closing then would swallow the click.
+    function left(e: FocusEvent) {
+        const next = e.relatedTarget as Node | null;
+        if(open && next && !root.contains(next)) open = false;
+    }
+
     function keys(e: KeyboardEvent) {
         if(e.key === 'Escape' && open) {
             open = false;
@@ -47,8 +54,8 @@
 
 <svelte:window onpointerdown={outside} onkeydown={keys} />
 
-<div class="dropdown {size} {className}" bind:this={root}>
-    <button bind:this={button} type="button" class="face ore-face {tone === 'dark' ? 'ore-dark' : 'ore-white'} ore-text" class:pressed={open} aria-expanded={open} aria-controls={id} aria-label={label} onclick={() => (open = !open)}>
+<div class="dropdown {size} {className}" bind:this={root} onfocusout={left}>
+    <button bind:this={button} type="button" class="face ore-face {tone === 'dark' ? 'ore-dark' : 'ore-white'} ore-text" class:pressed={open} aria-expanded={open} aria-controls={open ? id : undefined} aria-label={label} onclick={() => (open = !open)}>
         <span class="value">{@render children()}</span>
         <span class="arrow" aria-hidden="true"><PixelArt sprite={chevron(tone === 'dark' ? '#ffffff' : undefined)} width="100%" /></span>
     </button>

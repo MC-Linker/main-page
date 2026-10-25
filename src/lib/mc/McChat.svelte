@@ -34,7 +34,8 @@
     const visible = $derived(lines.slice(-max));
     const suggestions = $derived(commands && focused && !dismissed ? suggest(commands, value) : null);
     const options = $derived(suggestions?.options.slice(0, 10) ?? []);
-    const listId = `mc-suggest-${Math.random().toString(36).slice(2, 8)}`;
+    const uid = $props.id();
+    const listId = `mc-suggest-${uid}`;
 
     function pick(option: string) {
         if(!commands || !suggestions) return;

@@ -17,7 +17,8 @@
     let focused = $state(false);
     /** The hint goes away for good once a command has been started. */
     let hinted = $state(false);
-    const listId = `dc-suggest-${Math.random().toString(36).slice(2, 8)}`;
+    const uid = $props.id();
+    const listId = `dc-suggest-${uid}`;
 
     $effect(() => {
         if(value.startsWith('/')) hinted = true;

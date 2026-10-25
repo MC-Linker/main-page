@@ -91,10 +91,14 @@
         let start = performance.now();
         let offset = 0;
         const render = () => { if(!dead) hills.draw(offset); };
+        // The pan is slow, so 30 frames a second look the same as 120 and cost a quarter.
+        let last = 0;
         const tick = (now: number) => {
+            frame = requestAnimationFrame(tick);
+            if(now - last < 32) return;
+            last = now;
             offset = ((now - start) / 1000) * (hills.loop / PAN_SECONDS);
             render();
-            frame = requestAnimationFrame(tick);
         };
         // Only animate while on screen, and not at all for reduced motion.
         const update = () => {
@@ -108,10 +112,12 @@
         };
 
         const resize = new ResizeObserver(([entry]) => {
+            // Under a blur, extra device pixels can't be seen but still cost GPU time.
+            const dpr = blur > 0 ? Math.min(devicePixelRatio, 1) : devicePixelRatio;
             // The exact device pixel box when the browser gives one that matches the zoom (emulators may not).
-            const w = Math.round(entry.contentRect.width * devicePixelRatio);
-            const h = Math.round(entry.contentRect.height * devicePixelRatio);
-            const box = entry.devicePixelContentBoxSize?.[0];
+            const w = Math.round(entry.contentRect.width * dpr);
+            const h = Math.round(entry.contentRect.height * dpr);
+            const box = dpr === devicePixelRatio ? entry.devicePixelContentBoxSize?.[0] : undefined;
             const exact = box && Math.abs(box.inlineSize - w) <= 1 && Math.abs(box.blockSize - h) <= 1;
             canvas.width = exact ? box.inlineSize : w;
             canvas.height = exact ? box.blockSize : h;

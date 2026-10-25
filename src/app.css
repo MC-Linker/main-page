@@ -1,149 +1,382 @@
 @import "tailwindcss";
-
-@import "tw-animate-css";
 @plugin "@tailwindcss/typography";
 
-@custom-variant dark (&:is(.dark *));
-
-body {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	padding-top: var(--header-height);
-	height: 100%;
+/* Minecraft fonts from the MC-Linker bot repo (resources/fonts), subset to woff2. */
+@font-face {
+    font-family: "Minecraft Seven";
+    src: url("/fonts/minecraft-seven.woff2") format("woff2");
+    font-display: swap;
+}
+@font-face {
+    font-family: "Mojang Studios";
+    src: url("/fonts/mojang-studios.woff2") format("woff2");
+    font-display: swap;
 }
 
-body::before {
-	content: "";
-	position: fixed;
-	inset: 0;
-	background-image: 
-		linear-gradient(var(--secondary) .1em, transparent .1em),
-		linear-gradient(90deg, var(--secondary) .1em, transparent .1em);
-	background-size: 4em 4em;
-	mask-image: linear-gradient(to right, var(--color-background), transparent 30%, transparent 70%, var(--color-background));
-	mask-repeat: no-repeat;
-	mask-size: 100% 100%;
-	z-index: -1;
-}
+/* Discord's font, as in the guide (served by the discord-components project). */
+@font-face { font-family: "Whitney"; src: url("https://cdn.skyra.pw/whitney-font/v2/Book.woff") format("woff"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Whitney"; src: url("https://cdn.skyra.pw/whitney-font/v2/Medium.woff") format("woff"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "Whitney"; src: url("https://cdn.skyra.pw/whitney-font/v2/Semibold.woff") format("woff"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "Whitney"; src: url("https://cdn.skyra.pw/whitney-font/v2/Bold.woff") format("woff"); font-weight: 700; font-display: swap; }
 
-#nprogress .bar {
-	background-color: var(--color-primary) !important;
+@theme {
+    /*
+     * Ore UI's fonts. Mojangles is the game's pixel font (Minecraft Seven here); Minecraft Ten,
+     * for titles and hero buttons, has no free licence, so titles use the pixel font drawn bold
+     * the way the game does it (see .ore-title). Long text uses Noto Sans, the game's "smooth font".
+     */
+    --font-pixel: "Minecraft Seven", "Pixelify Sans Variable", ui-monospace, monospace;
+    --font-title: "Minecraft Seven", "Pixelify Sans Variable", ui-monospace, monospace;
+    /* The Mojang Studios logo font, for small uppercase labels. */
+    --font-mojang: "Mojang Studios", "Minecraft Seven", ui-monospace, monospace;
+    --font-sans: "Noto Sans Variable", "Noto Sans", ui-sans-serif, system-ui, sans-serif;
+    /* The same stack discord-components uses for messages. */
+    --font-discord: "gg sans", "Noto Sans", Whitney, "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+
+    /*
+     * Ore UI, Bedrock Edition's menus. Sampled from the textures of bedrock-core's ore-styled
+     * theme (MIT): https://bedrock-core.drav.dev/docs/ore-styled/theme
+     */
+    --color-ore-outline: #1e1e1f;
+    --color-ore-deep: #242425;
+    --color-ore-dark: #313233;
+    --color-ore-card: #48494a;
+    --color-ore-line: #5a5b5c;
+    --color-ore-gray: #58585a;
+    --color-ore-mid: #8c8d90;
+    --color-ore-silver: #b1b2b5;
+    --color-ore-white: #d0d1d4;
+    --color-ore-light: #e6e8eb;
+    --color-ore-green: #3c8527;
+    --color-ore-green-light: #639d52;
+    --color-ore-green-dark: #1d4d13;
+    --color-ore-red: #ca3636;
+    --color-ore-purple: #7345e5;
+
+    /* Minecraft's text colours (§ codes). */
+    --color-mc-gray: #aaaaaa;
+    --color-mc-dark-gray: #555555;
+    --color-mc-green: #55ff55;
+    --color-mc-yellow: #ffff55;
+
+    /* Discord side */
+    --color-dc: #313338;
+    --color-dc-2: #2b2d31;
+    --color-dc-3: #1e1f22;
+    --color-dc-hover: #2e3035;
+    --color-dc-input: #383a40;
+    --color-dc-text: #dbdee1;
+    --color-dc-header: #f2f3f5;
+    --color-dc-muted: #949ba4;
+    --color-dc-blurple: #5865f2;
+    --color-dc-blurple-dark: #4752c4;
+
+    /* Page */
+    --color-ink: #1e1e1f;
 }
 
 :root {
-	--radius: 1rem;
-	--background: oklch(1 0 0);
-	--foreground: oklch(0.141 0.005 285.823);
-	--card: #F7F5F3;
-	--card-foreground: oklch(0.141 0.005 285.823);
-	--popover: oklch(1 0 0);
-	--popover-foreground: oklch(0.141 0.005 285.823);
-	--primary: #719D34;
-	--primary-foreground: oklch(0.985 0 0);
-	--secondary: oklch(0.967 0.001 286.375);
-	--secondary-foreground: oklch(0.21 0.006 285.885);
-	--muted: oklch(0.967 0.001 286.375);
-	--muted-foreground: oklch(0.552 0.016 285.938);
-	--accent: oklch(0.967 0.001 286.375);
-	--accent-foreground: oklch(0.21 0.006 285.885);
-	--destructive: oklch(0.577 0.245 27.325);
-	--border: oklch(0.92 0.004 286.32);
-	--input: oklch(0.92 0.004 286.32);
-	--ring: oklch(0.705 0.015 286.067);
-	--chart-1: oklch(0.646 0.222 41.116);
-	--chart-2: oklch(0.6 0.118 184.704);
-	--chart-3: oklch(0.398 0.07 227.392);
-	--chart-4: oklch(0.828 0.189 84.429);
-	--chart-5: oklch(0.769 0.188 70.08);
-	--sidebar: oklch(0.985 0 0);
-	--sidebar-foreground: oklch(0.141 0.005 285.823);
-	--sidebar-primary: oklch(0.21 0.006 285.885);
-	--sidebar-primary-foreground: oklch(0.985 0 0);
-	--sidebar-accent: oklch(0.967 0.001 286.375);
-	--sidebar-accent-foreground: oklch(0.21 0.006 285.885);
-	--sidebar-border: oklch(0.92 0.004 286.32);
-	--sidebar-ring: oklch(0.705 0.015 286.067);
-	--header-height: 4rem;
+    color-scheme: dark;
+    --mc-shadow: 0.125em;
+    /* One texture pixel of an Ore UI control. */
+    --t: 2px;
+    /* Height of the Ore UI header bar at the top of the screen. Jumps to a section land below it. */
+    --nav-h: 3.5rem;
+    /*
+     * Where a Minecraft half meets a Discord half: a pixel-stepped edge, like the grass
+     * edge in the logo. Use `mask: var(--seam-mask)` on the Minecraft half and let the
+     * Discord half reach --seam-width under it.
+     */
+    --seam-width: 12px;
+    --seam-mask:
+        linear-gradient(#000 0 0) left / calc(100% - var(--seam-width)) 100% no-repeat,
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3 8' width='12' height='32'%3E%3Cpath d='M0 0h3v2H2v2h1v1H1v3H0z'/%3E%3C/svg%3E") right top / var(--seam-width) calc(var(--seam-width) * 8 / 3) repeat-y;
 }
 
-.dark {
-	--background: #111B22;
-	--foreground: oklch(0.985 0 0);
-	--card: #0E161B;
-	--card-foreground: oklch(0.985 0 0);
-	--popover: #111B22;
-	--popover-foreground: oklch(0.985 0 0);
-	--primary: #719D34;
-	--primary-foreground: oklch(0.21 0.006 285.885);
-	--secondary: #222E35;
-	--secondary-foreground: oklch(0.985 0 0);
-	--muted: #1C272E;
-	--muted-foreground: #6B7F8A;
-	--accent: #313D43;
-	--accent-foreground: oklch(0.985 0 0);
-	--destructive: oklch(0.704 0.191 22.216);
-	--border: oklch(1 0 0 / 10%);
-	--input: oklch(1 0 0 / 15%);
-	--ring: oklch(0.552 0.016 285.938);
-	--chart-1: oklch(0.488 0.243 264.376);
-	--chart-2: oklch(0.696 0.17 162.48);
-	--chart-3: oklch(0.769 0.188 70.08);
-	--chart-4: oklch(0.627 0.265 303.9);
-	--chart-5: oklch(0.645 0.246 16.439);
-	--sidebar: oklch(0.21 0.006 285.885);
-	--sidebar-foreground: oklch(0.985 0 0);
-	--sidebar-primary: oklch(0.488 0.243 264.376);
-	--sidebar-primary-foreground: oklch(0.985 0 0);
-	--sidebar-accent: oklch(0.274 0.006 286.033);
-	--sidebar-accent-foreground: oklch(0.985 0 0);
-	--sidebar-border: oklch(1 0 0 / 10%);
-	--sidebar-ring: oklch(0.552 0.016 285.938);
+html {
+    /* The Minecraft fonts have one weight; never smear them into fake bold. */
+    font-synthesis-weight: none;
+    scroll-behavior: smooth;
+    scroll-padding-top: var(--nav-h);
+    -webkit-text-size-adjust: 100%;
 }
 
-@theme inline {
-	--radius-sm: calc(var(--radius) - 4px);
-	--radius-md: calc(var(--radius) - 2px);
-	--radius-lg: var(--radius);
-	--radius-xl: calc(var(--radius) + 4px);
-	--color-background: var(--background);
-	--color-foreground: var(--foreground);
-	--color-card: var(--card);
-	--color-card-foreground: var(--card-foreground);
-	--color-popover: var(--popover);
-	--color-popover-foreground: var(--popover-foreground);
-	--color-primary: var(--primary);
-	--color-primary-foreground: var(--primary-foreground);
-	--color-secondary: var(--secondary);
-	--color-secondary-foreground: var(--secondary-foreground);
-	--color-muted: var(--muted);
-	--color-muted-foreground: var(--muted-foreground);
-	--color-accent: var(--accent);
-	--color-accent-foreground: var(--accent-foreground);
-	--color-destructive: var(--destructive);
-	--color-border: var(--border);
-	--color-input: var(--input);
-	--color-ring: var(--ring);
-	--color-chart-1: var(--chart-1);
-	--color-chart-2: var(--chart-2);
-	--color-chart-3: var(--chart-3);
-	--color-chart-4: var(--chart-4);
-	--color-chart-5: var(--chart-5);
-	--color-sidebar: var(--sidebar);
-	--color-sidebar-foreground: var(--sidebar-foreground);
-	--color-sidebar-primary: var(--sidebar-primary);
-	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-	--color-sidebar-accent: var(--sidebar-accent);
-	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-	--color-sidebar-border: var(--sidebar-border);
-	--color-sidebar-ring: var(--sidebar-ring);
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
 }
 
-@layer base {
-	* {
-		@apply border-border outline-ring/50;
-	}
-	body {
-		@apply bg-background text-foreground;
-	}
+body {
+    margin: 0;
+    background: var(--color-ore-dark);
+    color: var(--color-ore-white);
+    font-family: var(--font-sans);
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
 }
+
+::selection {
+    background: var(--color-ore-green);
+    color: white;
+}
+
+/* Ore UI's focus: a white frame with a dark edge, readable on light and dark faces. */
+:focus-visible {
+    outline: var(--t) solid #fff;
+    outline-offset: var(--t);
+    box-shadow: 0 0 0 calc(var(--t) * 2) var(--color-ore-outline);
+}
+
+/* Minecraft-style text in the world (chat, splash texts): the game's font with its hard drop shadow. */
+.mc-text {
+    font-family: var(--font-pixel);
+    font-weight: 400;
+    text-shadow: var(--mc-shadow) var(--mc-shadow) 0 rgb(0 0 0 / 0.55);
+}
+
+/* Ore UI text: the game's font, flat. */
+.ore-text {
+    font-family: var(--font-pixel);
+    font-weight: 400;
+}
+
+/*
+ * Ore UI titles. Bedrock draws them in Minecraft Ten; here the pixel font is drawn bold
+ * the way the game draws bold text: the glyph again, a sixteenth of the size to the right.
+ */
+.ore-title {
+    font-family: var(--font-title);
+    font-weight: 400;
+    letter-spacing: 0.0625em;
+    text-shadow: 0.0625em 0 0 currentColor;
+}
+
+/* Small labels in the Mojang Studios font. It only has capitals (see scripts/mojang-capitals.py). */
+.mojang {
+    font-family: var(--font-mojang);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+/* Discord messages come from @skyra/discord-components-core. Hide them until the
+   components have loaded, so they never flash unstyled. */
+discord-messages:not(:defined) { visibility: hidden; }
+discord-messages { display: block; }
+/* Tailwind's reset (margin: 0; padding: 0 on every element) beats the components' own
+   :host styles. Give the "you used /command" and reply lines back their indent past the
+   avatar, so the curved connector lines up like in Discord. */
+discord-command, discord-reply { margin: 0 0 4px 56px; padding-top: 2px; }
+discord-command[compact-mode], discord-reply[compact-mode] { margin: 0 0 0 62px; }
+/* The same reset removes the gap between messages; put back Discord's spacing. */
+discord-message { padding-top: 0.125rem; padding-bottom: 0.125rem; }
+discord-messages > * + * { margin-top: 1.0625rem; }
+
+/* On phones: the sun sits above the page titles, out of their way. */
+@media (max-width: 760px) {
+    :root { --orb-left: 5%; --orb-top: 0.6rem; }
+}
+
+/* ── Ore UI faces ────────────────────────────────────────────────────────
+ * The face of a button, tab or toggle, drawn behind its content: a dark outline,
+ * a light top-left edge, a shaded bottom-right one and, under it, a darker edge
+ * two texture pixels tall that makes it stand up. `.sunk` (or pressing it) pushes
+ * the face down into that edge, content and all. Colour it with a palette class.
+ */
+.ore-face {
+    --depth: calc(2 * var(--t));
+    position: relative;
+    isolation: isolate;
+    padding-bottom: var(--depth);
+    border: 0;
+    background: none;
+    color: var(--ink);
+    -webkit-tap-highlight-color: transparent;
+}
+.ore-face::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border: var(--t) solid var(--outline, var(--color-ore-outline));
+    background: var(--face);
+    box-shadow:
+        inset 0 calc(-1 * var(--depth)) 0 var(--edge),
+        inset var(--t) var(--t) 0 var(--hi),
+        inset calc(-1 * var(--t)) calc(-1 * var(--t) - var(--depth)) 0 var(--shade);
+}
+.ore-face.sunk::before, .ore-face:active:not(:disabled)::before {
+    top: var(--depth);
+    box-shadow:
+        inset var(--t) var(--t) 0 var(--hi),
+        inset calc(-1 * var(--t)) calc(-1 * var(--t)) 0 var(--shade);
+}
+.ore-face.sunk > *, .ore-face:active:not(:disabled) > * { transform: translateY(var(--depth)); }
+.ore-face:focus-visible { outline-offset: 0; }
+/* A chosen tab or toggle button: a short white line under the label. */
+.ore-face.marked::after {
+    content: '';
+    position: absolute;
+    left: 33%;
+    right: 33%;
+    bottom: var(--t);
+    height: var(--t);
+    background: #fff;
+}
+
+/* Palettes: face, highlight, shade, edge and text; then pointed at, then pressed. */
+.ore-green { --face: #3c8527; --hi: #639d52; --shade: #4f913c; --edge: #1d4d13; --ink: #fff; }
+.ore-green:hover { --face: #2a641c; --hi: #7fa277; --shade: #6a9260; }
+.ore-green:active, .ore-green.pressed { --face: #1d4d13; --hi: #779471; --shade: #61825a; }
+/* A chosen toggle button stays its plain green. */
+.ore-green.sunk:not(.pressed, :active) { --face: #3c8527; --hi: #639d52; --shade: #4f913c; }
+
+.ore-white { --face: #d0d1d4; --hi: #ecedee; --shade: #e3e3e5; --edge: #58585a; --ink: #000; }
+.ore-white:hover, .ore-white:active, .ore-white.pressed { --face: #b1b2b5; --hi: #eff0f0; --shade: #e0e0e1; }
+
+.ore-dark { --face: #48494a; --hi: #6d6d6e; --shade: #5a5b5c; --edge: #313233; --ink: #fff; }
+.ore-dark:hover { --face: #58585a; --hi: #79797b; --shade: #69696a; }
+.ore-dark:active, .ore-dark.pressed, .ore-dark.sunk { --face: #313233; --hi: #5a5b5c; --shade: #464747; }
+
+.ore-red { --face: #ca3636; --hi: #d55e5e; --shade: #cf4a4a; --edge: #ad1d1d; --ink: #fff; }
+.ore-red:hover { --face: #c02d2d; --hi: #df9696; --shade: #d98181; }
+.ore-red:active, .ore-red.pressed { --face: #ad1d1d; --hi: #d68e8e; --shade: #ce7777; }
+
+.ore-purple { --face: #7345e5; --hi: #a164f2; --shade: #8e4aeb; --edge: #4a1cac; --ink: #fff; }
+.ore-purple:hover { --face: #5d2cc6; --hi: #ad69ee; --shade: #9242e2; }
+.ore-purple:active, .ore-purple.pressed { --face: #4a1cac; --hi: #a864e6; --shade: #8b3cd8; }
+
+/* Discord's blurple, shaded the same way. */
+.ore-blurple { --face: #5865f2; --hi: #7c86f5; --shade: #6a76f3; --edge: #2f3896; --ink: #fff; }
+.ore-blurple:hover { --face: #4752c4; --hi: #9ea4f2; --shade: #8a91ea; }
+.ore-blurple:active, .ore-blurple.pressed { --face: #2f3896; --hi: #8f95dc; --shade: #757bc8; }
+
+/* No face until pointed at: icon buttons in a bar. */
+.ore-clear { --depth: 0px; --outline: transparent; --face: transparent; --hi: transparent; --shade: transparent; --edge: transparent; --ink: currentColor; }
+.ore-clear:hover { --face: rgb(115 115 115 / 0.4); }
+.ore-clear:active { --face: rgb(0 0 0 / 0.25); }
+
+.ore-face:disabled, .ore-face.disabled { --outline: #58585a; --face: #b1b2b5; --hi: #b1b2b5; --shade: #b1b2b5; --edge: #8c8d90; --ink: #555555; cursor: default; }
+
+/* ── Ore UI surfaces ─────────────────────────────────────────────────────
+ * Each is the texture drawn in CSS, one texture pixel = --t: a dark outline,
+ * a flat face and, for raised ones, a darker edge along the bottom.
+ */
+.ore-card {
+    --face: var(--color-ore-card);
+    --edge: var(--color-ore-dark);
+    --depth: 0px;
+    position: relative;
+    border: var(--t) solid var(--color-ore-outline);
+    background: var(--face);
+    box-shadow: inset 0 calc(-1 * var(--depth)) 0 var(--edge);
+    padding-bottom: var(--depth);
+}
+.ore-card.light { --face: var(--color-ore-light); --edge: var(--color-ore-silver); color: #000; }
+.ore-card.dark { --face: var(--color-ore-dark); --edge: var(--color-ore-deep); }
+/* Raised: lifted off the screen by a three-pixel edge. */
+.ore-card.raised { --depth: calc(3 * var(--t)); }
+
+/* The light bar across the top of an Ore UI screen. */
+.ore-header {
+    background: var(--color-ore-light);
+    color: #000;
+    box-shadow:
+        inset 0 calc(-2 * var(--t)) 0 var(--color-ore-silver),
+        inset 0 calc(-3 * var(--t)) 0 #ebedef,
+        0 var(--t) 0 var(--color-ore-outline);
+}
+/* The dark bar, for the site's own header: a darker grey than the screen under it. */
+.ore-header.dark {
+    background: var(--color-ore-deep);
+    color: #fff;
+    box-shadow:
+        inset 0 calc(-2 * var(--t)) 0 #1a1a1b,
+        inset 0 calc(-3 * var(--t)) 0 #3a3b3c,
+        0 var(--t) 0 #121213;
+}
+
+/* A text field: dark, with a shadow along its top edge so it sits into the surface. */
+.ore-field {
+    border: var(--t) solid var(--color-ore-outline);
+    border-radius: 0;
+    background: var(--color-ore-dark);
+    box-shadow: inset 0 calc(2 * var(--t)) 0 var(--color-ore-deep);
+    color: #fff;
+    font-family: var(--font-pixel);
+    font-size: 1rem;
+}
+.ore-field::placeholder { color: var(--color-mc-gray); opacity: 1; }
+.ore-field:hover { background: #38393a; }
+.ore-field:focus-visible { outline-offset: 0; }
+
+/* A rule between rows: a dark line over a light one. */
+.ore-divider {
+    height: calc(2 * var(--t));
+    margin: 0;
+    border: 0;
+    background: linear-gradient(#323334 50%, var(--color-ore-line) 50%);
+}
+
+/* A small label on a dark face, like a world's tags in the Play screen. */
+.ore-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    padding: 0.2em 0.45em 0.25em;
+    border: var(--t) solid var(--color-ore-outline);
+    background: var(--color-ore-dark);
+    color: #fff;
+    font-family: var(--font-pixel);
+    font-size: 0.8rem;
+    line-height: 1;
+    white-space: nowrap;
+}
+.ore-tag.green { background: var(--color-ore-green); }
+.ore-tag.light { background: var(--color-ore-light); color: #000; }
+
+/* Section headings: a title in the game's font and a line of text. */
+.section-head { padding: 0 1rem; text-align: center; }
+.section-head .kicker { margin: 0 0 0.75rem; font-size: 1rem; color: var(--color-mc-green); }
+.section-head h2 { margin: 0; font-size: clamp(2rem, 4.5vw, 3rem); line-height: 1.15; color: #fff; }
+.section-head p:not(.kicker) { margin: 0.9rem auto 0; max-width: 34rem; color: var(--color-ore-white); line-height: 1.6; }
+
+.skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -4rem;
+    z-index: 100;
+    padding: 0.5rem 1rem;
+    background: var(--color-ore-green);
+    color: #fff;
+    font-weight: 700;
+}
+.skip-link:focus { top: 1rem; }
+
+#nprogress .bar {
+    background: var(--color-ore-green-light) !important;
+    height: 3px !important;
+}
+
+/* Every link that opens a new tab ends in a small pixel arrow pointing out, in the link's own colour.
+   Screen readers hear "(opens in a new tab)" instead. Links that draw their own arrow have .own-arrow. */
+a[target="_blank"]:not(.ore-btn, .own-arrow)::after,
+/* Ore buttons draw it inside their label, so it stays beside the words when the label wraps. */
+a.ore-btn[target="_blank"] > .label::after {
+    content: "" / " (opens in a new tab)";
+    display: inline-block;
+    flex: none;
+    width: 0.55em;
+    height: 0.55em;
+    margin-left: 0.3em;
+    vertical-align: 0.2em;
+    background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 6' shape-rendering='crispEdges'%3E%3Crect x='2' y='0' width='1' height='1'/%3E%3Crect x='3' y='0' width='1' height='1'/%3E%3Crect x='4' y='0' width='1' height='1'/%3E%3Crect x='5' y='0' width='1' height='1'/%3E%3Crect x='4' y='1' width='1' height='1'/%3E%3Crect x='5' y='1' width='1' height='1'/%3E%3Crect x='3' y='2' width='1' height='1'/%3E%3Crect x='5' y='2' width='1' height='1'/%3E%3Crect x='2' y='3' width='1' height='1'/%3E%3Crect x='5' y='3' width='1' height='1'/%3E%3Crect x='1' y='4' width='1' height='1'/%3E%3Crect x='0' y='5' width='1' height='1'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 6' shape-rendering='crispEdges'%3E%3Crect x='2' y='0' width='1' height='1'/%3E%3Crect x='3' y='0' width='1' height='1'/%3E%3Crect x='4' y='0' width='1' height='1'/%3E%3Crect x='5' y='0' width='1' height='1'/%3E%3Crect x='4' y='1' width='1' height='1'/%3E%3Crect x='5' y='1' width='1' height='1'/%3E%3Crect x='3' y='2' width='1' height='1'/%3E%3Crect x='5' y='2' width='1' height='1'/%3E%3Crect x='2' y='3' width='1' height='1'/%3E%3Crect x='5' y='3' width='1' height='1'/%3E%3Crect x='1' y='4' width='1' height='1'/%3E%3Crect x='0' y='5' width='1' height='1'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+/* The label already spaces its parts out; pull the arrow back to the same distance as in text. */
+a.ore-btn[target="_blank"] > .label::after { margin-left: -0.25em; }

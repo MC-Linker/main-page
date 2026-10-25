@@ -1,0 +1,23 @@
+# Keep the per-branch preview deployments out of search results.
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex
+https://:version.:project.pages.dev/*
+  X-Robots-Tag: noindex
+
+# Static files keep their names when they change, so cache them for a while rather than forever.
+/fonts/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=604800
+/mc/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=604800
+/emoji/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=604800
+/brands/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=604800
+/features/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/showcase/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/hero/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/profiles/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800

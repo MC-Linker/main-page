@@ -1,0 +1,113 @@
+<script lang="ts">
+    import { tick } from 'svelte';
+    import { fade, fly } from 'svelte/transition';
+    import { scrollBehavior } from '$lib/browser';
+    import DcComposer from '$lib/discord/DcComposer.svelte';
+    import DcMessage from '$lib/discord/DcMessage.svelte';
+    import DcWindow from '$lib/discord/DcWindow.svelte';
+    import { type Bridge, demoCommands } from './bridge.svelte';
+
+    /** The hero's Discord side: the demo's #minecraft-chat channel, with a DM notification on top. */
+    /** `live`: read new messages out to screen readers (once the visitor has joined in, not for the script). */
+    let { bridge, onsubmit, live = false }: { bridge: Bridge; onsubmit: (text: string) => void; live?: boolean } = $props();
+
+    let list: HTMLElement;
+    let messages: HTMLElement;
+    let composer: DcComposer;
+    /** Whether the list is scrolled to the bottom. Scroll up to read, and it stops following. */
+    let following = true;
+
+    const toBottom = () => list?.scrollTo({ top: list.scrollHeight, behavior: scrollBehavior() });
+
+    // A new message always comes into view.
+    $effect(() => {
+        void bridge.dc.length;
+        void bridge.typing;
+        following = true;
+        tick().then(toBottom);
+    });
+
+    // Messages also grow in place: a command's "is thinking..." turns into its reply, images load.
+    // Keep following them down while the list is at the bottom.
+    $effect(() => {
+        const ro = new ResizeObserver(() => {
+            if(following) list.scrollTo({ top: list.scrollHeight });
+        });
+        ro.observe(messages);
+        return () => ro.disconnect();
+    });
+
+    // Only you scrolling up stops it following (not its own smooth scroll); back at the bottom, it follows again.
+    const stop = () => (following = false);
+    function onscroll() {
+        if(list.scrollHeight - list.scrollTop - list.clientHeight < 48) following = true;
+    }
+
+    /** Starts typing in the message box, e.g. "/" to open the command list. */
+    export function start(text = '/') {
+        composer.start(text);
+    }
+</script>
+
+<div class="channel">
+    <DcWindow channel="minecraft-chat" topic="Linked with testing.mclinker.com · {bridge.online.length} online">
+        <div class="dc-list" bind:this={list} {onscroll} onwheel={e => e.deltaY < 0 && stop()} ontouchmove={stop} aria-live={live ? 'polite' : 'off'} aria-label="Discord channel (demo)">
+            <discord-messages no-background bind:this={messages}>
+                {#each bridge.dc as msg (msg.id)}
+                    <div in:fly={{ y: 10, duration: 220 }}><DcMessage {msg} /></div>
+                {/each}
+            </discord-messages>
+        </div>
+        {#snippet footer()}
+            <DcComposer bind:this={composer} placeholder="Message #minecraft-chat" commands={demoCommands} {onsubmit} label="Discord message (demo)" hint="Try a slash command!" />
+            <div class="typing" aria-live={live ? 'polite' : 'off'}>
+                {#if bridge.typing}<span transition:fade={{ duration: 150 }}><i></i><i></i><i></i> <b>{bridge.typing}</b> is typing…</span>{/if}
+            </div>
+        {/snippet}
+    </DcWindow>
+    {#if bridge.dmToast}
+        <div class="dm-toast" role="status" transition:fly={{ y: -12, duration: 250 }}>
+            <span class="dm-icon" aria-hidden="true">📬</span>
+            <span><b>New DM from You</b><br />{bridge.dmToast}</span>
+        </div>
+    {/if}
+</div>
+
+<style>
+    /* Fills whatever height the hero's panel gives it; the message list takes the rest. */
+    .channel { position: relative; flex: 1; min-height: 0; display: flex; }
+    .channel :global(.window) { flex: 1; }
+    .channel :global(.content) { display: flex; flex-direction: column; }
+    .dc-list {
+        flex: 1;
+        min-height: 10rem;
+        height: 0;
+        /* Room between the last message and the message box, like Discord's. */
+        padding-bottom: 1.25rem;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-width: thin;
+        scrollbar-color: #1a1b1e transparent;
+        display: flex;
+        flex-direction: column;
+    }
+    .dc-list > :first-child { margin-top: auto; }
+    .typing { height: 1.25rem; padding-top: 0.25rem; font-size: 0.75rem; color: var(--color-dc-text); }
+    .typing b { font-weight: 700; }
+    .typing i {
+        display: inline-block; width: 5px; height: 5px; margin-right: 2px; border-radius: 50%;
+        background: var(--color-dc-text); animation: blink 1s infinite;
+    }
+    .typing i:nth-child(2) { animation-delay: 0.15s; }
+    .typing i:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes blink { 50% { opacity: 0.3; } }
+
+    .dm-toast {
+        position: absolute; top: 3.5rem; right: 0.75rem; z-index: 3;
+        display: flex; gap: 0.6rem; align-items: flex-start; max-width: 16rem; padding: 0.6rem 0.8rem;
+        border-radius: 8px; background: #111214; box-shadow: 0 8px 24px rgb(0 0 0 / 0.5);
+        font-size: 0.85rem; line-height: 1.35;
+    }
+    .dm-icon { font-size: 1.25rem; }
+
+</style>

@@ -1,41 +1,47 @@
 <script lang="ts">
-	import "../app.css";
-	import "nprogress/nprogress.css";
+    import '../app.css';
+    import '@fontsource-variable/pixelify-sans';
+    import '@fontsource-variable/noto-sans';
+    import 'nprogress/nprogress.css';
+    import nProgress from 'nprogress';
+    import { onMount } from 'svelte';
+    import { navigating } from '$app/state';
+    import favicon from '$lib/assets/favicon.ico';
+    import Footer from '$lib/components/Footer.svelte';
+    import OreNav from '$lib/components/nav/OreNav.svelte';
+    import { site } from '$lib/data';
+    import { textureVars } from '$lib/pixel/textures';
 
-	import { ModeWatcher, setMode } from "mode-watcher";
-	import { navigating } from '$app/state';
+    let { children } = $props();
 
-	import nProgress from "nprogress";
-	import favicon from '$lib/assets/favicon.ico';
-
-    import Navbar from "$lib/components/navbar.svelte";
-    import Footer from "$lib/components/footer.svelte";
-
-	nProgress.configure({ parent: "body", minimum: 0.4, trickleSpeed: 200, showSpinner: false, easing: "ease-out", speed: 300 });
-	$effect(() => {
-		if(navigating.to) nProgress.start()
-		else nProgress.done();
-	});
-
-	let { children } = $props();
-	setMode("dark");
+    // A thin progress bar while the next page loads. Browser only: on the Cloudflare worker, which
+    // renders the error page for unknown paths, nprogress's CommonJS default import is undefined.
+    onMount(() => nProgress.configure({ minimum: 0.4, trickleSpeed: 200, showSpinner: false }));
+    $effect(() => {
+        if(navigating.to) nProgress.start();
+        else nProgress.done();
+    });
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
-	<title>MC Linker</title>
-
-	<meta content="MC Linker" property="og:title" />
-	<meta content="Moderate and connect your Minecraft server with Discord! This bot allows you to view Minecraft statistics, advancements, and even inventories of members in Discord. Also supports a powerful two-way chat with Minecraft, command execution and many other helpful features." property="og:description" />
-	<meta content="https://mclinker.com/logo.png" property="og:image" />
-	<meta content="#729e34" data-react-helmet="true" name="theme-color" />
-
-	<meta name="description" content="Link your Minecraft server with Discord">
-	<meta name="keywords" content="Discord, Minecraft, Bot, Link">
-	<meta name="author" content="TheAnnoying, Lianecx">
+    <link rel="icon" href={favicon} sizes="32x32" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <link rel="apple-touch-icon" href="/logo-bg.png" />
+    <link rel="preload" href="/fonts/minecraft-seven.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+    <title>MC Linker · Link Minecraft and Discord</title>
+    <meta name="author" content="Lianecx, TheAnnoying" />
+    <meta name="theme-color" content={site.themeColor} />
+    {@html `<style>:root{${textureVars}}</style>`}
 </svelte:head>
 
-<ModeWatcher />
-<Navbar />
-{@render children?.()}
+<a class="skip-link" href="#main">Skip to content</a>
+<OreNav />
+<!-- Every page starts under the header bar. -->
+<main id="main" class="under-nav">
+    {@render children?.()}
+</main>
 <Footer />
+
+<style>
+    .under-nav { padding-top: var(--nav-h); }
+</style>

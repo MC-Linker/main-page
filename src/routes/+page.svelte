@@ -1,50 +1,25 @@
 <script lang="ts">
-    import { Button } from "$lib/components/ui/button/index";
-    import * as Popover from "$lib/components/ui/popover/index.js";
-    import Hero from "$lib/components/hero.svelte";
+    import { onMount } from 'svelte';
+    import { registerDiscord } from '$lib/discord/register';
+    import LinkPreview from '$lib/components/LinkPreview.svelte';
+    import Faq from '$lib/components/sections/Faq.svelte';
+    import Features from '$lib/components/sections/Features.svelte';
+    import FinalCta from '$lib/components/sections/FinalCta.svelte';
+    import Hero from '$lib/components/sections/Hero.svelte';
+    import Setup from '$lib/components/sections/Setup.svelte';
+    import { site } from '$lib/data';
+    import { homeEmbed, homeJsonLd } from '$lib/linkPreview';
 
-    import { hero, links } from "$lib/index";
-    import { UserPlus, Blocks } from "@lucide/svelte";
-    import { fly } from "svelte/transition";
+    // Only the home page shows Discord messages, so only it loads their elements.
+    onMount(registerDiscord);
 </script>
-<div in:fly={{ y: 20, delay: 200 }} class="flex flex-col gap-2 items-center md:w-1/3 w-3/4 m-32">
-    <img src="/banner.png" alt="MC Linker Banner" />
-    <span class="text-center">Link your Minecraft server with Discord</span>
-    <div class="flex flex-row gap-2">
-        <Button size="lg" variant="default" href={links.invites.bot} target="_blank">
-            <UserPlus />
-            Invite Bot
-        </Button>
-        <Popover.Root>
-            <Popover.Trigger>
-                <Button size="lg" variant="secondary">
-                    <Blocks />
-                    Plugin
-                </Button>
-            </Popover.Trigger>
-            <Popover.Content class="flex flex-row gap-2">
-                <Button variant="outline" href={links.plugin.spigot} target="_blank">
-                    <img src="/brands/spigot.png" alt="Spigot Icon" class="h-5">
-                    Spigot
-                </Button>
-                <Button variant="outline" href={links.plugin.modrinth} target="_blank">
-                    <img src="/brands/modrinth.svg" alt="Modrinth Icon" class="h-5 fill-amber-50" />
-                    Modrinth
-                </Button>
-            </Popover.Content>
-        </Popover.Root>
-    </div>
-</div>
-<div class="transition-all flex flex-col gap-20 md:w-3xl w-xs mb-32">
-    {#each hero as data, i}
-        <Hero
-            order={i+1}
-            reverse={i % 2 !== 0}
-            image={data.image}
-            alt={data.alt}
-            title={data.title}
-            description={data.description}
-            link={data.link}
-        />
-    {/each}
-</div>
+
+<LinkPreview title={site.name} description={site.description} path="/" embed={homeEmbed()} />
+<svelte:head>{@html homeJsonLd()}</svelte:head>
+
+<!-- The sections, top to bottom. The header bar links to them by id (see data/navigation.ts). -->
+<Hero />
+<Setup />
+<Features />
+<Faq />
+<FinalCta />

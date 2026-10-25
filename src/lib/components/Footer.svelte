@@ -41,7 +41,7 @@
         <nav aria-label="More">
             <p class="col-label ore-text">More</p>
             <ul>
-                <li><a href={links.guide} target="_blank" rel="noopener">Guide</a></li>
+                <li><a href={links.guide}>Guide</a></li>
                 <li><a href={links.pages.team}>Meet the team</a></li>
                 <li><a href={links.pages.terms}>Terms of Service</a></li>
                 <li><a href={links.pages.privacy}>Privacy Policy</a></li>

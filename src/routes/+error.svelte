@@ -23,7 +23,7 @@
     <p class="score ore-text">Score: <span>{page.status}</span></p>
     <div class="buttons">
         <OreButton href="/" hero size="lg">Respawn</OreButton>
-        <OreButton href={links.guide} external variant="secondary" size="lg">Read the guide</OreButton>
+        <OreButton href={links.guide} variant="secondary" size="lg">Read the guide</OreButton>
     </div>
 </section>
 

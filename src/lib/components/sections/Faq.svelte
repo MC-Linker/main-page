@@ -28,7 +28,7 @@
         <p class="answer">{@html faq[p.index].a}</p>
     {:else}
         <h3 class="bold">More answers</h3>
-        <p class="answer">The guide has a longer <a href={guide('help/faq')} target="_blank" rel="noopener">FAQ</a> and a <a href={guide('help/troubleshooting')} target="_blank" rel="noopener">troubleshooting</a> page for when something doesn't work.</p>
+        <p class="answer">The guide has a longer <a href={guide('help/faq')}>FAQ</a> and a <a href={guide('help/troubleshooting')}>troubleshooting</a> page for when something doesn't work.</p>
         <p class="answer">Thanks for reading!</p>
         <p class="sign">- <a class="team" href="/team" target="_blank">The MC Linker team</a></p>
     {/if}
@@ -52,7 +52,7 @@
     <McBook count={pages.length} label="Questions and answers" spread={wide.current} page={bookPage} />
 
     <div class="done">
-        <OreButton href={links.guide} external variant="secondary" size="lg">Read the guide</OreButton>
+        <OreButton href={links.guide} variant="secondary" size="lg">Read the guide</OreButton>
         <OreButton href={links.support} external variant="discord" size="lg"><BrandIcon brand="discord" size="1.1em" /> Ask on Discord</OreButton>
     </div>
 </section>

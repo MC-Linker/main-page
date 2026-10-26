@@ -374,8 +374,9 @@ export const features: Feature[] = [
         tab: 'accounts', icon: texture('emerald'), from: 'discord',
         preview: {
             images: [
-                { src: '/features/linked-roles-profile.png', alt: 'A Discord message from a member with a Minecraft badge, and the linked accounts that gave it', width: 669, height: 229 },
-                { src: '/features/linked-roles-apps.png', alt: 'The Minecraft app on a Discord profile, powered by MC Linker', width: 241, height: 170 },
+                { src: '/features/linked-roles-chat.png', alt: 'Discord messages from a member showing the Minecrafter role tag', width: 420, height: 194 },
+                { src: '/features/linked-roles-popup.png', alt: 'The role popup: has a verified Minecraft account, linked through MC Linker', width: 400, height: 149 },
+                { src: '/features/linked-roles-apps.png', alt: 'The Minecraft app on a Discord profile, powered by MC Linker', width: 400, height: 91 },
             ],
         },
     },

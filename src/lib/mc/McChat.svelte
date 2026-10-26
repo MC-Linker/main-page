@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { tick } from 'svelte';
     import { fly } from 'svelte/transition';
     import OreButton from '$lib/ore/OreButton.svelte';
     import { sendArrow } from '$lib/ore/sprites';
@@ -23,15 +24,28 @@
         commands?: CommandTree;
         /** Read new lines out to screen readers. Off for scripted demos until the visitor joins in. */
         live?: boolean;
+        /** Keep the history and let it scroll (it fills the height it's given), instead of only the last `max` lines. */
+        scroll?: boolean;
     };
-    let { lines, onsubmit, input = $bindable(), placeholder = 'Press T to chat', max = 9, label = 'Minecraft chat', commands, live = false }: Props = $props();
+    let { lines, onsubmit, input = $bindable(), placeholder = 'Press T to chat', max = 9, label = 'Minecraft chat', commands, live = false, scroll = false }: Props = $props();
 
     let value = $state('');
     let focused = $state(false);
     /** Hidden with Escape until the input changes, like in the game. */
     let dismissed = $state(false);
     let active = $state(0);
-    const visible = $derived(lines.slice(-max));
+    const visible = $derived(lines.slice(scroll ? -100 : -max));
+
+    // Scrolling: new lines come into view, unless you've scrolled up to read.
+    let list = $state<HTMLElement>();
+    let following = true;
+    $effect(() => {
+        void visible.length;
+        if(scroll && following) tick().then(() => list && (list.scrollTop = list.scrollHeight));
+    });
+    function onscroll() {
+        if(list) following = list.scrollHeight - list.scrollTop - list.clientHeight < 24;
+    }
     const suggestions = $derived(commands && focused && !dismissed ? suggest(commands, value) : null);
     const options = $derived(suggestions?.options.slice(0, 10) ?? []);
     const uid = $props.id();
@@ -75,7 +89,7 @@
 </script>
 
 <div class="chat">
-    <ol class="lines" aria-live={live ? 'polite' : 'off'} aria-label={label}>
+    <ol class="lines" class:scroll bind:this={list} onscroll={scroll ? onscroll : undefined} aria-live={live ? 'polite' : 'off'} aria-label={label}>
         {#each visible as line (line.id)}
             <li in:fly={{ y: 8, duration: 200 }}><McText text={line.text} /></li>
         {/each}
@@ -122,6 +136,10 @@
 <style>
     .chat { display: flex; flex-direction: column; gap: 0.5rem; font-family: var(--font-pixel); font-size: 1rem; line-height: 1.35; }
     .lines { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; justify-content: flex-end; }
+    /* Scrolling, the lines still sit at the bottom (justify-content: flex-end would cut off the oldest). */
+    .lines.scroll { justify-content: flex-start; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+    .lines.scroll::-webkit-scrollbar { display: none; }
+    .lines.scroll > :first-child { margin-top: auto; }
     .lines li {
         padding: 0.0625rem 0.5rem;
         background: rgb(0 0 0 / 0.5);

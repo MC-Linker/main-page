@@ -192,7 +192,7 @@
         </div>
         <div class="mc-hud">
             <div class="mc-chat" bind:this={mcEnd}>
-                <McChat bind:this={mcChat} commands={mcCommands} lines={bridge.mc} max={stacked.current ? 6 : 12} onsubmit={fromMinecraft} label="Minecraft chat (demo)" live={joined} placeholder={keyboard.current ? 'Press T to chat' : 'Tap to chat'} />
+                <McChat bind:this={mcChat} commands={mcCommands} lines={bridge.mc} scroll onsubmit={fromMinecraft} label="Minecraft chat (demo)" live={joined} placeholder={keyboard.current ? 'Press T to chat' : 'Tap to chat'} />
             </div>
         </div>
     </div>
@@ -271,7 +271,7 @@
     .mc-chat { width: min(100%, 42rem); height: min(36rem, calc(100svh - var(--nav-h) - 9rem)); display: flex; flex-direction: column; justify-content: flex-end; }
     .mc-chat :global(.chat) { font-size: 1.15rem; }
     .mc-chat :global(.chat) { flex: 1; min-height: 0; justify-content: flex-end; }
-    .mc-chat :global(.lines) { flex: 1; min-height: 0; overflow: hidden; }
+    .mc-chat :global(.lines) { flex: 1; min-height: 0; }
 
     /* ── Discord ── */
     .half.dc {

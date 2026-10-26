@@ -1,4 +1,3 @@
-import type { CommandTree } from '$lib/mc/suggest';
 import type { Look, LookName } from '$lib/pixel/heads';
 
 /** A picture URL, a pixel-art player head, or a coloured circle with a letter. */
@@ -68,8 +67,6 @@ export type SlashCommand = {
     options?: string[];
     /** Values offered after the command name, like the bot's tab-completion. */
     suggestions?: string[];
-    /** Minecraft commands to autocomplete word by word, like the bot's /command (instead of `suggestions`). */
-    tree?: CommandTree;
 };
 
 /** discord.js colour names used by the bot. */

@@ -4,7 +4,6 @@
     import { fade } from 'svelte/transition';
     import { scrollBehavior } from '$lib/browser';
     import { type Feature, features, featureTabs } from '$lib/data';
-    import CommandDemo from './features/CommandDemo.svelte';
     import DcMessage from '$lib/discord/DcMessage.svelte';
     import { registerDiscord } from '$lib/discord/register';
     import { bot, colors, type DcMsg } from '$lib/discord/types';
@@ -155,7 +154,7 @@
     }
 </script>
 
-{#snippet panel(item: Feature, pg: number, fu: FollowUp | null, sizer = false)}
+{#snippet panel(item: Feature, pg: number, fu: FollowUp | null)}
     {@const paged = pagedMsg(item, pg)}
     {@const answer = followUpMsg(fu)}
     <header class="d-head">
@@ -178,7 +177,6 @@
             {/each}
         </div>
     {/if}
-    {#if item.preview.command}<CommandDemo still={sizer} />{/if}
     <div class="worlds">
         {#each worldsOf(item) as world (world)}
             {#if world === 'minecraft' && item.preview.mc}
@@ -268,7 +266,7 @@
             <div class="detail-cell" bind:this={cell} style:min-height={tallest ? `${tallest}px` : undefined}>
                 {#if measuring}
                     {#each sizes as v, i (i)}
-                        <div class="ore-card dark raised detail sizer" aria-hidden="true" inert>{@render panel(v.item, v.pg, v.fu, true)}</div>
+                        <div class="ore-card dark raised detail sizer" aria-hidden="true" inert>{@render panel(v.item, v.pg, v.fu)}</div>
                     {/each}
                 {/if}
                 {#key selected.id}

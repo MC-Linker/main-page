@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { complete, discordChoices } from '$lib/mc/suggest';
     import type { SlashCommand } from './types';
 
     type Props = {
@@ -10,20 +9,11 @@
         label?: string;
         /** A small bubble pointing at the "/" button, until a command is started. */
         hint?: string;
-        /** What is typed, for a page that types into the box itself. */
-        value?: string;
-        /** The highlighted suggestion. */
-        active?: number;
-        /** Show the suggestions even while the box isn't focused (while the page types into it). */
-        showList?: boolean;
-        /** Called when the visitor clicks or types into the box. */
-        ontouch?: () => void;
     };
-    let {
-        placeholder, commands = [], onsubmit, input = $bindable(), label = placeholder, hint,
-        value = $bindable(''), active = $bindable(0), showList = false, ontouch,
-    }: Props = $props();
+    let { placeholder, commands = [], onsubmit, input = $bindable(), label = placeholder, hint }: Props = $props();
 
+    let value = $state('');
+    let active = $state(0);
     let focused = $state(false);
     /** The hint goes away for good once a command has been started. */
     let hinted = $state(false);
@@ -35,7 +25,6 @@
     });
 
     type Suggestion = { label: string; description: string; fill: string };
-    type Result = { list: Suggestion[]; usage?: string };
 
     // Once "/name " is typed, the command turns into chips and the rest is the first option's value.
     const cmd = $derived.by(() => {
@@ -45,36 +34,21 @@
     const tail = $derived(cmd ? value.slice(cmd.name.length + 2) : value);
     const option = $derived(cmd?.options?.[0]);
 
-    const result = $derived.by<Result>(() => {
-        if(cmd?.tree) {
-            // Like the bot: the whole command with the word being typed filled in. Picking one
-            // adds a space when more can follow, so the next word's choices show straight away.
-            const tree = cmd.tree;
-            const { choices, hint: usage } = discordChoices(tree, tail);
-            const list = choices
-                .filter(c => c !== tail)
-                .map(c => ({ label: c, description: '', fill: `/${cmd.name} ${complete(tree, `/${c}`, 1, c).slice(1)}` }));
-            return { list, usage: list.length ? undefined : usage };
-        }
+    const suggestions = $derived.by<Suggestion[]>(() => {
         if(cmd) {
             const arg = tail.toLowerCase();
-            const list = (cmd.suggestions ?? [])
+            return (cmd.suggestions ?? [])
                 .filter(s => s.toLowerCase().startsWith(arg) && s.toLowerCase() !== arg)
                 .slice(0, 6)
                 .map(s => ({ label: s, description: '', fill: `/${cmd.name} ${s}` }));
-            return { list };
         }
-        if(!value.startsWith('/')) return { list: [] };
+        if(!value.startsWith('/')) return [];
         const name = value.slice(1).toLowerCase();
-        const list = commands
+        return commands
             .filter(c => c.name.startsWith(name))
             .map(c => ({ label: `/${c.name}`, description: c.description, fill: `/${c.name} ` }));
-        return { list };
     });
-    const suggestions = $derived(result.list);
-    const open = $derived((focused || showList) && suggestions.length > 0);
-    /** The grey usage of a free-text word (like `<count>`), when there is nothing to pick. */
-    const usage = $derived((focused || showList) && !open ? result.usage : undefined);
+    const open = $derived(focused && suggestions.length > 0);
 
     // A new list starts at its first entry.
     $effect(() => {
@@ -89,12 +63,6 @@
         if(!el || !list) return;
         if(el.offsetTop < list.scrollTop) list.scrollTop = el.offsetTop;
         else if(el.offsetTop + el.offsetHeight > list.scrollTop + list.clientHeight) list.scrollTop = el.offsetTop + el.offsetHeight - list.clientHeight;
-    });
-
-    // While the page types into the box, keep the end of a long command in view.
-    $effect(() => {
-        void value;
-        if(input && !focused) input.scrollLeft = input.scrollWidth;
     });
 
     function pick(s: Suggestion) {
@@ -135,8 +103,7 @@
     }
 </script>
 
-<!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="composer" class:stacked={open || cmd} class:open onpointerdown={() => ontouch?.()} onkeydown={() => ontouch?.()}>
+<div class="composer" class:stacked={open || cmd} class:open>
     {#if open}
         <ul class="suggest" id={listId} role="listbox" aria-label="Commands" bind:this={list}>
             <li class="suggest-head" aria-hidden="true">
@@ -151,9 +118,6 @@
                 </li>
             {/each}
         </ul>
-    {/if}
-    {#if usage}
-        <p class="usage" aria-hidden="true">{usage}</p>
     {/if}
     {#if cmd}
         <div class="info"><span class="i-name">/{cmd.name}</span><span class="i-desc">{cmd.description}</span></div>
@@ -246,7 +210,7 @@
         position: absolute; left: 0; right: 0; bottom: 100%; z-index: 5;
         margin: 0; padding: 0 0 0.25rem; list-style: none;
         background: var(--color-dc-2); border-radius: 8px 8px 0 0; box-shadow: 0 -4px 16px rgb(0 0 0 / 0.25);
-        max-height: var(--suggest-max, 17rem); overflow-y: auto; scrollbar-width: thin; scrollbar-color: #1a1b1e transparent;
+        max-height: 17rem; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #1a1b1e transparent;
     }
     .suggest-head { display: flex; align-items: center; gap: 0.4rem; padding: 0.6rem 0.75rem 0.4rem; font-size: 0.8125rem; font-weight: 700; color: var(--color-dc-header); }
     .suggest-head img { border-radius: 50%; }
@@ -255,12 +219,7 @@
         border: 0; background: none; color: var(--color-dc-text); font: inherit; text-align: left; cursor: pointer;
     }
     .suggest li.active button, .suggest button:hover { background: rgb(78 80 88 / 0.35); }
-    .s-label { max-width: 100%; font-size: 1rem; font-weight: 700; color: var(--color-dc-header); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    /* Free text has nothing to pick: just its usage, greyed out, above the box. */
-    .usage {
-        position: absolute; left: 0; bottom: 100%; z-index: 5; margin: 0; padding: 0.35rem 0.75rem;
-        background: var(--color-dc-2); border-radius: 8px 8px 0 0; font-size: 0.875rem; color: #949ba4; font-family: var(--font-mono, monospace);
-    }
+    .s-label { font-size: 1rem; font-weight: 700; color: var(--color-dc-header); white-space: nowrap; }
     .s-desc { max-width: 100%; font-size: 0.8125rem; color: #b5bac1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .composer.open .suggest + .info { border-radius: 0; }
 
@@ -277,10 +236,10 @@
     .pill { flex: none; padding: 0.15rem 0.45rem; border-radius: 4px; background: var(--color-dc-2); font-size: 0.9375rem; line-height: 1.3; font-weight: 700; color: var(--color-dc-header); }
     .param { display: flex; align-items: center; flex: 1; min-width: 0; height: 100%; }
     .param.boxed {
-        flex: 0 1 auto; min-width: 0; max-width: 100%; overflow: hidden; height: auto; gap: 0.5rem; padding: 0.1rem 0.25rem 0.1rem 0.5rem;
+        flex: none; max-width: 100%; height: auto; gap: 0.5rem; padding: 0.1rem 0.25rem 0.1rem 0.5rem;
         border: 1px solid transparent; border-radius: 4px; background: var(--color-dc-2); font-size: 0.9375rem; line-height: 1.3;
     }
     .param.boxed:focus-within { border-color: var(--color-dc-blurple); }
-    .param.boxed input { flex: 0 1 auto; height: 1.5rem; min-width: 0; max-width: 100%; }
+    .param.boxed input { flex: none; height: 1.5rem; min-width: 0; max-width: 100%; }
     .opt { flex: none; color: var(--color-dc-header); }
 </style>

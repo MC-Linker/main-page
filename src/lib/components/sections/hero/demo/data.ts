@@ -1,5 +1,4 @@
 import { type Author, type Embed, type SlashCommand, visitor } from '$lib/discord/types';
-import { vanillaCommands } from '$lib/mc/commands';
 import type { CommandTree } from '$lib/mc/suggest';
 import type { LookName } from '$lib/pixel/heads';
 
@@ -25,9 +24,16 @@ export const members = {
 /** The visitor, as the user of a slash command. */
 export const you = { user: visitor.name, avatar: visitor.avatar };
 
-/** The commands the demo's Minecraft chat understands, for its suggestions (see runMinecraft and execute): the game's own, and the plugin's. */
+const playerNames = (rest: CommandTree = {}): CommandTree => Object.fromEntries(['@s', 'Lianecx', 'Cubey'].map(p => [p, rest]));
+
+/** The commands the demo's Minecraft chat understands, for its suggestions (see runMinecraft and execute). */
 export const mcCommands: CommandTree = {
-    ...vanillaCommands,
+    time: { set: { day: {}, noon: {}, night: {}, midnight: {} } },
+    weather: { clear: {}, rain: {}, thunder: {} },
+    gamemode: Object.fromEntries(['survival', 'creative', 'adventure', 'spectator'].map(m => [m, playerNames()])),
+    give: playerNames({ diamond: { '<count>': {} }, golden_apple: { '<count>': {} }, cake: { '<count>': {} } }),
+    say: { '<message>': {} },
+    list: {},
     dm: { TheAnnoying: { '<message>': {} }, Bnux: { '<message>': {} } },
     discord: {},
     verify: {},
@@ -39,7 +45,7 @@ export const demoCommands: SlashCommand[] = [
         name: 'command',
         description: 'Execute any command on the Minecraft-server.',
         options: ['command'],
-        tree: vanillaCommands,
+        suggestions: ['time set night', 'time set day', 'weather rain', 'weather thunder', 'weather clear', 'give Cubey diamond 64', 'gamemode creative Cubey', 'list', 'say Hello from Discord!'],
     },
     { name: 'serverinfo', description: 'View information about the connected Minecraft server.' },
     { name: 'inventory', description: 'Get an image of the current player\'s inventory.', options: ['user'], suggestions: ['TheAnnoying'] },

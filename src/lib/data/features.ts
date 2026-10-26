@@ -33,8 +33,6 @@ export type Preview = {
     images?: { src: string; alt: string; width: number; height: number }[];
     /** For features that are set up with choices, the choices instead of a demo. */
     options?: { title: string; choices: { name: string; text: string }[] }[];
-    /** The /command demo, which types commands with the bot's autocompletion (instead of dc and mc). */
-    command?: true;
 };
 
 /** Every feature, as an item in the Features section's list. */
@@ -228,11 +226,14 @@ export const features: Feature[] = [
     {
         id: 'command',
         name: 'Run any command',
-        lore: ['Every Minecraft command, from Discord.'],
+        lore: ['Every Minecraft command, from Discord.', 'Full Minecraft autocompletion as you type.'],
         commands: ['/command'],
         guide: guide('commands/command'),
         tab: 'moderation', icon: texture('command_block'), glint: true, rarity: 'epic', from: 'discord',
-        preview: { command: true },
+        preview: {
+            dc: [{ author: bot, interaction: { ...you, command: '/command' }, embeds: [{ ...embedStyle.success, color: colors.blue, title: 'Command Executed', description: '```Gave 64 [Diamond] to Cubey```' }] }],
+            mc: ['&7&o[Server: Gave 64 [Diamond] to Cubey]'],
+        },
     },
     {
         id: 'serverinfo',

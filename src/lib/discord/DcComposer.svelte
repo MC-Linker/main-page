@@ -174,12 +174,18 @@
         display: grid; place-items: center; width: 1.5rem; height: 1.5rem; flex: none;
         border-radius: 50%; background: #b5bac1; color: var(--color-dc-input); font-weight: 700; line-height: 1;
     }
+    /* iPhone Safari sometimes didn't repaint a see-through field while typing (letters missing or
+       drawn over the placeholder until something else redrew the page). An opaque field on its own
+       layer is always redrawn. */
     input {
-        flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; box-shadow: none; background: transparent;
+        flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; box-shadow: none; background: var(--color-dc-input);
         color: var(--color-dc-text); font: inherit; font-size: max(0.9375rem, 16px);
+        -webkit-appearance: none; appearance: none; border-radius: 0; padding: 0;
+        transform: translateZ(0);
     }
+    .param.boxed input { background: var(--color-dc-2); }
     input::placeholder { color: #6d6f78; }
-    .field:has(input:focus-visible) { outline: 2px solid var(--color-dc-blurple); outline-offset: 0; }
+    .field:focus-within { outline: 2px solid var(--color-dc-blurple); outline-offset: 0; }
     .kbd {
         display: grid; place-items: center; width: 1.75rem; height: 1.75rem; flex: none; padding: 0; cursor: pointer;
         border: 1px solid #4e5058; border-radius: 6px; background: none; font: inherit; font-size: 0.85rem; font-weight: 700; color: var(--color-dc-muted);

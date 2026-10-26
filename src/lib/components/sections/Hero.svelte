@@ -55,11 +55,13 @@
     function fromMinecraft(text: string) {
         joined = true;
         if(stacked.current) (document.activeElement as HTMLElement | null)?.blur();
+        recenter();
         void bridge.runMinecraft(text);
     }
     function fromDiscord(text: string) {
         joined = true;
         if(stacked.current) (document.activeElement as HTMLElement | null)?.blur();
+        recenter();
         void bridge.runDiscord(text);
     }
 
@@ -141,55 +143,28 @@
         window.scrollTo({ top: openY(), behavior: scrollBehavior() });
     }
 
-    /** The chat field being typed in, if it's one of the hero's. */
-    function heroField() {
-        const el = document.activeElement;
-        return el instanceof HTMLElement && stage?.contains(el) && isTextField(el) ? el : null;
-    }
-
     /*
-     * Phones: the keyboard makes the browser scroll the page to show the field, often too far,
-     * so the split slides off. While typing, the field sits just above the keyboard instead;
-     * once the keyboard closes (a message sent, or Done), the split goes back to its place.
+     * Phones: the keyboard makes the browser scroll the page to show the field, often far enough
+     * that the split slides off. Once a message is sent (and the keyboard closes), the split
+     * goes back to its place. Not if they scrolled away from the hero on purpose.
      */
-    function fitKeyboard() {
-        const vv = window.visualViewport;
-        const field = heroField();
-        if(!stacked.current || !vv || !field || !track) return;
-        // No keyboard open.
-        if(vv.height > document.documentElement.clientHeight * 0.85) return;
-        const box = (field.closest('.composer, .bar') ?? field).getBoundingClientRect();
-        const delta = box.bottom + 8 - (vv.offsetTop + vv.height);
-        if(Math.abs(delta) < 4) return;
-        // Never above the open split: further up the intro closes it.
-        window.scrollTo({ top: Math.max(openY(), window.scrollY + delta) });
-    }
-
-    let refocus: ReturnType<typeof setTimeout> | undefined;
-    function onfocusin() {
-        if(!stacked.current || !heroField()) return;
-        clearTimeout(refocus);
-        // After the keyboard has opened and the browser has done its own scrolling.
-        refocus = setTimeout(fitKeyboard, 350);
-    }
-    function onfocusout(e: FocusEvent) {
-        if(!stacked.current || !track || (e.relatedTarget instanceof Node && stage.contains(e.relatedTarget) && isTextField(e.relatedTarget))) return;
-        clearTimeout(refocus);
-        // After the keyboard has closed. Not if they scrolled away from the hero on purpose.
-        refocus = setTimeout(() => {
-            if(heroField()) return;
+    let recentering: ReturnType<typeof setTimeout> | undefined;
+    function recenter() {
+        if(!stacked.current || !track) return;
+        clearTimeout(recentering);
+        // After the keyboard has closed.
+        recentering = setTimeout(() => {
             const y = openY();
-            if(Math.abs(window.scrollY - y) > 4 && Math.abs(window.scrollY - y) < window.innerHeight * 0.75) window.scrollTo({ top: y, behavior: scrollBehavior() });
+            const off = Math.abs(window.scrollY - y);
+            if(off > 4 && off < window.innerHeight * 0.75) window.scrollTo({ top: y, behavior: scrollBehavior() });
         }, 350);
     }
 
     onMount(() => {
         bridge.transfer = transfer;
         update();
-        window.visualViewport?.addEventListener('resize', fitKeyboard);
         return () => {
-            clearTimeout(refocus);
-            window.visualViewport?.removeEventListener('resize', fitKeyboard);
+            clearTimeout(recentering);
             bridge.destroy();
             document.documentElement.classList.remove('hero-snap');
         };
@@ -206,7 +181,7 @@
 <div id="top" class="track" bind:this={track} data-progress-skip>
 <span class="snap closed" aria-hidden="true"></span>
 <span class="snap opened" aria-hidden="true"></span>
-<section class="split" bind:this={stage} aria-labelledby="hero-title" style:--q={q} class:open={p >= 1} {onfocusin} {onfocusout}>
+<section class="split" bind:this={stage} aria-labelledby="hero-title" style:--q={q} class:open={p >= 1}>
 
     <!-- ── Minecraft: the game itself ─────────────────────────────────── -->
     <div class="half mc" inert={p < 0.9}>

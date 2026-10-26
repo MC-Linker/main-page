@@ -226,7 +226,7 @@ export const features: Feature[] = [
     {
         id: 'command',
         name: 'Run any command',
-        lore: ['Every Minecraft command, from Discord.'],
+        lore: ['Every Minecraft command, from Discord.', 'Full Minecraft autocompletion as you type.'],
         commands: ['/command'],
         guide: guide('commands/command'),
         tab: 'moderation', icon: texture('command_block'), glint: true, rarity: 'epic', from: 'discord',

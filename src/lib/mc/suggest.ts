@@ -3,7 +3,8 @@
  * you are on show above the chat bar, and Tab fills one in.
  *
  * A command tree maps each word to what may follow it. A key in angle brackets
- * (`<message>`) is free text: it can't be filled in, so it shows as a grey hint.
+ * (`<message>`) or round brackets (`(grant|revoke)`) is free text or a usage: it can't be
+ * filled in, so it shows as a grey hint.
  */
 export type CommandTree = { [word: string]: CommandTree };
 
@@ -16,14 +17,15 @@ export type Suggestions = {
     hint?: string;
 };
 
-const isFree = (key: string) => key.startsWith('<');
+const isFree = (key: string) => key.startsWith('<') || key.startsWith('(');
 /** The branch for a typed word, ignoring case. */
 const branch = (node: CommandTree, word: string) => {
     const key = Object.keys(node).find(k => !isFree(k) && k.toLowerCase() === word.toLowerCase());
     return key === undefined ? undefined : node[key];
 };
 
-export function suggest(tree: CommandTree, value: string): Suggestions | null {
+/** `exact` also keeps a word that is already typed out in full, like Minecraft's server does. */
+export function suggest(tree: CommandTree, value: string, exact = false): Suggestions | null {
     if(!value.startsWith('/')) return null;
     const words = value.slice(1).split(' ');
     let node: CommandTree | undefined = tree;
@@ -41,7 +43,7 @@ export function suggest(tree: CommandTree, value: string): Suggestions | null {
     if(!node) return null;
     const current = words.at(-1)!.toLowerCase();
     const keys = Object.keys(node);
-    const options = keys.filter(k => !isFree(k) && k.toLowerCase().startsWith(current) && k.toLowerCase() !== current).sort((a, b) => a.localeCompare(b));
+    const options = keys.filter(k => !isFree(k) && k.toLowerCase().startsWith(current) && (exact || k.toLowerCase() !== current)).sort((a, b) => a.localeCompare(b));
     const free = keys.find(isFree);
     if(!options.length && !free) return null;
     return { start, options, hint: !options.length && !current ? free : undefined };
@@ -53,4 +55,16 @@ export function complete(tree: CommandTree, value: string, start: number, option
     // Add the space when more can follow, so the next suggestions show straight away.
     const after = suggest(tree, filled + ' ');
     return after && (after.options.length || after.hint) ? filled + ' ' : filled;
+}
+
+/**
+ * What the bot's /command offers in Discord for a typed value (without the "/"): it asks the
+ * server for suggestions on the last word and lists each as the whole command with that word
+ * filled in. Discord shows at most 25.
+ */
+export function discordChoices(tree: CommandTree, value: string): { choices: string[]; hint?: string } {
+    const s = suggest(tree, `/${value}`, true);
+    if(!s) return { choices: [] };
+    const before = value.slice(0, s.start - 1);
+    return { choices: s.options.slice(0, 25).map(o => before + o), hint: s.hint };
 }

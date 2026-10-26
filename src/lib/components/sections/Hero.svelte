@@ -132,16 +132,64 @@
         document.documentElement.classList.toggle('hero-snap', scrolled() < run() + 40);
     }
 
+    /** The page's scroll position where the split is open and fills the screen under the header. */
+    const openY = () => window.scrollY + track!.getBoundingClientRect().top + run() - parseFloat(getComputedStyle(stage).top);
+
     /** "Try it live": scroll to where the split is open. */
     function open() {
         if(!track || !stage) return;
-        window.scrollTo({ top: window.scrollY + run() - scrolled(), behavior: scrollBehavior() });
+        window.scrollTo({ top: openY(), behavior: scrollBehavior() });
+    }
+
+    /** The chat field being typed in, if it's one of the hero's. */
+    function heroField() {
+        const el = document.activeElement;
+        return el instanceof HTMLElement && stage?.contains(el) && isTextField(el) ? el : null;
+    }
+
+    /*
+     * Phones: the keyboard makes the browser scroll the page to show the field, often too far,
+     * so the split slides off. While typing, the field sits just above the keyboard instead;
+     * once the keyboard closes (a message sent, or Done), the split goes back to its place.
+     */
+    function fitKeyboard() {
+        const vv = window.visualViewport;
+        const field = heroField();
+        if(!stacked.current || !vv || !field || !track) return;
+        // No keyboard open.
+        if(vv.height > document.documentElement.clientHeight * 0.85) return;
+        const box = (field.closest('.composer, .bar') ?? field).getBoundingClientRect();
+        const delta = box.bottom + 8 - (vv.offsetTop + vv.height);
+        if(Math.abs(delta) < 4) return;
+        // Never above the open split: further up the intro closes it.
+        window.scrollTo({ top: Math.max(openY(), window.scrollY + delta) });
+    }
+
+    let refocus: ReturnType<typeof setTimeout> | undefined;
+    function onfocusin() {
+        if(!stacked.current || !heroField()) return;
+        clearTimeout(refocus);
+        // After the keyboard has opened and the browser has done its own scrolling.
+        refocus = setTimeout(fitKeyboard, 350);
+    }
+    function onfocusout(e: FocusEvent) {
+        if(!stacked.current || !track || (e.relatedTarget instanceof Node && stage.contains(e.relatedTarget) && isTextField(e.relatedTarget))) return;
+        clearTimeout(refocus);
+        // After the keyboard has closed. Not if they scrolled away from the hero on purpose.
+        refocus = setTimeout(() => {
+            if(heroField()) return;
+            const y = openY();
+            if(Math.abs(window.scrollY - y) > 4 && Math.abs(window.scrollY - y) < window.innerHeight * 0.75) window.scrollTo({ top: y, behavior: scrollBehavior() });
+        }, 350);
     }
 
     onMount(() => {
         bridge.transfer = transfer;
         update();
+        window.visualViewport?.addEventListener('resize', fitKeyboard);
         return () => {
+            clearTimeout(refocus);
+            window.visualViewport?.removeEventListener('resize', fitKeyboard);
             bridge.destroy();
             document.documentElement.classList.remove('hero-snap');
         };
@@ -158,7 +206,7 @@
 <div id="top" class="track" bind:this={track} data-progress-skip>
 <span class="snap closed" aria-hidden="true"></span>
 <span class="snap opened" aria-hidden="true"></span>
-<section class="split" bind:this={stage} aria-labelledby="hero-title" style:--q={q} class:open={p >= 1}>
+<section class="split" bind:this={stage} aria-labelledby="hero-title" style:--q={q} class:open={p >= 1} {onfocusin} {onfocusout}>
 
     <!-- ── Minecraft: the game itself ─────────────────────────────────── -->
     <div class="half mc" inert={p < 0.9}>
@@ -320,7 +368,8 @@
         .mc-hud { padding: 0 0.5rem 1.4rem; gap: 0.4rem; }
         .mc-chat :global(.chat) { font-size: 1rem; }
         .mc-chat { width: 100%; }
-        .mc-chat { height: auto; max-height: calc(44svh - 6rem); }
+        /* Under the Minecraft logo and server name, whatever the screen height. */
+        .mc-chat { height: auto; max-height: calc((100svh - var(--nav-h)) * 0.44 - 8rem); }
         .headline { font-size: 2rem; }
         .sub { font-size: 0.95rem; }
     }

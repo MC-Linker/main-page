@@ -75,7 +75,7 @@
 
 <style>
     /* Fills whatever height the hero's panel gives it; the message list takes the rest. */
-    .channel { position: relative; flex: 1; min-height: 0; display: flex; }
+    .channel { position: relative; flex: 1; min-width: 0; min-height: 0; display: flex; }
     .channel :global(.window) { flex: 1; }
     .channel :global(.content) { display: flex; flex-direction: column; }
     .dc-list {

@@ -155,7 +155,8 @@
         {#if !cmd}
             <button type="button" class="kbd" aria-label="Show commands" title="Commands" onmousedown={e => e.preventDefault()} onclick={() => start('/')}>/</button>
         {/if}
-        {#if hint && !hinted && !open}
+        <!-- Out of the way while typing, so the text has the room. -->
+        {#if hint && !hinted && !open && !value}
             <span class="hint-bubble" aria-hidden="true">{hint}</span>
         {/if}
     </div>

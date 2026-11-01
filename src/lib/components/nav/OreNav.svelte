@@ -126,7 +126,7 @@
 
     <OreButton href={links.guide} external variant="contrast" size="sm" class="guide">Guide</OreButton>
     <OreButton href={links.invite} external variant="discord" size="sm" class="add"><BrandIcon brand="discord" size="1.1em" /> Add to Discord</OreButton>
-    <OreButton href={links.plugin.modrinth} external variant="contrast" size="sm" class="modrinth" label="Modrinth"><BrandIcon brand="modrinth" size="1.1em" class="modrinth-icon" /><span class="modrinth-name">Modrinth</span></OreButton>
+    <OreButton href={links.plugin.modrinth} external variant="primary" size="sm" class="modrinth" label="Modrinth"><BrandIcon brand="modrinth" size="1.1em" /><span class="modrinth-name">Modrinth</span></OreButton>
 
     <OreDropdown id="nav-links" bind:open align="right" size="sm" tone="dark" class="links">
         <span class="wide-only">Links</span><span class="narrow-only">Menu</span>
@@ -222,7 +222,6 @@
     /* Guide, Add to Discord and Modrinth sit together on the right, before Links. */
     .nav :global(.guide) { flex: none; margin-left: auto; }
     .nav :global(.add), .nav :global(.modrinth) { flex: none; }
-    .nav :global(.modrinth-icon) { color: #1bd96a; }
     /* Menu rows are direct children of the popup; the wrapper only adds the phone-only switch. */
     .row { display: contents; }
     .row.phone-only { display: none; }

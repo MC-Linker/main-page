@@ -57,12 +57,12 @@
                             </OreButton>
                         {/each}
                     </div>
-                    <p class="drop">Drop the file into your <code class="ore-tag">{p.folder}/</code> folder, then restart the server.</p>
+                    <p class="drop">Drop it into <code class="ore-tag">{p.folder}/</code> and restart the server.</p>
                     <aside class="notes" aria-label="Notes">
-                        <p class="notes-title ore-label">Notes</p>
                         <ul>
                             {#if p.alsoWorksOn}<li>Also works on {p.alsoWorksOn}.</li>{/if}
                             {#each platformNotes as n (n)}<li>{n}</li>{/each}
+                            <li>Aternos: add Discord-Linker from the {p.folder === 'plugins' ? 'plugin' : 'mod'} list.</li>
                         </ul>
                     </aside>
                 </div>
@@ -100,14 +100,13 @@
     .buttons { display: flex; flex-wrap: wrap; gap: 1.1rem 0.6rem; margin-top: 1rem; }
     .buttons > :global(*) { flex: 1 1 8.5rem; }
     .buttons > :global(.wide) { flex-basis: 100%; }
-    .drop { margin: 1.25rem 0 0; color: var(--color-ore-white); line-height: 1.8; }
+    .drop { margin: 0.6rem 0 0; color: var(--color-ore-white); line-height: 1.6; }
     .drop code { font-size: 0.9rem; color: var(--color-mc-yellow); }
-    /* A dark inset box with a small "Notes" label and square bullets. */
-    .notes { margin: 1rem 0 0; padding: 0.75rem 1rem 0.85rem; background: var(--color-ore-deep); border: 2px solid var(--color-ore-outline); border-left: 4px solid var(--color-ore-mid); }
-    .notes-title { margin: 0 0 0.45rem; font-size: 0.75rem; color: var(--color-ore-silver); }
-    .notes ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.875rem; line-height: 1.5; color: #c4c5c8; }
-    .notes li { position: relative; padding-left: 1rem; }
-    .notes li::before { content: ''; position: absolute; left: 0; top: 0.6em; width: 0.35rem; height: 0.35rem; background: var(--color-ore-mid); }
+    /* Small notes with square bullets, kept tight so the step doesn't grow taller than the server list. */
+    .notes { margin: 0.35rem 0 0; padding: 0.1rem 0 0.1rem 0.7rem; border-left: 3px solid var(--color-ore-line); }
+    .notes ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.1rem; font-size: 0.8rem; line-height: 1.35; color: #c4c5c8; }
+    .notes li { position: relative; padding-left: 0.85rem; }
+    .notes li::before { content: ''; position: absolute; left: 0; top: 0.55em; width: 0.3rem; height: 0.3rem; background: var(--color-ore-mid); }
 
     @media (max-width: 860px) {
         .split { grid-template-columns: minmax(0, 1fr); }

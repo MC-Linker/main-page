@@ -126,6 +126,7 @@
 
     <OreButton href={links.guide} external variant="contrast" size="sm" class="guide">Guide</OreButton>
     <OreButton href={links.invite} external variant="discord" size="sm" class="add"><BrandIcon brand="discord" size="1.1em" /> Add to Discord</OreButton>
+    <OreButton href={links.plugin.modrinth} external variant="contrast" size="sm" class="modrinth" label="Modrinth"><BrandIcon brand="modrinth" size="1.1em" class="modrinth-icon" /><span class="modrinth-name">Modrinth</span></OreButton>
 
     <OreDropdown id="nav-links" bind:open align="right" size="sm" tone="dark" class="links">
         <span class="wide-only">Links</span><span class="narrow-only">Menu</span>
@@ -218,9 +219,10 @@
     .crumb:not(.last) { flex: none; }
 
     .nav :global(.sections) { flex: none; }
-    /* Guide and Add to Discord sit together on the right, before Links. */
+    /* Guide, Add to Discord and Modrinth sit together on the right, before Links. */
     .nav :global(.guide) { flex: none; margin-left: auto; }
-    .nav :global(.add) { flex: none; }
+    .nav :global(.add), .nav :global(.modrinth) { flex: none; }
+    .nav :global(.modrinth-icon) { color: #1bd96a; }
     /* Menu rows are direct children of the popup; the wrapper only adds the phone-only switch. */
     .row { display: contents; }
     .row.phone-only { display: none; }
@@ -248,10 +250,21 @@
         .nav :global(.sections .seg) { padding-inline: 0.65rem; }
     }
 
+    /* Narrower: Modrinth shows only its logo. */
+    @media (max-width: 1180px) {
+        .nav :global(.modrinth-name) { display: none; }
+    }
+    /* Too narrow for all of them beside the banner: Guide and Modrinth move into Links. */
+    @media (max-width: 1040px) {
+        .nav :global(.ore-btn.guide), .nav :global(.ore-btn.modrinth) { display: none; }
+        .nav :global(.add) { margin-left: auto; }
+        .row.phone-only { display: contents; }
+    }
+
     /* Phones: sections and links in one "Menu" dropdown. */
     @media (max-width: 760px) {
         .nav { gap: 0.4rem; padding-inline: 0.4rem 0.6rem; }
-        .nav :global(.sections), .nav :global(.guide), .nav :global(.add), .trail, .wide-only { display: none; }
+        .nav :global(.sections), .nav :global(.ore-btn.guide), .nav :global(.ore-btn.add), .nav :global(.ore-btn.modrinth), .trail, .wide-only { display: none; }
         .row.phone-only { display: contents; }
         .nav :global(.links) { margin-left: auto; }
         .narrow-only { display: inline; }

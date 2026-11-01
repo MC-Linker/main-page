@@ -204,6 +204,11 @@ discord-command[compact-mode], discord-reply[compact-mode] { margin: 0 0 0 62px;
 /* The same reset removes the gap between messages; put back Discord's spacing. */
 discord-message { padding-top: 0.125rem; padding-bottom: 0.125rem; }
 discord-messages > * + * { margin-top: 1.0625rem; }
+/* And the 8px between an embed's author or title and its description, fields and footer,
+   and the small gaps around mentions, times and tags. */
+discord-embed-description, discord-embed-fields, discord-embed-footer { margin-top: 8px; }
+discord-mention, discord-time { padding: 0 2px; }
+discord-author-info { margin-right: 0.25rem; }
 
 /* On phones: the sun sits above the page titles, out of their way. */
 @media (max-width: 760px) {

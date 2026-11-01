@@ -108,7 +108,7 @@
     <p class="intro">Discord gives you a code. Run it on your server as an operator and the two are linked. That's it.</p>
     <div class="sides">
         <div class="side" bind:this={dcSide}>
-            <DcWindow channel="general">
+            <DcWindow channel="general" class="flat">
                 <!-- All three replies sit in one cell, the hidden ones only holding its height, so the step keeps the tallest one's size. -->
                 <discord-messages no-background class="stack">
                     {#each phases as p (p)}
@@ -142,6 +142,8 @@
     .intro { margin: 0 0 1.25rem; color: var(--color-ore-white); line-height: 1.6; }
     .sides { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; align-items: start; }
     .side { min-width: 0; }
+    /* The Discord window sits flat in the step, without its drop shadow. */
+    .side :global(.window.flat) { box-shadow: 0 0 0 1px rgb(255 255 255 / 0.04); }
     /* Children share one grid cell, so the cell is as tall as the tallest of them. */
     .stack { display: grid; }
     .stack > :global(*) { grid-area: 1 / 1; min-width: 0; margin: 0; }

@@ -1,4 +1,4 @@
-/* Item sprites: the icons for the header's sections and links, and the server software list. */
+/* Item sprites: the icons for the header's sections and links. */
 import type { Sprite } from './sprites';
 
 /** Swaps palette colours of a sprite, for colour variants of the same shape. */
@@ -13,8 +13,6 @@ export const book: Sprite = {
     rows: ['.ooooooooo', 'oRRRRRRRRo', 'oRRwwwwRRo', 'oRRRRRRRRo', 'oRRRRRRRRo', 'oRRRRRRRRo', 'oRRRRRRRRo', 'oRRRRRRRRo', 'oppppppppo', 'oooooooooo'],
     palette: { o: '#2a0f0b', R: '#8b3a2e', w: '#e8d9b0', p: '#efe6cc' },
 };
-
-export const enchantedBook = recolor(book, { R: '#6a3d9a', w: '#f3c94a', o: '#1d0d2e' });
 
 export const map: Sprite = {
     rows: ['oooooooooo', 'oPPPPPPPPo', 'oPgggbbbPo', 'oPggbbbgPo', 'oPgbbbggPo', 'oPbbbgggPo', 'oPggggggPo', 'oPgggRggPo', 'oPPPPPPPPo', 'oooooooooo'],
@@ -43,11 +41,6 @@ export const heart: Sprite = {
 export const letter: Sprite = {
     rows: ['oooooooooo', 'owwwwwwwwo', 'oowwwwwwoo', 'owowwwwowo', 'owwowwowwo', 'owwwoowwwo', 'owwwwwwwwo', 'oooooooooo'],
     palette: { o: '#5c5c5c', w: '#f4f1e8' },
-};
-
-export const painting: Sprite = {
-    rows: ['oooooooooo', 'oFFFFFFFFo', 'oFbbbbbbFo', 'oFbbYbbbFo', 'oFggbbggFo', 'oFggggggFo', 'oFFFFFFFFo', 'oooooooooo'],
-    palette: { o: '#2b1a0b', F: '#8a5a2b', b: '#7fb3ff', Y: '#ffe066', g: '#5d8a24' },
 };
 
 export const craftingTable: Sprite = {

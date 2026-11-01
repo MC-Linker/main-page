@@ -79,8 +79,7 @@
     }
     .sm { min-height: 2.25rem; padding-inline: 0.75rem; font-size: 0.9rem; }
     .lg { min-height: 3.5rem; padding-inline: 1.5rem; font-size: 1.25rem; }
-    .hero { font-family: var(--font-title); letter-spacing: 0.0625em; }
-    .hero .label { text-shadow: 0.0625em 0 0 currentColor; }
+    .hero { font-family: var(--font-title); letter-spacing: 0.02em; }
     .label { display: inline-flex; align-items: center; justify-content: center; gap: 0.55em; min-width: 0; }
     .label :global(svg) { flex: none; }
 

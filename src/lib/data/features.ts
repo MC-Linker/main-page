@@ -384,7 +384,6 @@ export const features: Feature[] = [
 
 /** The feature list's tabs. "all" shows everything and has the search field. */
 export const featureTabs = [
-    { id: 'all', name: 'All', icon: texture('book') },
     { id: 'chat', name: 'Chat & Logs', icon: texture('oak_sign') },
     { id: 'players', name: 'Players', icon: texture('barrel') },
     { id: 'moderation', name: 'Moderation', icon: texture('iron_sword') },

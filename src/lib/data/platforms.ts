@@ -1,5 +1,3 @@
-import { craftingTable, enchantedBook, letter, painting } from '$lib/pixel/items';
-import type { Sprite } from '$lib/pixel/sprites';
 import type { Brand } from './brands';
 import { links } from './links';
 
@@ -10,7 +8,8 @@ export type Download = { name: string; href: string; brand?: Brand; color: strin
 export type Platform = {
     id: string;
     name: string;
-    icon: Sprite;
+    /** The software's own logo, in static/brands. `pixelated` for pixel art logos. */
+    icon: { src: string; pixelated?: boolean };
     /** Other server software that uses the same build. */
     alsoWorksOn?: string;
     versions: string;
@@ -28,7 +27,7 @@ export const platforms: Platform[] = [
     {
         id: 'paper',
         name: 'Paper & Spigot',
-        icon: letter,
+        icon: { src: '/brands/paper.png' },
         alsoWorksOn: 'Purpur and other Bukkit-based servers',
         versions: '1.8 – latest',
         folder: 'plugins',
@@ -37,7 +36,7 @@ export const platforms: Platform[] = [
     {
         id: 'fabric',
         name: 'Fabric',
-        icon: painting,
+        icon: { src: '/brands/fabric.png', pixelated: true },
         versions: '1.16.5 – 26.2',
         folder: 'mods',
         downloads: [modrinth, curseforgeMods],
@@ -45,7 +44,7 @@ export const platforms: Platform[] = [
     {
         id: 'neoforge',
         name: 'NeoForge',
-        icon: enchantedBook,
+        icon: { src: '/brands/neoforge.png', pixelated: true },
         versions: '1.21.1 – 26.2',
         folder: 'mods',
         downloads: [modrinth, curseforgeMods],
@@ -53,7 +52,7 @@ export const platforms: Platform[] = [
     {
         id: 'forge',
         name: 'Forge',
-        icon: craftingTable,
+        icon: { src: '/brands/forge.svg' },
         versions: '1.16.5 – 1.20.x',
         folder: 'mods',
         downloads: [modrinth, curseforgeMods],

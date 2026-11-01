@@ -103,7 +103,7 @@
 </script>
 
 <!-- Step 3 happens in both worlds: Discord on the left, Minecraft on the right, in the order you use them. -->
-<StepCard step={3} world="both">
+<StepCard step={3}>
     {#snippet title()}Run <code>/connect</code>, paste the code{/snippet}
     <p class="intro">Discord gives you a code. Run it on your server as an operator and the two are linked. That's it.</p>
     <div class="sides">

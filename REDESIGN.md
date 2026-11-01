@@ -106,7 +106,7 @@ On phones the link slots fold into one "Links" slot that opens a small list, so 
 - **Buttons:** a flat face, a light top-left edge, a shaded bottom-right one and a darker edge underneath that makes them stand up. Pressing pushes the face down into that edge. Green for the main action, light grey with black text for the rest, dark grey, red and purple as in the game, plus a blurple one built the same way for "Add to Discord". Hero buttons use the title font.
 - **Panels:** dark grey (`#48494a`) with a near-black outline; "raised" ones have a darker edge along the bottom. A light grey bar with black text is the title of a screen or a dialog.
 - **Controls:** dark tabs and light toggle buttons with fused borders, where the chosen one sinks in and gets a white line; list rows with a thumbnail, a title, a grey line and an arrow; radio buttons as diamonds; text fields that sit into the surface; a dropdown with a grey popup.
-- **Text:** flat, without the classic drop shadow. Mojangles (Minecraft Seven here) for controls, Minecraft Ten for titles (Minecraft Seven drawn bold here, since Minecraft Ten has no free licence) and Noto Sans, the game's "smooth font", for longer text.
+- **Text:** flat, without the classic drop shadow. Mojangles (Minecraft Seven here) for controls, Minecraft Ten for titles, Minecraft Five for small capital labels and Noto Sans, the game's "smooth font", for longer text.
 
 **What changed from Final:**
 

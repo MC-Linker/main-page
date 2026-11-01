@@ -6,7 +6,7 @@
 </script>
 
 <!-- Step 1 happens in Discord. -->
-<StepCard step={1} world="discord">
+<StepCard step={1}>
     {#snippet title()}Add MC Linker to your Discord server{/snippet}
     <div class="split">
         <div class="copy">

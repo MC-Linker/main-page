@@ -1,11 +1,36 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-/* Minecraft fonts from the MC-Linker bot repo (resources/fonts), subset to woff2. */
+/*
+ * Minecraft's own fonts: Ten for titles, Seven (Mojangles) for UI text, Five for small capital labels.
+ * Their metrics are evened out so capitals sit in the middle of the line box: next to an icon
+ * in a flex row, text and icon line up without nudging.
+ */
+@font-face {
+    font-family: "Minecraft Ten";
+    src: url("/fonts/minecraft-ten.woff2") format("woff2");
+    font-display: swap;
+    ascent-override: 85%; descent-override: 15%; line-gap-override: 0%;
+}
 @font-face {
     font-family: "Minecraft Seven";
     src: url("/fonts/minecraft-seven.woff2") format("woff2");
     font-display: swap;
+    ascent-override: 85%; descent-override: 15%; line-gap-override: 0%;
+}
+@font-face {
+    font-family: "Minecraft Five";
+    src: url("/fonts/minecraft-five.woff2") format("woff2");
+    font-weight: 400;
+    font-display: swap;
+    ascent-override: 85%; descent-override: 15%; line-gap-override: 0%;
+}
+@font-face {
+    font-family: "Minecraft Five";
+    src: url("/fonts/minecraft-five-bold.woff2") format("woff2");
+    font-weight: 700;
+    font-display: swap;
+    ascent-override: 85%; descent-override: 15%; line-gap-override: 0%;
 }
 @font-face {
     font-family: "Mojang Studios";
@@ -13,25 +38,25 @@
     font-display: swap;
 }
 
-/* Discord's font, as in the guide (served by the discord-components project). */
-@font-face { font-family: "Whitney"; src: url("https://cdn.skyra.pw/whitney-font/v2/Book.woff") format("woff"); font-weight: 400; font-display: swap; }
-@font-face { font-family: "Whitney"; src: url("https://cdn.skyra.pw/whitney-font/v2/Medium.woff") format("woff"); font-weight: 500; font-display: swap; }
-@font-face { font-family: "Whitney"; src: url("https://cdn.skyra.pw/whitney-font/v2/Semibold.woff") format("woff"); font-weight: 600; font-display: swap; }
-@font-face { font-family: "Whitney"; src: url("https://cdn.skyra.pw/whitney-font/v2/Bold.woff") format("woff"); font-weight: 700; font-display: swap; }
+/* Discord's font, gg sans (https://github.com/damnxav/gg-sans-font), for the Discord mock-ups. */
+@font-face { font-family: "gg sans"; src: url("/fonts/gg-sans-regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "gg sans"; src: url("/fonts/gg-sans-medium.woff2") format("woff2"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "gg sans"; src: url("/fonts/gg-sans-semibold.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "gg sans"; src: url("/fonts/gg-sans-bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
 
 @theme {
     /*
-     * Ore UI's fonts. Mojangles is the game's pixel font (Minecraft Seven here); Minecraft Ten,
-     * for titles and hero buttons, has no free licence, so titles use the pixel font drawn bold
-     * the way the game does it (see .ore-title). Long text uses Noto Sans, the game's "smooth font".
+     * Ore UI's fonts: Minecraft Ten for titles and hero buttons, Mojangles (Minecraft Seven) for
+     * UI text, Minecraft Five for small capital labels. Long text uses Noto Sans, the game's "smooth font".
      */
     --font-pixel: "Minecraft Seven", "Pixelify Sans Variable", ui-monospace, monospace;
-    --font-title: "Minecraft Seven", "Pixelify Sans Variable", ui-monospace, monospace;
+    --font-title: "Minecraft Ten", "Minecraft Seven", ui-monospace, monospace;
+    --font-label: "Minecraft Five", "Minecraft Seven", ui-monospace, monospace;
     /* The Mojang Studios logo font, for small uppercase labels. */
     --font-mojang: "Mojang Studios", "Minecraft Seven", ui-monospace, monospace;
     --font-sans: "Noto Sans Variable", "Noto Sans", ui-sans-serif, system-ui, sans-serif;
     /* The same stack discord-components uses for messages. */
-    --font-discord: "gg sans", "Noto Sans", Whitney, "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+    --font-discord: "gg sans", "Noto Sans", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
 
     /*
      * Ore UI, Bedrock Edition's menus. Sampled from the textures of bedrock-core's ore-styled
@@ -144,15 +169,19 @@ body {
     font-weight: 400;
 }
 
-/*
- * Ore UI titles. Bedrock draws them in Minecraft Ten; here the pixel font is drawn bold
- * the way the game draws bold text: the glyph again, a sixteenth of the size to the right.
- */
+/* Ore UI titles, in Minecraft Ten like Bedrock's. */
 .ore-title {
     font-family: var(--font-title);
     font-weight: 400;
-    letter-spacing: 0.0625em;
-    text-shadow: 0.0625em 0 0 currentColor;
+    letter-spacing: 0.02em;
+}
+
+/* Small capital labels, like "IN DISCORD" over a preview. */
+.ore-label {
+    font-family: var(--font-label);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
 }
 
 /* Small labels in the Mojang Studios font. It only has capitals (see scripts/mojang-capitals.py). */

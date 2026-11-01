@@ -8,7 +8,7 @@
 
 <!-- The last screen: an Ore UI dialog over both worlds, like the game asking "ready?". -->
 <section class="cta" aria-labelledby="cta-title">
-    <McWorld class="cta-world" tile={30} hills blur={3} clouds={false} />
+    <McWorld class="cta-world" tile={30} hills still blur={3} clouds={false} />
     <div class="dc-bg" aria-hidden="true"><DcBackdrop /></div>
 
     <img src="/logo-horizontal.svg" alt="" width="980" height="472" class="logo" />

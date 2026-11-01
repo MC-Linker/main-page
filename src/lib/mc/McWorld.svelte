@@ -17,12 +17,14 @@
          * panorama, instead of flat ground.
          */
         hills?: boolean;
+        /** The hills stand still instead of panning by. */
+        still?: boolean;
         /** Blur in px, for a soft, out-of-focus backdrop (the title screen look). */
         blur?: number;
         class?: string;
         children?: Snippet;
     };
-    let { night = false, rain = false, tile = 32, ground = 2, clouds = true, hills = false, blur = 0, class: className = '', children }: Props = $props();
+    let { night = false, rain = false, tile = 32, ground = 2, clouds = true, hills = false, still = false, blur = 0, class: className = '', children }: Props = $props();
 
     // A stepped skyline like the edge of the logo: mostly flat, with a hill on each side.
     const bumps = [2, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 3, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2];
@@ -100,11 +102,11 @@
             offset = ((now - start) / 1000) * (hills.loop / PAN_SECONDS);
             render();
         };
-        // Only animate while on screen, and not at all for reduced motion.
+        // Only animate while on screen, and not at all for reduced motion or still worlds.
         const update = () => {
             cancelAnimationFrame(frame);
             if(dead) return;
-            if(visible && !motion.matches) {
+            if(visible && !motion.matches && !still) {
                 start = performance.now() - (offset / hills.loop) * PAN_SECONDS * 1000;
                 frame = requestAnimationFrame(tick);
             }
@@ -287,9 +289,11 @@
         animation: fall 0.5s linear infinite paused;
     }
     .rain .rainfall { opacity: 1; animation-play-state: running; }
+    /* Straight down by exactly one tile, so each loop starts where the last one ended (a sideways
+       drift that isn't a whole tile made all the rain jump back at the end of every loop). */
     @keyframes fall {
         from { background-position: 0 0, 40px 0; }
-        to { background-position: -12px 180px, 32px 130px; }
+        to { background-position: 0 180px, 40px 130px; }
     }
 
     .content { position: relative; z-index: 2; height: 100%; }

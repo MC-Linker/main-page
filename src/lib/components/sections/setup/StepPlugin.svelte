@@ -97,14 +97,14 @@
     .motd { font-size: 0.875rem; line-height: 1.25; color: var(--color-ore-white); }
     .folder { color: var(--color-mc-yellow); }
     /* The recommended download on its own row; the others share rows, and one left alone fills its row. */
-    .buttons { display: flex; flex-wrap: wrap; gap: 1.1rem 0.6rem; margin-top: 1rem; }
+    .buttons { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1rem; }
     .buttons > :global(*) { flex: 1 1 8.5rem; }
     .buttons > :global(.wide) { flex-basis: 100%; }
-    .drop { margin: 0.6rem 0 0; color: var(--color-ore-white); line-height: 1.6; }
+    .drop { margin: 0.9rem 0 0; color: var(--color-ore-white); line-height: 1.6; }
     .drop code { font-size: 0.9rem; color: var(--color-mc-yellow); }
     /* Small notes with square bullets, kept tight so the step doesn't grow taller than the server list. */
-    .notes { margin: 0.35rem 0 0; padding: 0.1rem 0 0.1rem 0.7rem; border-left: 3px solid var(--color-ore-line); }
-    .notes ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.1rem; font-size: 0.8rem; line-height: 1.35; color: #c4c5c8; }
+    .notes { margin: 0.5rem 0 0; padding: 0.2rem 0 0.2rem 0.7rem; border-left: 3px solid var(--color-ore-line); }
+    .notes ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.2rem; font-size: 0.8rem; line-height: 1.4; color: #c4c5c8; }
     .notes li { position: relative; padding-left: 0.85rem; }
     .notes li::before { content: ''; position: absolute; left: 0; top: 0.55em; width: 0.3rem; height: 0.3rem; background: var(--color-ore-mid); }
 

@@ -312,7 +312,8 @@
         position: absolute; inset: 0; z-index: 5; cursor: pointer;
         display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
         padding: 1rem; text-align: center;
-        background: radial-gradient(ellipse at center, rgb(0 0 0 / 0.45), transparent 70%);
+        /* Shades the middle behind the intro's text; gone once the split is open (it would dim the chain and chats). */
+        background: radial-gradient(ellipse at center, rgb(0 0 0 / calc((1 - var(--q)) * 0.45)), transparent 70%);
     }
     /* The logo, big, with a black outline and shadow traced along its shapes (logo-outlined.svg),
        so it stands out from both worlds. */

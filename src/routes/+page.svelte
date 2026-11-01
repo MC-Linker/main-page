@@ -15,7 +15,12 @@
 </script>
 
 <LinkPreview title={site.name} description={site.description} path="/" embed={homeEmbed()} />
-<svelte:head>{@html homeJsonLd()}</svelte:head>
+<!-- Each page sets its own title. Svelte doesn't undo a title when a page goes away, so a
+     title in the layout would stay stuck on whatever page was opened before. -->
+<svelte:head>
+    <title>MC Linker · Link Minecraft and Discord</title>
+    {@html homeJsonLd()}
+</svelte:head>
 
 <!-- The sections, top to bottom. The header bar links to them by id (see data/navigation.ts). -->
 <Hero />

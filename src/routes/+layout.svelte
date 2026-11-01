@@ -28,7 +28,6 @@
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <link rel="apple-touch-icon" href="/logo-bg.png" />
     <link rel="preload" href="/fonts/minecraft-seven.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
-    <title>MC Linker · Link Minecraft and Discord</title>
     <meta name="author" content="Lianecx, TheAnnoying" />
     <meta name="theme-color" content={site.themeColor} />
     {@html `<style>:root{${textureVars}}</style>`}

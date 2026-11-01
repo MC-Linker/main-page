@@ -58,10 +58,13 @@
                         {/each}
                     </div>
                     <p class="drop">Drop the file into your <code class="ore-tag">{p.folder}/</code> folder, then restart the server.</p>
-                    <ul class="notes">
-                        {#if p.alsoWorksOn}<li>Also works on {p.alsoWorksOn}.</li>{/if}
-                        {#each platformNotes as n (n)}<li>{n}</li>{/each}
-                    </ul>
+                    <aside class="notes" aria-label="Notes">
+                        <p class="notes-title ore-label">Notes</p>
+                        <ul>
+                            {#if p.alsoWorksOn}<li>Also works on {p.alsoWorksOn}.</li>{/if}
+                            {#each platformNotes as n (n)}<li>{n}</li>{/each}
+                        </ul>
+                    </aside>
                 </div>
             {/each}
         </div>
@@ -99,7 +102,12 @@
     .buttons > :global(.wide) { flex-basis: 100%; }
     .drop { margin: 1.25rem 0 0; color: var(--color-ore-white); line-height: 1.8; }
     .drop code { font-size: 0.9rem; color: var(--color-mc-yellow); }
-    .notes { margin: 0.75rem 0 0; padding-left: 1.1rem; font-size: 0.875rem; line-height: 1.55; color: #c4c5c8; }
+    /* A dark inset box with a small "Notes" label and square bullets. */
+    .notes { margin: 1rem 0 0; padding: 0.75rem 1rem 0.85rem; background: var(--color-ore-deep); border: 2px solid var(--color-ore-outline); border-left: 4px solid var(--color-ore-mid); }
+    .notes-title { margin: 0 0 0.45rem; font-size: 0.75rem; color: var(--color-ore-silver); }
+    .notes ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.875rem; line-height: 1.5; color: #c4c5c8; }
+    .notes li { position: relative; padding-left: 1rem; }
+    .notes li::before { content: ''; position: absolute; left: 0; top: 0.6em; width: 0.35rem; height: 0.35rem; background: var(--color-ore-mid); }
 
     @media (max-width: 860px) {
         .split { grid-template-columns: minmax(0, 1fr); }

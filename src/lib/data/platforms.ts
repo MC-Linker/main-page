@@ -61,6 +61,6 @@ export const platforms: Platform[] = [
 
 /** Shown under the platform picker. */
 export const platformNotes = [
-    'Hybrid servers (MohistMC, Magma, Arclight) use the plugin.',
+    'Hybrid servers (MohistMC, Magma, Arclight) can use the plugin or the Forge or NeoForge build. We recommend the plugin.',
     'On Aternos, add Discord-Linker from the plugin list.',
 ];

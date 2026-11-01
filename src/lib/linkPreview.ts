@@ -40,7 +40,7 @@ const container = (...components: Child[]): ComponentEmbed => ({ component: { ty
 export function homeEmbed(): ComponentEmbed {
     // The share card says it all: the logo and "The easiest Minecraft ⇄ Discord link."
     return container(
-        text('# MC Linker'),
+        text('# MC Linker - Link Minecraft & Discord'),
         gallery('/og.jpg', 'MC Linker: The easiest Minecraft and Discord link.'),
         { type: 14 },
         row(

@@ -14,7 +14,7 @@ This file explains the redesign: what we learned about the project, the decision
 
 - **Two halves:** the *MC Linker* Discord bot (hosted by the team) and the *Discord-Linker* plugin/mod on the user's Minecraft server. They talk over a WebSocket. Users never host a bot or edit config files: everything is slash commands.
 - **Setup is 3 steps:** invite the bot → install the plugin → run `/connect` in Discord and paste `/linker connect <code>` in Minecraft.
-- **Platforms:** Spigot/Paper/Purpur 1.8+, Fabric 1.16.5–26.2, Forge 1.16.5–1.20.x, NeoForge 1.21.1–26.2, hybrid servers (Mohist, Magma, Arclight). Downloads: Modrinth, CurseForge, Hangar, SpigotMC, Aternos.
+- **Platforms:** Spigot/Paper/Purpur 1.8+, Fabric 1.16.5–26.2, Forge 1.16.5–1.20.x, NeoForge 1.21.1–26.2, hybrid servers (Mohist, Magma, Arclight; they use the plugin). Downloads: Modrinth, CurseForge, Hangar, SpigotMC, Aternos.
 - **Features:** chat bridge (chat, join/quit, deaths, advancements, player/console/command-block commands, start/stop) · console channel · `/inventory` `/stats` `/advancements` rendered as images · `/userinfo` `/serverinfo` · `/command` with live tab-completion · `/ban` `/unban` `/kick` `/op` `/deop` `/gamemode` · stat channels with templates (`%count%`, `%ip%`, `%time%`, `%version%`) · role sync with teams, LuckPerms and Vault (both directions) · account linking (`/account connect` + `/verify`), per-server accounts, cracked and Bedrock (Floodgate) players · join requirements (linked account or Discord roles) · Discord Linked Roles · in-game `/dm` to Discord with replies · `/customize` (server nickname/avatar/banner/bio) · premium custom bot.
 - **Character:** simple, quick, playful. The logo is a chain link made of grass and dirt.
 

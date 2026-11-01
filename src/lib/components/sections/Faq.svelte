@@ -52,7 +52,7 @@
     <McBook count={pages.length} label="Questions and answers" spread={wide.current} page={bookPage} />
 
     <div class="done">
-        <OreButton href={links.guide} variant="secondary" size="lg">Read the guide</OreButton>
+        <OreButton href={links.guide} external variant="secondary" size="lg">Read the guide</OreButton>
         <OreButton href={links.support} external variant="discord" size="lg"><BrandIcon brand="discord" size="1.1em" /> Ask on Discord</OreButton>
     </div>
 </section>

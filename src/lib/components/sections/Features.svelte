@@ -176,7 +176,7 @@
             {/if}
         {/each}
     </div>
-    <OreButton href={item.guide} class="guide">Read the guide</OreButton>
+    <OreButton href={item.guide} external class="guide">Read the guide</OreButton>
     </div>
 {/snippet}
 

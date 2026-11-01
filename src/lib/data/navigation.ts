@@ -16,7 +16,7 @@ export const homeSections: HomeSection[] = [
 export type SiteLink = { name: string; title: string; hint: string; href: string; icon: ItemIcon; newTab?: boolean; cta?: boolean; phoneOnly?: boolean };
 
 export const siteLinks: SiteLink[] = [
-    { name: 'Guide', title: 'Guide', hint: 'Every command and feature explained', href: links.guide, icon: { sprite: map }, phoneOnly: true },
+    { name: 'Guide', title: 'Guide', hint: 'Every command and feature explained', href: links.guide, icon: { sprite: map }, newTab: true, phoneOnly: true },
     { name: 'Support', title: 'Support server', hint: 'Opens Discord in a new tab', href: links.support, icon: { sprite: letter }, newTab: true },
     { name: 'Modrinth', title: 'Modrinth', hint: 'Download the plugin and mods', href: links.plugin.modrinth, icon: { image: '/brands/modrinth-green.svg' }, newTab: true },
     { name: 'GitHub', title: 'GitHub', hint: 'MC Linker is completely open source', href: links.socials.github, icon: { sprite: githubBlock }, newTab: true },
